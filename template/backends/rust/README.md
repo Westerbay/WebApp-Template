@@ -9,7 +9,7 @@ pnpm template:archives -- --backend rust --profile fr --output output/rust-archi
 
 Omitting `--backend` selects `nestjs`, including the existing archive names.
 Rust supports the same `en`, `fr` and `multilingual` profiles; its archives append
-`-rust`. The source release matrix is expanded to all six combinations in the next PR.
+`-rust`. Release validation builds all six combinations before publication.
 Generation never connects to a database or reads real environment files.
 
 ## Ownership and generated application
