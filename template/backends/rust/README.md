@@ -62,3 +62,28 @@ Better Auth RS is pinned to revision
 `9f91cd7fdb8a5f73a9c69d5c56d363468a7dc281`, an alpha release. This is a new-project
 schema, not a migration of existing NestJS accounts. SMTP delivery has no durable
 queue. Production packaging and generator wiring follow in separate pull requests.
+
+## Production packaging
+
+`Dockerfile.runtime` builds a Rust-only executable with the fixtures feature off.
+The final image runs as UID 10001. `compose.production.yml` expects a reviewed image
+and an external environment file; it uses a read-only filesystem, dropped
+capabilities, health checks and graceful shutdown. `env.example` documents the
+configuration shape without supplying deployed credentials.
+
+Staging and production validate HTTPS origins, a persistent secret, verified
+PostgreSQL TLS and SMTP settings. Capture mode is not allowed in production.
+Run `--migrate --target hostname:port/database` explicitly before serving; the
+server refuses absent, pending or modified migration history. Review the exact
+target and deployment credentials before any real deployment. There is no down
+migration or automatic adoption of an existing NestJS schema.
+
+Run the disposable normal-runtime check from the repository root:
+
+```sh
+sh template/backends/rust/runtime-check.sh
+```
+
+It verifies migration refusal, explicit/idempotent migration, readiness and restart
+against an owned local database. `cli.mjs` is a development-command asset for the
+upcoming generator; the deployed API reads process environment directly.
