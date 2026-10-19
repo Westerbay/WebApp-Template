@@ -9,8 +9,14 @@ import { copyTemplateFiles, listTemplateFiles } from "./template-files.mjs"
 
 const source = fileURLToPath(new URL("../", import.meta.url))
 
-export async function generateTemplate({ output, profile = "en" }) {
+export async function generateTemplate({
+  output,
+  profile = "en",
+  backend = "nestjs",
+}) {
   if (!output) throw new Error("An explicit output directory is required")
+  if (!["nestjs", "rust"].includes(backend))
+    throw new Error(`Unknown template backend: ${backend}`)
   const selected = templateProfiles.find(({ id }) => id === profile)
   if (!selected) throw new Error(`Unknown template profile: ${profile}`)
   const destination = resolve(output)
@@ -18,7 +24,14 @@ export async function generateTemplate({ output, profile = "en" }) {
     throw new Error("Cannot overwrite the source repository")
   // Check catalogs and documentation before creating the destination.
   const plan = await prepareTemplate(selected)
-  const files = await listTemplateFiles(source)
+  let files = await listTemplateFiles(source)
+  let rust
+  if (backend === "rust") {
+    const { prepareRustTemplate, includeRustFile } =
+      await import("./template-rust.mjs")
+    rust = await prepareRustTemplate(source, selected, plan)
+    files = files.filter(includeRustFile)
+  }
   await copyTemplateFiles(source, destination, files)
   await mkdir(resolve(destination, "packages/i18n/messages"), {
     recursive: true,
@@ -39,6 +52,18 @@ export async function generateTemplate({ output, profile = "en" }) {
     plan.routing
   )
   await writeJson(resolve(destination, "package.json"), plan.manifest)
+  if (rust) {
+    for (const [path, content] of rust) {
+      await mkdir(resolve(destination, path, ".."), { recursive: true })
+      await writeFile(
+        resolve(destination, path),
+        path.endsWith(".json")
+          ? await format(content, { filepath: path })
+          : content
+      )
+    }
+    await writeJson(resolve(destination, "package.json"), plan.manifest)
+  }
   // Let pnpm prune unused entries without installing packages or running scripts.
   execFileSync(
     "pnpm",

@@ -9,10 +9,12 @@ const { values } = parseArgs({
   options: {
     output: { type: "string" },
     profile: { type: "string", default: "en" },
+    backend: { type: "string", default: "nestjs" },
   },
 })
 const output = await generateTemplate({
   output: values.output,
   profile: values.profile,
+  backend: values.backend,
 })
 console.log(`Template generated at ${output}`)

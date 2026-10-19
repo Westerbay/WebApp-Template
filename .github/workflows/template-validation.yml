@@ -32,12 +32,14 @@ jobs:
   language-profile:
     needs: profiles
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.profiles.outputs.matrix) }}
     env:
       PROFILE_ID: ${{ matrix.id }}
+      BACKEND: ${{ matrix.backend }}
+      ARTIFACT_ID: ${{ matrix.artifact }}
       PROFILE_LOCALES: ${{ matrix.locales }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -51,39 +53,49 @@ jobs:
       - name: Install template tooling
         run: pnpm install --frozen-lockfile
       - name: Generate source ZIP
-        run: node scripts/template-archives.mjs --profile "$PROFILE_ID" --output output/templates
+        run: node scripts/template-archives.mjs --profile "$PROFILE_ID" --backend "$BACKEND" --output output/templates
       - name: Extract the ZIP for validation
-        run: python3 -m zipfile --extract "output/templates/webapp-template-$PROFILE_ID.zip" "output/validate-$PROFILE_ID"
+        run: python3 -m zipfile --extract "output/templates/webapp-template-$ARTIFACT_ID.zip" "output/validate-$ARTIFACT_ID"
       - name: Cache extracted project dependencies
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version-file: output/validate-${{ matrix.id }}/.node-version
+          node-version-file: output/validate-${{ matrix.artifact }}/.node-version
           cache: pnpm
-          cache-dependency-path: output/validate-${{ matrix.id }}/pnpm-lock.yaml
+          cache-dependency-path: output/validate-${{ matrix.artifact }}/pnpm-lock.yaml
+      - name: Install Rust
+        if: matrix.backend == 'rust'
+        run: rustup toolchain install 1.90 --profile minimal --component rustfmt --component clippy && rustup default 1.90
       - name: Validate the extracted project
-        working-directory: output/validate-${{ matrix.id }}
+        working-directory: output/validate-${{ matrix.artifact }}
         run: |
           pnpm install --frozen-lockfile
           pnpm check
-          pnpm --filter @workspace/api exec playwright install --with-deps chromium
           pnpm test:integration
-          IFS=',' read -ra locales <<< "$PROFILE_LOCALES"
-          for locale in "${locales[@]}"; do
-            AUTH_TEST_LOCALE="$locale" pnpm test:e2e
-          done
+          if [ "$BACKEND" = "rust" ]; then
+            sh apps/api/runtime-check.sh
+            pnpm --filter web exec playwright install --with-deps chromium
+            pnpm test:e2e
+            pnpm docker:build
+          else
+            pnpm --filter @workspace/api exec playwright install --with-deps chromium
+            IFS=',' read -ra locales <<< "$PROFILE_LOCALES"
+            for locale in "${locales[@]}"; do
+              AUTH_TEST_LOCALE="$locale" pnpm test:e2e
+            done
+          fi
 
       - name: Upload failed profile diagnostics
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: template-${{ matrix.id }}-e2e-diagnostics
-          path: output/validate-${{ matrix.id }}/output/playwright/
+          name: template-${{ matrix.artifact }}-e2e-diagnostics
+          path: output/validate-${{ matrix.artifact }}/output/
           retention-days: 7
           if-no-files-found: warn
 
       - name: Upload source ZIP without an outer archive
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: output/templates/webapp-template-${{ matrix.id }}.zip
+          path: output/templates/webapp-template-${{ matrix.artifact }}.zip
           archive: false
           if-no-files-found: error

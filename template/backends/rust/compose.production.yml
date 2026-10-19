@@ -1,0 +1,27 @@
+services:
+  api:
+    image: ${API_IMAGE:?Set API_IMAGE to the reviewed Rust image tag}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 30s
+    ports:
+      - "127.0.0.1:${API_PORT:-3001}:3001"
+    environment:
+      APP_ENV: ${APP_ENV:?Set staging or production}
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+      DATABASE_URL: ${DATABASE_URL:?Set PostgreSQL URL with sslmode=verify-full}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set a persistent random secret}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?Set the public HTTPS API origin}
+      WEB_URL: ${WEB_URL:?Set the public HTTPS frontend origin}
+      EMAIL_MODE: smtp
+      EMAIL_FROM: ${EMAIL_FROM:?Set the sender}
+      SMTP_HOST: ${SMTP_HOST:?Set the SMTP hostname}
+      SMTP_PORT: ${SMTP_PORT:?Set the SMTP port}
+      SMTP_SECURE: ${SMTP_SECURE:?Set true for implicit TLS or false for required STARTTLS}
+      SMTP_USER: ${SMTP_USER:?Set SMTP credentials}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?Set SMTP credentials}
+      EMAIL_ALLOWED_RECIPIENTS: ${EMAIL_ALLOWED_RECIPIENTS:-}

@@ -5,9 +5,13 @@ export const templateProfiles = [
 ]
 
 if (import.meta.main) {
-  const include = templateProfiles.map(({ id, locales }) => ({
-    id,
-    locales: locales.join(","),
-  }))
+  const include = templateProfiles.flatMap(({ id, locales }) =>
+    ["nestjs", "rust"].map((backend) => ({
+      id,
+      backend,
+      artifact: backend === "nestjs" ? id : `${id}-${backend}`,
+      locales: locales.join(","),
+    }))
+  )
   console.log(JSON.stringify({ include }))
 }
