@@ -1,7 +1,8 @@
 import { spawnSync } from "node:child_process"
-import { mkdtemp, readFile, rm } from "node:fs/promises"
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
+import { existsSync } from "node:fs"
 
 const mode = process.argv[2]
 const root = resolve(import.meta.dirname, "..")
@@ -22,8 +23,26 @@ function run(command, args) {
 }
 
 async function generate(specPath, typesPath) {
-  run("pnpm", ["--filter", "@workspace/api", "build"])
-  run("node", ["apps/api/dist/openapi/generate.js", specPath])
+  if (existsSync(join(root, "apps/api/Cargo.toml"))) {
+    const result = spawnSync(
+      "cargo",
+      [
+        "run",
+        "--manifest-path",
+        "apps/api/Cargo.toml",
+        "--locked",
+        "--",
+        "--openapi",
+      ],
+      { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] }
+    )
+    if (result.error) throw result.error
+    if (result.status !== 0) throw new Error("Rust OpenAPI export failed")
+    await writeFile(specPath, result.stdout)
+  } else {
+    run("pnpm", ["--filter", "@workspace/api", "build"])
+    run("node", ["apps/api/dist/openapi/generate.js", specPath])
+  }
   run("pnpm", [
     "--filter",
     "web",

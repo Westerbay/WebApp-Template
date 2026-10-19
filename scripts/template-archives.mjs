@@ -5,14 +5,20 @@ import { zipSync } from "fflate"
 import { generateTemplate } from "./template-generator.mjs"
 import { templateProfiles } from "./template-profiles.mjs"
 
-export async function createTemplateArchive({ output, profile }) {
+export async function createTemplateArchive({
+  output,
+  profile,
+  backend = "nestjs",
+}) {
   const directory = resolve(output)
+  const id = backend === "nestjs" ? profile : `${profile}-${backend}`
   const project = await generateTemplate({
-    output: resolve(directory, profile),
+    output: resolve(directory, id),
     profile,
+    backend,
   })
   const entries = await readArchiveFiles(project)
-  const archive = resolve(directory, `webapp-template-${profile}.zip`)
+  const archive = resolve(directory, `webapp-template-${id}.zip`)
   await writeFile(archive, zipSync(entries), { flag: "wx" })
   return archive
 }
@@ -49,6 +55,7 @@ if (import.meta.main) {
     options: {
       output: { type: "string", default: "output/templates" },
       profile: { type: "string" },
+      backend: { type: "string", default: "nestjs" },
     },
   })
   const profiles = values.profile
@@ -58,6 +65,7 @@ if (import.meta.main) {
     const archive = await createTemplateArchive({
       output: values.output,
       profile,
+      backend: values.backend,
     })
     console.log(`Template archive ready: ${archive}`)
   }

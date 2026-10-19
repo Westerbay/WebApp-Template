@@ -4,6 +4,14 @@ WebApp Template is a reusable full-stack starting point. It includes a working
 identity flow, a sample searchable user table and optional local infrastructure;
 it does not prescribe the next project's business domain.
 
+<!-- template-maintainers:start -->
+
+The generator defaults to NestJS and also offers a standalone Rust backend.
+See the [Rust option](../template/backends/rust/README.md) for migrations,
+production configuration and differences in operational integrations.
+
+<!-- template-maintainers:end -->
+
 The web app uses TanStack Start, Query, Form and Table. NestJS composes the API,
 Better Auth owns identity, and PostgreSQL persists data. Shared Zod contracts,
 Paraglide localization and UI primitives have separate packages. See
