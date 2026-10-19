@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: prototype
+      POSTGRES_PASSWORD: prototype
+      POSTGRES_DB: rust_auth_prototype
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prototype -d rust_auth_prototype"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  mailpit:
+    image: axllent/mailpit:v1.29.2
+
+  test:
+    build: .
+    image: webapp-template-rust-auth-prototype:local
+    working_dir: /work
+    environment:
+      CARGO_HOME: /cache
+      CARGO_BUILD_JOBS: "1"
+    volumes:
+      - .:/work
+      - /tmp/skull-rust-cargo:/cache
+      - /tmp/skull-rust-target:/work/target
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    command:
+      - sh
+      - -ec
+      - |
+        cargo fmt --check
+        cargo test --locked --lib --bins --test parity --test acceptance --test services --test runtime
+        RUST_AUTH_PROTOTYPE_POSTGRES=1 cargo test --locked --test parity --test acceptance --test services --test runtime --test migrations
+        cargo clippy --locked --all-targets --all-features -- -D warnings
+
+  runtime:
+    profiles: [runtime]
+    image: webapp-template-rust-auth-prototype:local
+    network_mode: service:postgres
+    environment:
+      APP_ENV: test
+      API_HOST: 127.0.0.1
+      API_PORT: "3001"
+      DATABASE_URL: postgres://prototype:prototype@127.0.0.1:5432/rust_auth_prototype
+      DATABASE_FIXTURE_MODE: enabled
+      DATABASE_TEST_OWNED: ${RUST_AUTH_TEST_OWNED:-}
+      BETTER_AUTH_SECRET: isolated-test-secret-not-for-production-2026
+      BETTER_AUTH_URL: http://localhost:3001
+      WEB_URL: http://localhost:3000
+      EMAIL_MODE: capture
+      EMAIL_FROM: no-reply@example.test
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_SECURE: "false"
+    volumes:
+      - /tmp/skull-rust-target:/work/target
+    command: [/work/target/debug/webapp-api]
+    healthcheck:
+      test: [CMD, /work/target/debug/webapp-api, --health-check]
+      interval: 1s
+      timeout: 4s
+      retries: 30
