@@ -34,6 +34,12 @@ async fn repeated_concurrent_migration_preserves_users_and_checks_history() {
     first.unwrap();
     second.unwrap();
     migrations::check(pool).await.unwrap();
+    let versions: Vec<i64> =
+        sqlx::query_scalar("SELECT version FROM _sqlx_migrations ORDER BY version")
+            .fetch_all(pool)
+            .await
+            .unwrap();
+    assert_eq!(versions, vec![202610190001]);
     assert_eq!(
         app.auth
             .store()

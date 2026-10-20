@@ -30,7 +30,14 @@ fn values() -> HashMap<String, String> {
 #[test]
 fn production_requires_verified_database_tls_and_https_origins() {
     let base = values();
-    assert!(RuntimeSettings::from_values(&|key| base.get(key).cloned()).is_ok());
+    let settings = RuntimeSettings::from_values(&|key| base.get(key).cloned()).unwrap();
+    assert_eq!(settings.auth.base_url, "https://api.example.test/api/auth");
+    assert_eq!(
+        settings.auth.trusted_origins,
+        vec!["https://app.example.test"]
+    );
+    assert_eq!(settings.web_origin, "https://app.example.test");
+    assert_eq!(settings.smtp.host, "smtp.example.test");
     for (key, value, error) in [
         (
             "DATABASE_URL",

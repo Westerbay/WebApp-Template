@@ -36,6 +36,11 @@ service, repository or domain layers.
 
 ## Behavior and verification
 
+The template starts with one `202610190001_initial.sql` migration covering identity
+and shared quotas. Use a fresh disposable local database if you applied the earlier
+prototype history. The normal server reads URLs, database and SMTP from its process
+environment; the localhost defaults belong to test helpers.
+
 The API covers signup, email verification, signin, password reset and signout,
 plus verified `/api/me` and cursor-based `/api/users`. It preserves exact password
 bytes, opaque duplicate signup, HIBP checks on new passwords, shared quotas and
