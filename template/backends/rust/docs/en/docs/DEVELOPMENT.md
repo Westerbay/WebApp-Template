@@ -26,7 +26,12 @@ migrations and runtime configuration. Artifacts go beneath `output/`.
 No test reads a real environment file or uses production SMTP/HIBP credentials.
 Development/tests stay offline for HIBP; its HTTP adapter uses a loopback fixture.
 
-Add a new immutable timestamped SQL file in `apps/api/migrations/` and update
+The template ships one initial migration, `202610190001_initial.sql`, for identity
+and shared quotas. Its consolidated checksum replaces the earlier prototype history;
+use a fresh disposable local database if you had applied that history. No automatic
+reset or history adoption is performed.
+
+For an application with retained data, add a new immutable timestamped SQL file in `apps/api/migrations/` and update
 SeaORM entities together. `build.rs` tracks migration changes. SQLx records
 versions/checksums, locks concurrent migrators and applies each PostgreSQL
 migration transactionally. There is no reset or automatic down-migration command.
@@ -43,6 +48,25 @@ port and database. Remote migration is a deliberate deployment action requiring
 operator approval, backup and target verification. The tool never logs the URL.
 Normal startup refuses missing, pending, unknown or modified migration history.
 It does not adopt an existing Nest/Drizzle schema or migrate password hashes.
+
+The local `.env.example` intentionally uses localhost. Commands such as `pnpm dev`
+and `pnpm setup` load your root `.env` explicitly. Test defaults remain isolated
+from the normal server configuration.
+
+For deployment, copy [.env.production.example](../.env.production.example) to a
+private `.env.production`, replace its placeholders, or inject the same values
+through the deployment platform. Docker Compose loads the selected file and passes
+values to the Rust process:
+
+```sh
+docker compose --env-file .env.production -f infra/compose/production.yml config --quiet
+docker compose --env-file .env.production -f infra/compose/production.yml up -d
+```
+
+Run the explicit migration job before starting the server as described above.
+The file is never copied into the image. `WEB_URL` and `BETTER_AUTH_URL` are public
+origins; the loopback host-port binding is separate and intended for the ingress
+proxy. Keep actual environment files and credentials out of Git.
 
 Production config is supplied through process environment, not a bundled file:
 `APP_ENV`, `DATABASE_URL` with exactly one `sslmode=verify-full`, persistent random

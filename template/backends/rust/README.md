@@ -22,6 +22,12 @@ CI and matching documentation. Nest, Drizzle and server TypeScript packages/tool
 are omitted. Node builds/serves the frontend and runs development tools; it is not
 an authentication service beside Rust.
 
+Generated projects include `.env.example` for local PostgreSQL/Mailpit and
+`.env.production.example` for deployed origins, PostgreSQL and SMTP. The latter
+comes from [production.env.example](production.env.example); replace its placeholders
+and keep real environment files untracked. Public URLs are read from the environment,
+not from test fixture defaults.
+
 The generated [development guide](docs/en/docs/DEVELOPMENT.md) documents setup,
 production environment, migrations, container deployment and verification. A
 [French guide](docs/fr/docs/DEVELOPMENT.md) ships in French projects. Email catalogs
@@ -43,7 +49,8 @@ TLS and enable HIBP for new passwords. SMTP requires implicit TLS or STARTTLS;
 staging recipients use an exact allowlist. Production rejects capture/memory mail.
 The binary reads process environment, never an environment file.
 
-SQLx embeds immutable files from `migrations/`, stores versions and checksums,
+The template starts with one `202610190001_initial.sql` migration containing
+identity and shared quotas. SQLx embeds files from `migrations/`, stores versions and checksums,
 locks concurrent migrators and applies each PostgreSQL migration transactionally.
 Serving only verifies history; absent, pending, unknown or modified history fails
 startup. Explicit `--migrate` is separate. Development migration checks loopback,

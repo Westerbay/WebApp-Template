@@ -118,6 +118,7 @@ export async function prepareRustTemplate(source, selected, plan) {
   })
   overlay.set("scripts/rust/cli.mjs", await read("cli.mjs"))
   overlay.set(".env.example", await read("env.example"))
+  overlay.set(".env.production.example", await read("production.env.example"))
   const compose = await readFile(join(source, "compose.yml"), "utf8")
   overlay.set(
     "compose.yml",
@@ -168,7 +169,7 @@ export async function prepareRustTemplate(source, selected, plan) {
   overlay.set(".github/workflows/ci.yml", await read("ci.yml"))
   overlay.set(
     ".gitignore",
-    `${await readFile(join(source, ".gitignore"), "utf8")}\n# Rust build artifacts\n**/target/\n`
+    `${await readFile(join(source, ".gitignore"), "utf8")}\n# Rust build artifacts\n**/target/\n!.env.production.example\n`
   )
   overlay.set(
     ".prettierignore",

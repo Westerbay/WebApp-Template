@@ -25,7 +25,12 @@ Les preuves restent dans `output/`. Aucun test ne lit un vrai fichier d'environn
 ou utilise des identifiants SMTP/HIBP de production. HIBP reste hors ligne en dev/test,
 avec un serveur loopback pour tester son adaptateur HTTP.
 
-Ajouter un nouveau fichier SQL horodaté dans `apps/api/migrations/`, et modifier
+Le template fournit une seule migration initiale, `202610190001_initial.sql`, pour
+l’identité et les quotas partagés. Son checksum remplace celui du prototype :
+utiliser une base locale jetable neuve si cet ancien historique avait été appliqué.
+Aucun reset ni adoption automatique de l’historique n’est exécuté.
+
+Dans une application dont les données sont conservées, ajouter un nouveau fichier SQL horodaté dans `apps/api/migrations/`, et modifier
 les entités SeaORM ensemble. Ne jamais modifier une migration appliquée. `build.rs`
 suit les changements ; SQLx conserve versions/checksums, verrouille les exécutions
 concurrentes et applique chaque migration PostgreSQL dans une transaction.
@@ -43,6 +48,25 @@ nom de base configurés. Une migration distante exige autorisation opérateur,
 sauvegarde et vérification de la cible. L'URL n'est jamais journalisée.
 Le serveur refuse un historique absent, incomplet, inconnu ou altéré sans le modifier.
 Il n'adopte pas un schéma Nest/Drizzle existant ni ses anciens hachages.
+
+Le `.env.example` local utilise volontairement localhost. `pnpm dev` et
+`pnpm setup` chargent explicitement le `.env` à la racine. Les valeurs des fixtures
+ne servent pas au démarrage normal du serveur.
+
+Pour le déploiement, copier [.env.production.example](../.env.production.example)
+vers un `.env.production` privé puis remplacer les placeholders, ou injecter les
+mêmes variables via la plateforme. Docker Compose charge le fichier choisi et
+transmet les valeurs au processus Rust :
+
+```sh
+docker compose --env-file .env.production -f infra/compose/production.yml config --quiet
+docker compose --env-file .env.production -f infra/compose/production.yml up -d
+```
+
+Exécuter les migrations explicites avant le démarrage, comme décrit plus haut.
+Le fichier n’est jamais copié dans l’image. `WEB_URL` et `BETTER_AUTH_URL` sont
+les origines publiques ; le port hôte loopback est distinct et destiné au reverse
+proxy. Ne pas committer les vrais fichiers d’environnement ni les identifiants.
 
 La production reçoit la configuration dans l'environnement du processus : `APP_ENV`,
 `DATABASE_URL` avec un unique `sslmode=verify-full`, `BETTER_AUTH_SECRET` aléatoire

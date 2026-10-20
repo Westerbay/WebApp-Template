@@ -37,13 +37,21 @@ for (const profile of ["en", "fr", "multilingual"]) {
     for (const required of [
       "apps/api/Cargo.toml",
       "apps/api/Cargo.lock",
-      "apps/api/migrations/202610190001_identity.sql",
+      "apps/api/migrations/202610190001_initial.sql",
       "apps/api/Dockerfile",
+      ".env.production.example",
       "apps/api/src/config/runtime.rs",
       "infra/compose/production.yml",
       "scripts/rust/frontend-check.mjs",
     ])
       assert.ok(entries[required], required)
+    assert.deepEqual(
+      Object.keys(entries).filter(
+        (path) =>
+          path.startsWith("apps/api/migrations/") && path.endsWith(".sql")
+      ),
+      ["apps/api/migrations/202610190001_initial.sql"]
+    )
     for (const name of Object.keys(entries)) {
       assert.ok(
         !/^(?:template\/|packages\/(?:database|core|email)\/|scripts\/infra\/)/.test(
