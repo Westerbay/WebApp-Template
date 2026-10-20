@@ -87,3 +87,9 @@ sh template/backends/rust/runtime-check.sh
 It verifies migration refusal, explicit/idempotent migration, readiness and restart
 against an owned local database. `cli.mjs` is a development-command asset for the
 upcoming generator; the deployed API reads process environment directly.
+
+`production.env.example` provides public HTTPS origins and external PostgreSQL/SMTP
+placeholders. Copy it to a private deployment environment file or inject the same
+variables through your platform. Compose uses `--env-file`; the Rust binary consumes
+process variables and never loads a secret file implicitly. The generator later
+emits this asset as `.env.production.example`.
