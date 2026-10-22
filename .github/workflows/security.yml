@@ -1,0 +1,99 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencies:
+    name: Dependency vulnerabilities
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+        with:
+          version: 12.4.1
+          run_install: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm -r audit --audit-level high
+
+  images:
+    name: Discover Compose images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Collect unique literal image references without loading environment files
+        id: images
+        shell: python
+        run: |
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          files = [Path("compose.yml"), *Path("infra/compose").glob("*.yml"), *Path("infra/compose").glob("*.yaml")]
+          images = set()
+          for path in files:
+              for match in re.finditer(r"^\s*image:\s*([^\s#]+)", path.read_text(), re.MULTILINE):
+                  image = match[1].strip("\"'")
+                  if "$" in image or ":" not in image or image.endswith(":latest"):
+                      raise ValueError(f"Expected a pinned literal image in {path}: {image}")
+                  images.add(image)
+          if not images:
+              raise ValueError("No Compose images found")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("matrix=" + json.dumps({"image": sorted(images)}) + "\n")
+
+  container-vulnerabilities:
+    name: Scan ${{ matrix.image }}
+    needs: images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.images.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Scan OS and application packages
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ matrix.image }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "1"
+          format: table
+          timeout: 10m
+
+  security:
+    name: Security checks
+    if: always()
+    needs: [dependencies, images, container-vulnerabilities]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require all security jobs to succeed
+        env:
+          RESULTS: ${{ join(needs.*.result, ',') }}
+        run: test "$RESULTS" = "success,success,success"
