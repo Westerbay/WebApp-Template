@@ -105,7 +105,7 @@ not in application documentation.
 
 The `Template validation` workflow runs on PRs and manual requests. Both it and
 the tag-only `Template release` workflow call `template-validation.yml`, which
-checks the generator and all three NestJS profiles. It creates source ZIPs, extracts
+checks both backends in all three profiles (six archives). It creates source ZIPs, extracts
 them, then runs `pnpm check`, integration and E2E in each active language against
 the extracted projects. The ZIPs themselves are uploaded, without an outer archive.
 All template workflows are excluded from generated projects; application CI is
@@ -120,7 +120,7 @@ profile and language.
 ## Publishing template releases
 
 PRs and `Run workflow` perform validation and provide downloadable artifacts.
-Only pushing a `v*` tag starts `Template release`, which publishes after all three
+Only pushing a `v*` tag starts `Template release`, which publishes after all six
 profiles succeed. Publication is absent from PR runs rather than shown as skipped.
 Choose a new version on the intended commit, normally the merged `main`:
 
