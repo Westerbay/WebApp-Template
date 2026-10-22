@@ -25,6 +25,13 @@ Les preuves restent dans `output/`. Aucun test ne lit un vrai fichier d'environn
 ou utilise des identifiants SMTP/HIBP de production. HIBP reste hors ligne en dev/test,
 avec un serveur loopback pour tester son adaptateur HTTP.
 
+Le [workflow Security](../.github/workflows/security.yml) audite les dépendances
+JavaScript et analyse avec Trivy les images littérales d’infrastructure de Compose.
+`API_IMAGE` est fournie au déploiement : son pipeline de publication doit analyser
+cette image applicative revue avant déploiement. Ce workflow ne résout ni ne
+télécharge cette référence. Installer l’[application GitHub Renovate](https://github.com/apps/renovate)
+pour activer la configuration de mise à jour des dépendances incluse.
+
 Le template fournit une seule migration initiale, `202610190001_initial.sql`, pour
 l’identité et les quotas partagés. Son checksum remplace celui du prototype :
 utiliser une base locale jetable neuve si cet ancien historique avait été appliqué.

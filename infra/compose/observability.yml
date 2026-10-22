@@ -2,7 +2,7 @@ name: webapp-template-observability
 
 services:
   prometheus:
-    image: prom/prometheus:v3.15.0
+    image: prom/prometheus:v3.15.1
     restart: unless-stopped
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -18,7 +18,7 @@ services:
       - prometheus_data:/prometheus
 
   blackbox:
-    image: prom/blackbox-exporter:v0.29.0
+    image: prom/blackbox-exporter:v0.29.1
     restart: unless-stopped
     command: ["--config.file=/etc/blackbox/config.yml"]
     extra_hosts:
@@ -27,7 +27,7 @@ services:
       - ../observability/blackbox.yml:/etc/blackbox/config.yml:ro
 
   loki:
-    image: grafana/loki:3.7.8
+    image: grafana/loki:3.7.9
     restart: unless-stopped
     command: ["-config.file=/etc/loki/config.yml"]
     ports:
@@ -37,7 +37,7 @@ services:
       - loki_data:/loki
 
   alloy:
-    image: grafana/alloy:v1.20.0
+    image: grafana/alloy:v1.21.1
     restart: unless-stopped
     command:
       - run
@@ -63,7 +63,7 @@ services:
       - loki
 
   grafana:
-    image: grafana/grafana:13.2.2
+    image: grafana/grafana:13.2.4
     restart: unless-stopped
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: "true"

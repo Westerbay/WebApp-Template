@@ -70,6 +70,7 @@ for (const profile of ["en", "fr", "multilingual"]) {
       )
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
+    assert.ok(!text("pnpm-workspace.yaml").includes("@esbuild-kit/core-utils"))
     const root = JSON.parse(text("package.json"))
     assert.equal(root.scripts["db:studio"], undefined)
     assert.equal(root.scripts["test:integration"], "sh scripts/rust/check.sh")

@@ -148,7 +148,17 @@ export async function prepareRustTemplate(source, selected, plan) {
   const workspace = await readFile(join(source, "pnpm-workspace.yaml"), "utf8")
   overlay.set(
     "pnpm-workspace.yaml",
-    workspace.replace(/^  "@(?:nestjs\/core|swc\/core)": true\n/gm, "")
+    workspace
+      .replace(/^  "@(?:nestjs\/core|swc\/core)": true\n/gm, "")
+      .replace(
+        /^  #[^\n]*\n(?=  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":)/gm,
+        ""
+      )
+      .replace(
+        /^  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":[^\n]*\n/gm,
+        ""
+      )
+      .replace(/^overrides:\n(?=\n|$)/m, "")
   )
   overlay.set(
     "apps/api/package.json",

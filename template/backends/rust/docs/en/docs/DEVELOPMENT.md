@@ -26,6 +26,13 @@ migrations and runtime configuration. Artifacts go beneath `output/`.
 No test reads a real environment file or uses production SMTP/HIBP credentials.
 Development/tests stay offline for HIBP; its HTTP adapter uses a loopback fixture.
 
+The [Security workflow](../.github/workflows/security.yml) audits JavaScript
+dependencies and scans the literal infrastructure images from Compose with Trivy.
+The production `API_IMAGE` is supplied at deployment, so its publishing pipeline
+must scan that reviewed application image before deployment. It is not resolved
+or pulled by this workflow. Install the [Renovate GitHub App](https://github.com/apps/renovate)
+to activate the included dependency update configuration.
+
 The template ships one initial migration, `202610190001_initial.sql`, for identity
 and shared quotas. Its consolidated checksum replaces the earlier prototype history;
 use a fresh disposable local database if you had applied that history. No automatic

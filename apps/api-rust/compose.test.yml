@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.6-alpine
+    image: postgres:17.11-alpine3.24
     environment:
       POSTGRES_USER: prototype
       POSTGRES_PASSWORD: prototype
@@ -14,7 +14,7 @@ services:
       retries: 30
 
   mailpit:
-    image: axllent/mailpit:v1.29.2
+    image: axllent/mailpit:v1.31.6
 
   test:
     build:

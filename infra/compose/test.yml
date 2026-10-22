@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.6-alpine
+    image: postgres:17.11-alpine3.24
     environment:
       POSTGRES_DB: webapp_template_auth_test
       POSTGRES_USER: webapp_template_auth_test
@@ -19,7 +19,7 @@ services:
       timeout: 3s
       retries: 40
   mailpit:
-    image: axllent/mailpit:v1.29.2
+    image: axllent/mailpit:v1.31.6
     ports:
       - "127.0.0.1::1025"
       - "127.0.0.1::8025"
