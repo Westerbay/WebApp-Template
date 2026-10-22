@@ -92,6 +92,36 @@ After changing Nest controllers or DTOs, run
 `pnpm api:generate` and include the generated API schema and web client types.
 `pnpm api:check` verifies drift without a database or SMTP connection.
 
+## Security and dependency updates
+
+[Security CI](../.github/workflows/security.yml) runs on pull requests, pushes to
+`main`, every Monday and manual dispatch. It audits production and development
+JavaScript dependencies with `pnpm -r audit --audit-level high`, and scans each unique
+literal image from `compose.yml` and `infra/compose/*.{yml,yaml}` with Trivy.
+`HIGH` and `CRITICAL` vulnerabilities fail the checks, including image findings
+without an available fix. Reports appear in the workflow logs; registry or advisory
+service failures also fail the checks. No containers or databases are started.
+Require `Security checks` in GitHub branch rules to block merging failed scans.
+
+[Renovate configuration](../renovate.json) prepares weekly update PRs for workspace
+dependencies, Compose images and GitHub Actions. Install the
+[Renovate GitHub App](https://github.com/apps/renovate) on each repository using the
+template to activate updates. Compatible minor/patch updates are grouped; major
+updates stay separate and merging remains manual. pnpm updates remain manual
+because CI and project validation also pin its version. Keep image references in
+JavaScript test harnesses aligned when reviewing Compose image updates. Renovate
+does not update arbitrary image strings embedded in scripts.
+
+The security workflow and Renovate configuration are included in generated projects.
+To reproduce the dependency audit locally, run `pnpm -r audit --audit-level high`
+after installing dependencies. Image scanning requires access to public registries
+and Trivy's vulnerability database.
+
+The shared UI imports the extracted shadcn 4.21.0 utilities from
+`packages/ui/src/styles/shadcn.css`, retaining their MIT notice. The shadcn CLI is
+not an installed dependency; use `pnpm dlx shadcn@latest` when adding components.
+Upstream changes to `shadcn/tailwind.css` must be reviewed and copied explicitly.
+
 ## Local data and email
 
 Migration and seed commands refuse staging, production and remote or

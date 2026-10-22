@@ -78,6 +78,40 @@ fixtures isolées. Après modification de contrôleurs ou DTO Nest, exécuter
 `pnpm api:generate` et inclure le schéma API et les types du client web générés.
 `pnpm api:check` vérifie les dérives sans base ni connexion SMTP.
 
+## Sécurité et mises à jour des dépendances
+
+La [CI de sécurité](../.github/workflows/security.yml) s’exécute sur les PR, les
+pushs sur `main`, chaque lundi et sur déclenchement manuel. Elle audite les
+dépendances JavaScript de production et de développement avec
+`pnpm -r audit --audit-level high`, et analyse avec Trivy chaque image littérale unique
+de `compose.yml` et `infra/compose/*.{yml,yaml}`. Les vulnérabilités `HIGH` et
+`CRITICAL` font échouer les contrôles, y compris celles des images sans correctif
+disponible. Les rapports sont dans les logs du workflow ; une indisponibilité des
+registres ou du service d’avis de sécurité fait aussi échouer les contrôles.
+Aucun conteneur ni base de données n’est démarré. Rendre `Security checks` obligatoire
+dans les règles de branche GitHub pour bloquer la fusion en cas d’échec.
+
+La [configuration Renovate](../renovate.json) prépare des PR de mise à jour
+hebdomadaires pour les dépendances du workspace, les images Compose et les GitHub
+Actions. Installer l’[application GitHub Renovate](https://github.com/apps/renovate)
+sur chaque dépôt utilisant le template pour activer les mises à jour. Les versions
+mineures et correctives compatibles sont regroupées ; les versions majeures restent
+séparées et la fusion reste manuelle. Les mises à jour de pnpm restent manuelles,
+car la CI et les contrôles du projet verrouillent aussi sa version. Lors des mises
+à jour Compose, aligner les références d’images présentes dans les scripts de test
+JavaScript : Renovate ne modifie pas ces chaînes intégrées aux scripts.
+
+Le workflow de sécurité et la configuration Renovate sont inclus dans les projets
+générés. Pour reproduire l’audit localement, exécuter
+`pnpm -r audit --audit-level high` après installation des dépendances. Le scan des
+images nécessite un accès aux registres publics et à la base de vulnérabilités Trivy.
+
+L’UI partagée importe les utilitaires extraits de shadcn 4.21.0 depuis
+`packages/ui/src/styles/shadcn.css`, avec leur notice MIT. Le CLI shadcn n’est pas
+une dépendance installée ; utiliser `pnpm dlx shadcn@latest` pour ajouter des
+composants. Les évolutions amont de `shadcn/tailwind.css` doivent être examinées
+et copiées explicitement.
+
 ## Données locales et email
 
 Les commandes de migration et de données de test refusent staging, production
