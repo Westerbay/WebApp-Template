@@ -1,5 +1,9 @@
 # Template maintenance
 
+The generator offers NestJS (default) or [Rust with Axum and Better Auth RS](backends/rust/README.md).
+Backend choice is independent of the three language profiles. Rust uses a pinned
+alpha auth dependency; validate it for your deployment before adoption.
+
 This guide belongs to the WebApp Template source repository only. Generated projects
 keep application code, tests, CI and documentation. They exclude this directory,
 generation scripts and their tests, the distribution workflow, template commands
@@ -22,9 +26,16 @@ The maintainer repository offers three profiles:
 pnpm template:create -- --profile en --output output/english-app
 pnpm template:create -- --profile fr --output output/french-app
 pnpm template:create -- --profile multilingual --output output/bilingual-app
+pnpm template:create -- --backend rust --profile multilingual --output output/rust-app
 pnpm template:check
 pnpm template:archives
 ```
+
+The default backend is `nestjs`; pass `--backend rust` to generate a Rust-only API,
+versioned PostgreSQL migrations, Docker runtime, CI and matching documentation.
+Rust archives append `-rust` (for example `webapp-template-fr-rust.zip`).
+`pnpm template:archives -- --backend rust` creates all three Rust archives.
+The default archive command retains the three NestJS names.
 
 The default profile is `en`. The multilingual profile defaults to English;
 the URL selects the active language. `scripts/template-profiles.mjs` defines
@@ -94,7 +105,7 @@ not in application documentation.
 
 The `Template validation` workflow runs on PRs and manual requests. Both it and
 the tag-only `Template release` workflow call `template-validation.yml`, which
-checks the generator and all three profiles. It creates source ZIPs, extracts
+checks the generator and all three NestJS profiles. It creates source ZIPs, extracts
 them, then runs `pnpm check`, integration and E2E in each active language against
 the extracted projects. The ZIPs themselves are uploaded, without an outer archive.
 All template workflows are excluded from generated projects; application CI is
