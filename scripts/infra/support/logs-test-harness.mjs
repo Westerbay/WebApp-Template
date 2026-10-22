@@ -72,7 +72,7 @@ export async function createLogsTestHarness() {
       overrideConfig +
         `
     postgres:
-      image: postgres:17.6-alpine
+      image: postgres:17.11-alpine3.24
       command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements", "-c", "compute_query_id=auto"]
       volumes:
         - ${root}infra/postgres/query-statistics.sql:/docker-entrypoint-initdb.d/query-statistics.sql:ro
@@ -88,7 +88,7 @@ export async function createLogsTestHarness() {
         timeout: 3s
         retries: 40
     valkey:
-      image: valkey/valkey:8.1.3-alpine
+      image: valkey/valkey:8.1.10-alpine3.24
       command: ["valkey-server", "--save", "", "--appendonly", "no"]
       ports: ["127.0.0.1::6379"]
   `
@@ -196,7 +196,7 @@ export async function createLogsTestHarness() {
         file + ":/probe.jsonl:ro",
         "--entrypoint",
         "/bin/sh",
-        "grafana/grafana:13.2.2",
+        "grafana/grafana:13.2.4",
         "-c",
         "sleep 3; cat /probe.jsonl; sleep 120",
       ],

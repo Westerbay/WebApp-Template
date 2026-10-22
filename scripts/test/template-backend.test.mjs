@@ -72,6 +72,7 @@ for (const profile of ["en", "fr", "multilingual"]) {
       )
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
+    assert.ok(!text("pnpm-workspace.yaml").includes("@esbuild-kit/core-utils"))
     const root = JSON.parse(text("package.json"))
     assert.ok(root.devDependencies.orval)
     assert.match(text("apps/web/src/lib/api/contracts.ts"), /responses\.zod/)
