@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { access, mkdtemp, rm, readFile, writeFile } from "node:fs/promises"
 import { execFileSync } from "node:child_process"
 import { unzipSync } from "fflate"
+import { check } from "prettier"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { test } from "node:test"
@@ -71,6 +72,11 @@ for (const profile of ["en", "fr", "multilingual"]) {
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
     assert.ok(!text("pnpm-workspace.yaml").includes("@esbuild-kit/core-utils"))
+    assert.ok(
+      await check(text("pnpm-workspace.yaml"), {
+        filepath: "pnpm-workspace.yaml",
+      })
+    )
     const root = JSON.parse(text("package.json"))
     assert.equal(root.scripts["db:studio"], undefined)
     assert.equal(root.scripts["test:integration"], "sh scripts/rust/check.sh")

@@ -159,6 +159,7 @@ export async function prepareRustTemplate(source, selected, plan) {
         ""
       )
       .replace(/^overrides:\n(?=\n|$)/m, "")
+      .replace(/\n{3,}/g, "\n\n")
   )
   overlay.set(
     "apps/api/package.json",
