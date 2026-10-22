@@ -1,0 +1,22 @@
+{
+  "email_verify_subject": "Confirm your email address",
+  "email_verify_body": "Confirm your email address to access your account.",
+  "email_verify_action": "Confirm my address",
+  "email_reset_subject": "Reset your password",
+  "email_reset_body": "You requested a new password. If you did not make this request, ignore this email.",
+  "email_reset_action": "Choose a new password",
+  "email_expiry": [
+    {
+      "declarations": ["input hours", "local count = hours: plural"],
+      "selectors": ["count"],
+      "match": {
+        "count=one": "This link expires in {hours} hour.",
+        "count=other": "This link expires in {hours} hours."
+      }
+    }
+  ],
+  "email_fallback": "If the button does not work, copy this link into your browser:",
+  "email_label": "Email address",
+  "email_not_verified": "Confirm your email address before signing in.",
+  "email_request_received": "Request received. If your account supports this operation, you will receive an email. Check your spam folder too."
+}

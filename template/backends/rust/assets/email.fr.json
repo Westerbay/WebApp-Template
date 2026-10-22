@@ -1,0 +1,22 @@
+{
+  "email_verify_subject": "Confirmez votre adresse email",
+  "email_verify_body": "Confirmez votre adresse email pour accéder à votre compte.",
+  "email_verify_action": "Confirmer mon adresse",
+  "email_reset_subject": "Réinitialisez votre mot de passe",
+  "email_reset_body": "Vous avez demandé un nouveau mot de passe. Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.",
+  "email_reset_action": "Choisir un nouveau mot de passe",
+  "email_expiry": [
+    {
+      "declarations": ["input hours", "local count = hours: plural"],
+      "selectors": ["count"],
+      "match": {
+        "count=one": "Ce lien expire dans {hours} heure.",
+        "count=other": "Ce lien expire dans {hours} heures."
+      }
+    }
+  ],
+  "email_fallback": "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
+  "email_label": "Adresse email",
+  "email_not_verified": "Confirmez votre adresse email avant de vous connecter.",
+  "email_request_received": "Demande reçue. Si votre compte permet cette opération, vous recevrez un email. Vérifiez aussi vos courriers indésirables."
+}
