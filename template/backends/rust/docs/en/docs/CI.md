@@ -28,11 +28,17 @@ also fail. Exact reviewed false positives are separate from real vulnerabilities
 known vulnerable upstream images keep the security gate red until remediated.
 These checks never load real environment files or start a database.
 
+Owned infrastructure recipes are built and scanned once in the security matrix.
+Validation starts after security succeeds and loads those exact Docker images
+from artifacts in the same run; PostgreSQL/Grafana are not rebuilt per profile.
+Artifacts expire after one day. A weekly security-only run builds and scans the
+same recipes without starting services.
+
 The application validation is shared through
 [Application checks](../.github/workflows/ci-application.yml) and local composite
 actions. It checks quality, unit tests, contracts, integration and browser journeys.
 Rust also exercises migrations and runtime restart, builds its production image
-and scans that built image. Browser tests exercise the configured application
+scans that built image and exercises its migrations, health and restart. Browser tests exercise the configured application
 locales. Individual steps expose the failing stage and diagnostics are retained.
 
 `Security checks` aggregates all security jobs. `CI checks` is the stable overall

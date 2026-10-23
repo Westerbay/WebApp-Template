@@ -40,7 +40,7 @@ jobs:
     uses: ./.github/workflows/security.yml
 
   application:
-    needs: plan
+    needs: [plan, security]
     if: needs.plan.outputs.validation == 'true'
     uses: ./.github/workflows/ci-application.yml
 

@@ -40,12 +40,12 @@ jobs:
     uses: ./.github/workflows/security.yml
 
   source:
-    needs: plan
+    needs: [plan, security]
     if: needs.plan.outputs.validation == 'true'
     uses: ./.github/workflows/ci-source.yml
 
   templates:
-    needs: plan
+    needs: [plan, security]
     if: needs.plan.outputs.validation == 'true'
     uses: ./.github/workflows/template-validation.yml
 

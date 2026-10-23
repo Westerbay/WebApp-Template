@@ -77,13 +77,19 @@ jobs:
     name: Scan ${{ matrix.image }}
     needs: images
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       max-parallel: 3
       matrix: ${{ fromJSON(needs.images.outputs.matrix) }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build infrastructure recipe
+        if: matrix.context != ''
+        env:
+          IMAGE: ${{ matrix.image }}
+          CONTEXT: ${{ matrix.context }}
+        run: docker build --pull --tag "$IMAGE" "$CONTEXT"
       - name: Scan OS and application packages
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
@@ -96,6 +102,21 @@ jobs:
           exit-code: "1"
           format: table
           timeout: 10m
+      - name: Export scanned image for validation jobs
+        if: matrix.artifact != ''
+        env:
+          IMAGE: ${{ matrix.image }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: docker save --output "$RUNNER_TEMP/$ARTIFACT.tar" "$IMAGE"
+      - name: Share scanned image within this run
+        if: matrix.artifact != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: infra-image-${{ matrix.artifact }}
+          path: ${{ runner.temp }}/${{ matrix.artifact }}.tar
+          compression-level: 1
+          retention-days: 1
+          if-no-files-found: error
 
   security:
     name: Security checks

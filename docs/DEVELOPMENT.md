@@ -44,6 +44,13 @@ orchestration and resource cleanup; Bash suits short shell-specific CI steps.
 executable stub is skipped on Windows). Integration, E2E and observability
 suites require Docker and clean only their own temporary resources.
 
+PostgreSQL and optional Grafana use maintained local image recipes rather than
+published custom tags. Their pinned sources, rebuild procedure and maintenance
+constraints are documented with the [PostgreSQL recipe](../infra/images/postgres/README.md)
+and [Grafana recipe](../infra/images/grafana/README.md). The first start builds
+them; later starts reuse the local images. Rebuild explicitly after recipe updates.
+Grafana bundles only the Loki and Prometheus integrations used by this template.
+
 ## Languages and public paths
 
 Edit `packages/i18n/messages/<locale>.json` for UI and email copy and
@@ -104,7 +111,7 @@ or database is needed. Require `CI checks` and `Security checks` in branch rules
 to enforce these results.
 
 [Renovate configuration](../renovate.json) prepares weekly update PRs for workspace
-dependencies, Compose images and GitHub Actions. Install the
+dependencies, Compose/Dockerfile images and GitHub Actions. Install the
 [Renovate GitHub App](https://github.com/apps/renovate) on each repository using the
 template to activate updates. Compatible minor/patch updates are grouped; major
 updates stay separate and merging remains manual. pnpm updates remain manual

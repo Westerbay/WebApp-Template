@@ -14,6 +14,7 @@ pnpm --filter web exec playwright install chromium
 pnpm test:e2e
 pnpm api:generate
 pnpm docker:build
+sh scripts/rust/image-check.sh
 ```
 
 `pnpm check` vérifie format, Clippy, types, tests unitaires/auth, dérive OpenAPI,
@@ -106,3 +107,10 @@ de cible et les alias TLS sont refusés.
 Les fixtures Docker compilent dans `apps/api/target/fixture`, séparé des autres
 projets et du build natif. Seuls les téléchargements Cargo peuvent partager le
 cache temporaire ; PostgreSQL/Mailpit restent propres à chaque exécution.
+
+PostgreSQL utilise une [recette locale corrigée](../infra/images/postgres/README.md),
+construite et scannée avant les validations CI. L’image Rust de production utilise
+Distroless Debian 13 épinglée, avec glibc, OpenSSL et certificats CA. Sans shell ni
+gestionnaire de paquets, `webapp-api` assure migrations et contrôles de santé. Le
+test de l’image utilise une base PostgreSQL neuve possédée par le test et vérifie
+démarrage, migrations répétées et redémarrage du vrai binaire release.

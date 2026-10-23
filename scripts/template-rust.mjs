@@ -10,6 +10,7 @@ const excluded = [
   "scripts/infra/",
   "infra/compose/",
   "infra/observability/",
+  "infra/images/grafana/",
   "scripts/worktree.mjs",
   "scripts/test/worktree.test.mjs",
   "scripts/test/infra-stack.test.mjs",
@@ -82,7 +83,7 @@ export async function prepareRustTemplate(source, selected, plan) {
     }
     overlay.set(to, content)
   }
-  for (const file of ["check.sh", "runtime-check.sh"]) {
+  for (const file of ["check.sh", "runtime-check.sh", "image-check.sh"]) {
     const content = await readFile(
       join(source, "scripts/template-rust", file),
       "utf8"

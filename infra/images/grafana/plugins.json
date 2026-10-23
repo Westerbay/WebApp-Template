@@ -1,0 +1,20 @@
+[
+  {
+    "id": "loki",
+    "version": "13.2.2",
+    "grafana": ">=12.3.0-0",
+    "sha256": {
+      "amd64": "0d1f5794d34febc54e55ac05ac92ea4ad6548ec3f2521865116c9ed46f7d55e9",
+      "arm64": "7351ef25f01bf5347ad0db13b66a8cbc8b6b91272dc11f42ea2d700a3ac60163"
+    }
+  },
+  {
+    "id": "prometheus",
+    "version": "13.2.4",
+    "grafana": ">=12.3.0-0",
+    "sha256": {
+      "amd64": "117edd789f96f4dc6f2e79bef6be3ea10e9ffec775e81e05c16954bcc10cc3a0",
+      "arm64": "c6aaae69fe3e7996d9ce9087bfd6f2b25f8ee540f78b15ee3dc560e6f7c206c2"
+    }
+  }
+]

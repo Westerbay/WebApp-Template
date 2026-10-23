@@ -63,7 +63,9 @@ services:
       - loki
 
   grafana:
-    image: grafana/grafana:13.2.4
+    image: webapp-template-grafana:13.2.4-security.1
+    build:
+      context: ../images/grafana
     restart: unless-stopped
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: "true"

@@ -17,6 +17,7 @@ jobs:
     uses: ./.github/workflows/security.yml
 
   validate:
+    needs: security
     uses: ./.github/workflows/template-validation.yml
 
   publish-release:

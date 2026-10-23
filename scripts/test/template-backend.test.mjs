@@ -46,6 +46,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "scripts/rust/frontend-check.mjs",
       "scripts/rust/check.sh",
       "scripts/rust/runtime-check.sh",
+      "scripts/rust/image-check.sh",
+      "infra/images/postgres/Dockerfile",
     ])
       assert.ok(entries[required], required)
     assert.deepEqual(
@@ -65,6 +67,7 @@ for (const profile of ["en", "fr", "multilingual"]) {
       assert.ok(!/^apps\/api\/.*\.(?:ts|js)$/.test(name), name)
       assert.ok(!/^apps\/api-(?:nestjs|rust)\//.test(name), name)
       assert.ok(!name.startsWith("scripts/template-"), name)
+      assert.ok(!name.startsWith("infra/images/grafana/"), name)
       assert.ok(
         !name.includes("/node_modules/") && !name.includes("/target/"),
         name

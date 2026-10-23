@@ -96,3 +96,8 @@ runs:
         ignore-unfixed: false
         exit-code: "1"
         timeout: 10m
+    - name: Exercise Rust production image
+      if: steps.backend.outputs.rust == 'true'
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: sh scripts/rust/image-check.sh

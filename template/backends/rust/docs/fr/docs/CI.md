@@ -30,11 +30,18 @@ examinés sont distincts des vraies vulnérabilités ; une image amont vulnérab
 maintient le contrôle en échec jusqu’à correction. Ces scans ne chargent aucun
 vrai fichier d’environnement et ne démarrent aucune base de données.
 
+Les recettes d’infrastructure sont construites et scannées une seule fois dans
+la matrice de sécurité. Après son succès, les validations chargent ces images
+Docker exactes depuis les artefacts de la même exécution, conservés un jour.
+PostgreSQL/Grafana ne sont pas reconstruits par profil. Le scan hebdomadaire
+construit et analyse aussi les recettes sans démarrer de service.
+
 La validation applicative est partagée via
 [Application checks](../.github/workflows/ci-application.yml) et des actions
 composites locales. Elle couvre qualité, tests unitaires, contrats, intégration
 et parcours navigateur. Rust vérifie aussi les migrations et le redémarrage,
-construit son image de production et analyse cette image. Les tests navigateur
+construit son image de production, l’analyse et teste ses migrations, sa santé
+et son redémarrage. Les tests navigateur
 exercent les langues configurées. Les étapes distinctes identifient la phase
 en échec et les diagnostics sont conservés.
 

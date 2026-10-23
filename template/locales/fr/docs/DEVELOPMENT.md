@@ -26,6 +26,14 @@ ressources ; Bash convient aux courtes étapes de CI propres au shell.
 POSIX est ignoré sous Windows). Les suites d’intégration, E2E et d’observabilité
 nécessitent Docker et nettoient uniquement leurs propres ressources temporaires.
 
+PostgreSQL et Grafana optionnel utilisent des recettes locales maintenues. Leurs
+sources épinglées et procédures de reconstruction sont documentées avec les recettes
+[PostgreSQL](../infra/images/postgres/README.md) et
+[Grafana](../infra/images/grafana/README.md). Le premier démarrage construit ces
+images ; les suivants réutilisent les images locales. Reconstruire explicitement
+après une mise à jour des recettes. Grafana fournit uniquement les intégrations
+Loki et Prometheus utilisées par ce template.
+
 ## Langues et chemins publics
 
 Modifier `packages/i18n/messages/<locale>.json` pour les messages UI et email,

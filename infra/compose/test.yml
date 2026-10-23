@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:17.11-alpine3.24
+    image: webapp-template-postgres:17.11-security.1
+    build:
+      context: ../images/postgres
     environment:
       POSTGRES_DB: webapp_template_auth_test
       POSTGRES_USER: webapp_template_auth_test
