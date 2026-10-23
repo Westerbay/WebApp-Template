@@ -18,6 +18,10 @@ concurrency:
 
 jobs:
   plan:
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
