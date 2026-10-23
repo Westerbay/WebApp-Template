@@ -138,16 +138,15 @@ async function prepareTemplate({ locales, docsLocale }) {
       .sort()
       .map((file) => `docs/${file}`),
   ]
-  for (const document of documents)
-    documentation.set(
-      document,
-      projectBackendPaths(
-        await readFile(resolve(source, docsRoot, document), "utf8")
-      ).replace(
-        /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
-        ""
-      )
+  for (const document of documents) {
+    const content = projectBackendPaths(
+      await readFile(resolve(source, docsRoot, document), "utf8")
+    ).replace(
+      /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
+      ""
     )
+    documentation.set(document, content.trimEnd() + "\n")
+  }
   const manifest = JSON.parse(
     projectBackendPaths(JSON.stringify(await readJson("package.json")))
   )

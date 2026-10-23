@@ -1,4 +1,5 @@
 import { test } from "node:test"
+import { check } from "prettier"
 import { unzipSync } from "fflate"
 import assert from "node:assert/strict"
 import {
@@ -67,8 +68,14 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         )
         assert.equal(
           Buffer.from(entries[`docs/${name}`]).toString("utf8"),
-          expected,
+          expected.trimEnd() + "\n",
           `Wrong documentation language for ${id}: ${name}`
+        )
+        assert.ok(
+          await check(Buffer.from(entries[`docs/${name}`]).toString("utf8"), {
+            filepath: name,
+          }),
+          `Unformatted generated documentation for ${id}: ${name}`
         )
       }
       for (const required of [
