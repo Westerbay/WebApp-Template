@@ -1,0 +1,4 @@
+# False positives: public Docker image tag valkey/valkey:8.1.10-alpine3.24.
+# Suppress only these two historical findings; keep generic-api-key enabled.
+6babaa19ad2d8e55fef0c696b78254cbe761ab57:scripts/infra/support/logs-test-harness.mjs:generic-api-key:91
+6babaa19ad2d8e55fef0c696b78254cbe761ab57:infra/compose/valkey.yml:generic-api-key:5
