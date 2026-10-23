@@ -510,8 +510,8 @@ importers:
         specifier: workspace:*
         version: link:../i18n
       nodemailer:
-        specifier: 10.0.9
-        version: 10.0.9
+        specifier: 10.0.10
+        version: 10.0.10
       react:
         specifier: ^19.2.6
         version: 19.3.1
@@ -4628,8 +4628,8 @@ packages:
     resolution: {integrity: sha512-5qr2okC4ItAI0hG5SaV0HoYMpnM/Y6+Oqr7AmPYy/2uEoGvS+GbSKLeRxSS1uAdu59yz0ouzcuXievSgg///WA==}
     engines: {node: '>=18'}
 
-  nodemailer@10.0.9:
-    resolution: {integrity: sha512-BF0qcyplCwp+jMk6HCjFykBz/YhhZSsxrARhOldLwFWH+8kGjQsd2WIMIZhqEuyXRoGFi0ONbDeWDMDoL8MhLw==}
+  nodemailer@10.0.10:
+    resolution: {integrity: sha512-He9XskOFms62SyAKkLu8CcGcYHAo+BSHSsORI8s4PJH8qZgZY4L4lDfvyN0twvmbpyG+eGrxpyBlskj9d9rJ8A==}
     engines: {node: '>=20.0.0'}
 
   object-assign@4.1.1:
@@ -9606,7 +9606,7 @@ snapshots:
 
   node-releases@2.0.59: {}
 
-  nodemailer@10.0.9: {}
+  nodemailer@10.0.10: {}
 
   object-assign@4.1.1: {}
 

@@ -80,16 +80,15 @@ fixtures isolées. Après modification de contrôleurs ou DTO Nest, exécuter
 
 ## Sécurité et mises à jour des dépendances
 
-La [CI de sécurité](../.github/workflows/security.yml) s’exécute sur les PR, les
-pushs sur `main`, chaque lundi et sur déclenchement manuel. Elle audite les
-dépendances JavaScript de production et de développement avec
-`pnpm -r audit --audit-level high`, et analyse avec Trivy chaque image littérale unique
-de `compose.yml` et `infra/compose/*.{yml,yaml}`. Les vulnérabilités `HIGH` et
-`CRITICAL` font échouer les contrôles, y compris celles des images sans correctif
-disponible. Les rapports sont dans les logs du workflow ; une indisponibilité des
-registres ou du service d’avis de sécurité fait aussi échouer les contrôles.
-Aucun conteneur ni base de données n’est démarré. Rendre `Security checks` obligatoire
-dans les règles de branche GitHub pour bloquer la fusion en cas d’échec.
+Le [guide CI](CI.md) décrit les événements, la réutilisation des validations et
+les statuts obligatoires. La [CI de sécurité](../.github/workflows/security.yml)
+est appelée une seule fois par le workflow d’entrée pour les PR, pushs directs
+sur main, lancements manuels et scans hebdomadaires. Elle analyse les secrets,
+les dépendances JavaScript/Rust et une matrice d’images d’infrastructure uniques.
+Les vulnérabilités HIGH/CRITICAL, même sans correctif, et les erreurs de service
+du scanner bloquent. Aucun vrai fichier d’environnement ni base n’est nécessaire.
+Rendre `CI checks` et `Security checks` obligatoires dans les règles de branche
+pour imposer ces résultats.
 
 La [configuration Renovate](../renovate.json) prépare des PR de mise à jour
 hebdomadaires pour les dépendances du workspace, les images Compose et les GitHub

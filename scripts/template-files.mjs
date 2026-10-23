@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process"
 
 const excluded = [
   "template/",
+  ".github/workflows/ci-source.yml",
   "apps/api-rust/",
   ".agents/",
   ".codex/",
@@ -68,7 +69,9 @@ export async function copyTemplateFiles(source, destination, files) {
 
 // Source backends have explicit names; generated projects contain only apps/api.
 export function projectBackendPaths(content) {
-  return content.replaceAll("apps/api-nestjs", "apps/api")
+  return content
+    .replaceAll("\r\n", "\n")
+    .replaceAll("apps/api-nestjs", "apps/api")
 }
 
 function resolveSourcePath(root, path) {

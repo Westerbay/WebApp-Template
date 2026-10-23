@@ -183,7 +183,7 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       assert.equal(
         await readFile(join(output, ".github/workflows/ci.yml"), "utf8"),
         projectBackendPaths(
-          await readFile(join(source, ".github/workflows/ci.yml"), "utf8")
+          await readFile(join(source, "template/workflows/ci.yml"), "utf8")
         )
       )
       for (const excluded of [
@@ -237,6 +237,7 @@ test("rejects a newly added document without a French translation before creatin
   const fixture = join(temporary, "source")
   for (const file of [
     "scripts/template-generator.mjs",
+    "template/workflows/ci.yml",
     "scripts/template-files.mjs",
     "scripts/template-profiles.mjs",
     "packages/i18n/routing-config.mjs",
@@ -305,6 +306,7 @@ async function createLocaleFixture(t) {
   const fixture = join(directory, "source")
   for (const file of [
     "scripts/template-generator.mjs",
+    "template/workflows/ci.yml",
     "scripts/template-files.mjs",
     "packages/i18n/routing-config.mjs",
     "packages/i18n/routing.json",

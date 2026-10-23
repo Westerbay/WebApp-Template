@@ -42,16 +42,15 @@ test("locale documentation preserves operational examples and link destinations"
     const documentation = resolve(directory, pack.documentation)
     if (documentation === source) continue
     for (const document of documents) {
-      const original = (
-        await readFile(resolve(source, document), "utf8")
-      ).replace(
-        /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
-        ""
-      )
-      const translated = await readFile(
-        resolve(documentation, document),
-        "utf8"
-      )
+      const original = (await readFile(resolve(source, document), "utf8"))
+        .replaceAll("\r\n", "\n")
+        .replace(
+          /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
+          ""
+        )
+      const translated = (
+        await readFile(resolve(documentation, document), "utf8")
+      ).replaceAll("\r\n", "\n")
       assert.deepEqual(
         executableExamples(translated),
         executableExamples(original),
