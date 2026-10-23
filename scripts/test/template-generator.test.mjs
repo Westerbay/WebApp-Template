@@ -385,8 +385,18 @@ async function createLocaleFixture(t) {
 }
 
 test("generates an additional locale from its pack without changing generator code", async (t) => {
-  const { output, generateFixture } = await createLocaleFixture(t)
+  const { fixture, output, generateFixture } = await createLocaleFixture(t)
+  const workflowPath = join(fixture, "template/workflows/ci.yml")
+  const workflow = (await readFile(workflowPath, "utf8")).replaceAll(
+    "\r\n",
+    "\n"
+  )
+  await writeFile(workflowPath, workflow.replaceAll("\n", "\r\n"))
   await generateFixture({ output, profile: "synthetic" })
+  assert.equal(
+    await readFile(join(output, ".github/workflows/ci.yml"), "utf8"),
+    workflow
+  )
   assert.deepEqual(
     (await readdir(join(output, "packages/i18n/messages"))).sort(),
     ["en.json", "xx.json"]
