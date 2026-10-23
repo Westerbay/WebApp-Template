@@ -13,11 +13,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  security:
+    uses: ./.github/workflows/security.yml
+
   validate:
     uses: ./.github/workflows/template-validation.yml
 
   publish-release:
-    needs: validate
+    needs: [validate, security]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:

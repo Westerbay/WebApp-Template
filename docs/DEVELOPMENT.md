@@ -121,14 +121,14 @@ Nest projects do not install Orval or regenerate these schemas through OpenAPI.
 
 ## Security and dependency updates
 
-[Security CI](../.github/workflows/security.yml) runs on pull requests, pushes to
-`main`, every Monday and manual dispatch. It audits production and development
-JavaScript dependencies with `pnpm -r audit --audit-level high`, and scans each unique
-literal image from `compose.yml` and `infra/compose/*.{yml,yaml}` with Trivy.
-`HIGH` and `CRITICAL` vulnerabilities fail the checks, including image findings
-without an available fix. Reports appear in the workflow logs; registry or advisory
-service failures also fail the checks. No containers or databases are started.
-Require `Security checks` in GitHub branch rules to block merging failed scans.
+The [CI guide](CI.md) describes event planning, validation reuse and required
+statuses. [Security CI](../.github/workflows/security.yml) is called once by the
+entry workflow for PRs, direct main pushes, manual runs and weekly security
+refreshes. It scans secrets, JavaScript and Rust dependencies, and a matrix of
+unique infrastructure images. HIGH/CRITICAL vulnerabilities, including unfixed
+findings, and scanner service errors fail the checks. No real environment file
+or database is needed. Require `CI checks` and `Security checks` in branch rules
+to enforce these results.
 
 [Renovate configuration](../renovate.json) prepares weekly update PRs for workspace
 dependencies, Compose images and GitHub Actions. Install the

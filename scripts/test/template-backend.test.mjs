@@ -105,7 +105,7 @@ for (const profile of ["en", "fr", "multilingual"]) {
     assert.match(text("scripts/rust/check.sh"), /\/\.\.\/\.\.\/apps\/api"/)
     assert.doesNotMatch(text("scripts/rust/check.sh"), /template-rust/)
     assert.match(
-      text(".github/workflows/ci.yml"),
+      text(".github/actions/validate-project/action.yml"),
       /sh scripts\/rust\/runtime-check.sh/
     )
     assert.match(root.scripts["test:e2e"], /rust\/frontend-check/)
@@ -132,7 +132,10 @@ for (const profile of ["en", "fr", "multilingual"]) {
         : "../../docs/DESIGN.md",
       import.meta.url
     )
-    assert.equal(text("docs/DESIGN.md"), await readFile(designSource, "utf8"))
+    assert.equal(
+      text("docs/DESIGN.md"),
+      (await readFile(designSource, "utf8")).replaceAll("\r\n", "\n")
+    )
     assert.match(text("docs/DEVELOPMENT.md"), /sslmode=verify-full/)
     const project = join(directory, `${profile}-rust`)
     execFileSync(process.execPath, ["scripts/docs-check.mjs"], { cwd: project })

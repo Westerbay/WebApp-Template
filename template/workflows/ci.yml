@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ci-${{ github.event_name == 'schedule' && 'scheduled-security' || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      validation: ${{ steps.plan.outputs.validation }}
+      security: ${{ steps.plan.outputs.security }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/ci/plan.py
+
+  security:
+    needs: plan
+    if: needs.plan.outputs.security == 'true'
+    uses: ./.github/workflows/security.yml
+
+  application:
+    needs: plan
+    if: needs.plan.outputs.validation == 'true'
+    uses: ./.github/workflows/ci-application.yml
+
+  checks:
+    name: CI checks
+    if: always()
+    needs: [plan, security, application]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Require the planned checks
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          VALIDATION_JOBS: application
+        run: python3 scripts/ci/gate.py
+      - name: Record the validated tree
+        if: needs.plan.outputs.validation == 'true'
+        run: python3 scripts/ci/plan.py prove proof.json
+      - name: Save validation proof
+        if: needs.plan.outputs.validation == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ci-validated-tree
+          path: proof.json
+          retention-days: 30

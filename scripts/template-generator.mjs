@@ -37,6 +37,11 @@ export async function generateTemplate({
     files = files.filter(includeRustFile)
   }
   await copyTemplateFiles(source, destination, files)
+  await mkdir(resolve(destination, ".github/workflows"), { recursive: true })
+  await writeFile(
+    resolve(destination, ".github/workflows/ci.yml"),
+    await readFile(resolve(source, "template/workflows/ci.yml"), "utf8")
+  )
   await mkdir(resolve(destination, "packages/i18n/messages"), {
     recursive: true,
   })
