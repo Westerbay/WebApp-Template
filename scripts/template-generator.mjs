@@ -37,6 +37,13 @@ export async function generateTemplate({
     files = files.filter(includeRustFile)
   }
   await copyTemplateFiles(source, destination, files)
+  await mkdir(resolve(destination, ".github/workflows"), { recursive: true })
+  await writeFile(
+    resolve(destination, ".github/workflows/ci.yml"),
+    (
+      await readFile(resolve(source, "template/workflows/ci.yml"), "utf8")
+    ).replaceAll("\r\n", "\n")
+  )
   await mkdir(resolve(destination, "packages/i18n/messages"), {
     recursive: true,
   })
@@ -63,7 +70,7 @@ export async function generateTemplate({
         resolve(destination, path),
         path.endsWith(".json")
           ? await format(content, { filepath: path })
-          : content
+          : content.replaceAll("\r\n", "\n")
       )
     }
     await writeJson(resolve(destination, "package.json"), plan.manifest)
@@ -133,16 +140,15 @@ async function prepareTemplate({ locales, docsLocale }) {
       .sort()
       .map((file) => `docs/${file}`),
   ]
-  for (const document of documents)
-    documentation.set(
-      document,
-      projectBackendPaths(
-        await readFile(resolve(source, docsRoot, document), "utf8")
-      ).replace(
-        /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
-        ""
-      )
+  for (const document of documents) {
+    const content = projectBackendPaths(
+      await readFile(resolve(source, docsRoot, document), "utf8")
+    ).replace(
+      /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
+      ""
     )
+    documentation.set(document, content.trimEnd() + "\n")
+  }
   const manifest = JSON.parse(
     projectBackendPaths(JSON.stringify(await readJson("package.json")))
   )

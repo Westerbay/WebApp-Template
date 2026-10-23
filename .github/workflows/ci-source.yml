@@ -1,0 +1,35 @@
+name: Source checks
+on:
+  workflow_call:
+permissions:
+  contents: read
+env:
+  CI: true
+jobs:
+  checks:
+    name: Source / ${{ matrix.suite }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [quality, infrastructure]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-workspace
+      - uses: ./.github/actions/load-infrastructure
+        if: matrix.suite == 'infrastructure'
+      - run: pnpm install --frozen-lockfile
+      - name: Source quality
+        if: matrix.suite == 'quality'
+        run: pnpm check
+      - name: CI planning and security discovery tests
+        if: matrix.suite == 'quality'
+        run: python3 -m unittest discover -s scripts/test -p 'ci_*_test.py' -v
+      - name: Optional infrastructure integrations
+        if: matrix.suite == 'infrastructure'
+        run: |
+          pnpm valkey:test
+          pnpm logs:check
+          pnpm logs:test
+          pnpm logs:test:docker

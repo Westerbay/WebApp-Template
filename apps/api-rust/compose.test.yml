@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:17.6-alpine
+    image: webapp-template-postgres:17.11-security.1
+    build:
+      context: ../../infra/images/postgres
     environment:
       POSTGRES_USER: prototype
       POSTGRES_PASSWORD: prototype
@@ -14,7 +16,7 @@ services:
       retries: 30
 
   mailpit:
-    image: axllent/mailpit:v1.29.2
+    image: axllent/mailpit:v1.32.0
 
   test:
     build:

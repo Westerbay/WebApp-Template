@@ -77,12 +77,15 @@ for (const route of routes) {
   }
 }
 
-const workflow = await readFile(
-  resolve(root, ".github/workflows/ci.yml"),
-  "utf8"
-)
-for (const match of workflow.matchAll(/uses:\s*([^\s]+)@([^\s#]+)/g)) {
-  if (!/^[a-f0-9]{40}$/.test(match[2])) {
+const workflowFiles = [
+  ...(await filesUnder(resolve(root, ".github/workflows"))),
+  ...(await filesUnder(resolve(root, ".github/actions"))),
+].filter((path) => /\.ya?ml$/.test(path))
+const workflow = (
+  await Promise.all(workflowFiles.map((path) => readFile(path, "utf8")))
+).join("\n")
+for (const match of workflow.matchAll(/uses:\s*([^\s#]+)/g)) {
+  if (!match[1].startsWith("./") && !/@[a-f0-9]{40}$/.test(match[1])) {
     failures.push(`GitHub action is not pinned to a commit: ${match[1]}`)
   }
 }

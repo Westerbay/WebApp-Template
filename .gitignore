@@ -31,3 +31,6 @@ playwright-report/
 test-results/
 
 .worktree/
+
+# Python CI helpers
+__pycache__/

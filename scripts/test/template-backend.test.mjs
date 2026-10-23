@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { access, mkdtemp, rm, readFile, writeFile } from "node:fs/promises"
 import { execFileSync } from "node:child_process"
 import { unzipSync } from "fflate"
+import { check } from "prettier"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { test } from "node:test"
@@ -45,6 +46,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "scripts/rust/frontend-check.mjs",
       "scripts/rust/check.sh",
       "scripts/rust/runtime-check.sh",
+      "scripts/rust/image-check.sh",
+      "infra/images/postgres/Dockerfile",
     ])
       assert.ok(entries[required], required)
     assert.deepEqual(
@@ -64,19 +67,26 @@ for (const profile of ["en", "fr", "multilingual"]) {
       assert.ok(!/^apps\/api\/.*\.(?:ts|js)$/.test(name), name)
       assert.ok(!/^apps\/api-(?:nestjs|rust)\//.test(name), name)
       assert.ok(!name.startsWith("scripts/template-"), name)
+      assert.ok(!name.startsWith("infra/images/grafana/"), name)
       assert.ok(
         !name.includes("/node_modules/") && !name.includes("/target/"),
         name
       )
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
+    assert.ok(!text("pnpm-workspace.yaml").includes("@esbuild-kit/core-utils"))
+    assert.ok(
+      await check(text("pnpm-workspace.yaml"), {
+        filepath: "pnpm-workspace.yaml",
+      })
+    )
     const root = JSON.parse(text("package.json"))
     assert.equal(root.scripts["db:studio"], undefined)
     assert.equal(root.scripts["test:integration"], "sh scripts/rust/check.sh")
     assert.match(text("scripts/rust/check.sh"), /\/\.\.\/\.\.\/apps\/api"/)
     assert.doesNotMatch(text("scripts/rust/check.sh"), /template-rust/)
     assert.match(
-      text(".github/workflows/ci.yml"),
+      text(".github/actions/validate-project/action.yml"),
       /sh scripts\/rust\/runtime-check.sh/
     )
     assert.match(root.scripts["test:e2e"], /rust\/frontend-check/)
@@ -103,7 +113,10 @@ for (const profile of ["en", "fr", "multilingual"]) {
         : "../../docs/DESIGN.md",
       import.meta.url
     )
-    assert.equal(text("docs/DESIGN.md"), await readFile(designSource, "utf8"))
+    assert.equal(
+      text("docs/DESIGN.md"),
+      (await readFile(designSource, "utf8")).replaceAll("\r\n", "\n")
+    )
     assert.match(text("docs/DEVELOPMENT.md"), /sslmode=verify-full/)
     const project = join(directory, `${profile}-rust`)
     execFileSync(process.execPath, ["scripts/docs-check.mjs"], { cwd: project })

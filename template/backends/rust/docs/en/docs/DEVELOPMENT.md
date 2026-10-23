@@ -15,6 +15,7 @@ pnpm --filter web exec playwright install chromium
 pnpm test:e2e
 pnpm api:generate
 pnpm docker:build
+sh scripts/rust/image-check.sh
 ```
 
 `pnpm check` covers formatting, Clippy, type checking, unit/auth tests, contract
@@ -25,6 +26,13 @@ tests run the real frontend/SDK against a Rust API initialized with versioned
 migrations and runtime configuration. Artifacts go beneath `output/`.
 No test reads a real environment file or uses production SMTP/HIBP credentials.
 Development/tests stay offline for HIBP; its HTTP adapter uses a loopback fixture.
+
+The [Security workflow](../.github/workflows/security.yml) audits JavaScript
+dependencies and scans the literal infrastructure images from Compose with Trivy.
+The production `API_IMAGE` is supplied at deployment, so its publishing pipeline
+must scan that reviewed application image before deployment. It is not resolved
+or pulled by this workflow. Install the [Renovate GitHub App](https://github.com/apps/renovate)
+to activate the included dependency update configuration.
 
 The template ships one initial migration, `202610190001_initial.sql`, for identity
 and shared quotas. Its consolidated checksum replaces the earlier prototype history;
@@ -100,3 +108,10 @@ parameters are limited to canonical `sslmode`, `sslrootcert`, `sslcert`, `sslkey
 Docker fixture compilation uses `apps/api/target/fixture`, isolated from other
 projects and the native build. Cargo downloads may share the temporary registry
 cache; PostgreSQL/Mailpit containers remain unique to each test run.
+
+PostgreSQL uses the [local security recipe](../infra/images/postgres/README.md),
+built once and scanned before CI validation. The production Rust runtime uses
+pinned Distroless Debian 13 with glibc, OpenSSL and CA certificates. It has no
+shell or package manager; `webapp-api` handles migrations and health checks.
+The image test uses a fresh owned PostgreSQL fixture and verifies startup,
+repeated migrations and restart with the actual release image.

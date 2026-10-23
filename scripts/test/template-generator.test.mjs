@@ -1,4 +1,5 @@
 import { test } from "node:test"
+import { check } from "prettier"
 import { unzipSync } from "fflate"
 import assert from "node:assert/strict"
 import {
@@ -67,8 +68,14 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         )
         assert.equal(
           Buffer.from(entries[`docs/${name}`]).toString("utf8"),
-          expected,
+          expected.trimEnd() + "\n",
           `Wrong documentation language for ${id}: ${name}`
+        )
+        assert.ok(
+          await check(Buffer.from(entries[`docs/${name}`]).toString("utf8"), {
+            filepath: name,
+          }),
+          `Unformatted generated documentation for ${id}: ${name}`
         )
       }
       for (const required of [
@@ -78,6 +85,12 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         ".env.example",
         ".gitignore",
         ".github/workflows/ci.yml",
+        ".github/workflows/security.yml",
+        "renovate.json",
+        "infra/images/postgres/Dockerfile",
+        "infra/images/grafana/Dockerfile",
+        "infra/images/grafana/plugins.json",
+        ".github/actions/load-infrastructure/action.yml",
       ])
         assert.ok(entries[required], `Missing ZIP entry: ${required}`)
       assert.deepEqual(
@@ -181,7 +194,7 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       assert.equal(
         await readFile(join(output, ".github/workflows/ci.yml"), "utf8"),
         projectBackendPaths(
-          await readFile(join(source, ".github/workflows/ci.yml"), "utf8")
+          await readFile(join(source, "template/workflows/ci.yml"), "utf8")
         )
       )
       for (const excluded of [
@@ -235,6 +248,7 @@ test("rejects a newly added document without a French translation before creatin
   const fixture = join(temporary, "source")
   for (const file of [
     "scripts/template-generator.mjs",
+    "template/workflows/ci.yml",
     "scripts/template-files.mjs",
     "scripts/template-profiles.mjs",
     "packages/i18n/routing-config.mjs",
@@ -303,6 +317,7 @@ async function createLocaleFixture(t) {
   const fixture = join(directory, "source")
   for (const file of [
     "scripts/template-generator.mjs",
+    "template/workflows/ci.yml",
     "scripts/template-files.mjs",
     "packages/i18n/routing-config.mjs",
     "packages/i18n/routing.json",
@@ -363,8 +378,18 @@ async function createLocaleFixture(t) {
 }
 
 test("generates an additional locale from its pack without changing generator code", async (t) => {
-  const { output, generateFixture } = await createLocaleFixture(t)
+  const { fixture, output, generateFixture } = await createLocaleFixture(t)
+  const workflowPath = join(fixture, "template/workflows/ci.yml")
+  const workflow = (await readFile(workflowPath, "utf8")).replaceAll(
+    "\r\n",
+    "\n"
+  )
+  await writeFile(workflowPath, workflow.replaceAll("\n", "\r\n"))
   await generateFixture({ output, profile: "synthetic" })
+  assert.equal(
+    await readFile(join(output, ".github/workflows/ci.yml"), "utf8"),
+    workflow
+  )
   assert.deepEqual(
     (await readdir(join(output, "packages/i18n/messages"))).sort(),
     ["en.json", "xx.json"]

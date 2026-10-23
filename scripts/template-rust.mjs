@@ -10,6 +10,7 @@ const excluded = [
   "scripts/infra/",
   "infra/compose/",
   "infra/observability/",
+  "infra/images/grafana/",
   "scripts/worktree.mjs",
   "scripts/test/worktree.test.mjs",
   "scripts/test/infra-stack.test.mjs",
@@ -23,8 +24,10 @@ export async function prepareRustTemplate(source, selected, plan) {
   const base = join(source, "template/backends/rust")
   const crate = join(source, "apps/api-rust")
   const overlay = new Map()
-  const read = (path) => readFile(join(base, path), "utf8")
-  const readCrate = (path) => readFile(join(crate, path), "utf8")
+  const read = async (path) =>
+    (await readFile(join(base, path), "utf8")).replaceAll("\r\n", "\n")
+  const readCrate = async (path) =>
+    (await readFile(join(crate, path), "utf8")).replaceAll("\r\n", "\n")
   for (const directory of ["src", "migrations", "tests"]) {
     await collect(join(crate, directory), `apps/api/${directory}`, overlay)
   }
@@ -80,7 +83,7 @@ export async function prepareRustTemplate(source, selected, plan) {
     }
     overlay.set(to, content)
   }
-  for (const file of ["check.sh", "runtime-check.sh"]) {
+  for (const file of ["check.sh", "runtime-check.sh", "image-check.sh"]) {
     const content = await readFile(
       join(source, "scripts/template-rust", file),
       "utf8"
@@ -88,6 +91,7 @@ export async function prepareRustTemplate(source, selected, plan) {
     overlay.set(
       `scripts/rust/${file}`,
       content
+        .replaceAll("\r\n", "\n")
         .replaceAll("apps/api-rust", "apps/api")
         .replaceAll("node ../../scripts/template-rust/check-assets.mjs\n", "")
     )
@@ -107,7 +111,10 @@ export async function prepareRustTemplate(source, selected, plan) {
   const docs = join(base, "docs", selected.docsLocale)
   for (const document of plan.documentation.keys()) {
     if (document === "docs/DESIGN.md") continue
-    overlay.set(document, await readFile(join(docs, document), "utf8"))
+    overlay.set(
+      document,
+      (await readFile(join(docs, document), "utf8")).replaceAll("\r\n", "\n")
+    )
   }
   const manifest = plan.manifest
   for (const name of Object.keys(manifest.scripts)) {
@@ -145,10 +152,23 @@ export async function prepareRustTemplate(source, selected, plan) {
   )
   web.devDependencies["@playwright/test"] = "1.63.0"
   overlay.set("apps/web/package.json", JSON.stringify(web))
-  const workspace = await readFile(join(source, "pnpm-workspace.yaml"), "utf8")
+  const workspace = (
+    await readFile(join(source, "pnpm-workspace.yaml"), "utf8")
+  ).replaceAll("\r\n", "\n")
   overlay.set(
     "pnpm-workspace.yaml",
-    workspace.replace(/^  "@(?:nestjs\/core|swc\/core)": true\n/gm, "")
+    workspace
+      .replace(/^  "@(?:nestjs\/core|swc\/core)": true\n/gm, "")
+      .replace(
+        /^  #[^\n]*\n(?=  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":)/gm,
+        ""
+      )
+      .replace(
+        /^  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":[^\n]*\n/gm,
+        ""
+      )
+      .replace(/^overrides:\n(?=\n|$)/m, "")
+      .replace(/\n{3,}/g, "\n\n")
   )
   overlay.set(
     "apps/api/package.json",
@@ -177,7 +197,6 @@ export async function prepareRustTemplate(source, selected, plan) {
     outputs: ["target/release/webapp-api"],
   }
   overlay.set("turbo.json", JSON.stringify(turbo))
-  overlay.set(".github/workflows/ci.yml", await read("ci.yml"))
   overlay.set(
     ".gitignore",
     `${await readFile(join(source, ".gitignore"), "utf8")}\n# Rust build artifacts\n**/target/\n!.env.production.example\n`
@@ -195,7 +214,8 @@ async function collect(directory, prefix, files) {
     const path = join(directory, entry.name)
     const target = `${prefix}/${entry.name}`
     if (entry.isDirectory()) await collect(path, target, files)
-    else if (entry.isFile()) files.set(target, await readFile(path, "utf8"))
+    else if (entry.isFile())
+      files.set(target, (await readFile(path, "utf8")).replaceAll("\r\n", "\n"))
     else throw new Error(`Unsupported Rust source entry: ${path}`)
   }
 }

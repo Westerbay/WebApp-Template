@@ -1,0 +1,139 @@
+name: Security
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      GITLEAKS_VERSION: 8.30.1
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Download and verify Gitleaks
+        run: |
+          archive="$RUNNER_TEMP/gitleaks.tar.gz"
+          binary="$RUNNER_TEMP/gitleaks"
+          curl --fail --silent --show-error --location \
+            --output "$archive" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  ${archive}" | sha256sum --check --strict
+          tar --extract --gzip --file "$archive" --directory "$RUNNER_TEMP" gitleaks
+          chmod +x "$binary"
+      - name: Scan repository history
+        run: |
+          "$RUNNER_TEMP/gitleaks" git --redact --verbose .
+
+  dependencies:
+    name: Dependency vulnerabilities
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./.github/actions/setup-workspace
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm -r audit --audit-level high
+
+  images:
+    name: Discover Compose images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.images.outputs.matrix }}
+      cargo: ${{ steps.images.outputs.cargo }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Discover versioned infrastructure images and Cargo lockfile
+        id: images
+        run: python3 scripts/ci/images.py
+
+  rust:
+    name: Rust dependency vulnerabilities
+    needs: images
+    if: needs.images.outputs.cargo != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: v0.76.1
+          scan-type: fs
+          scan-ref: ${{ needs.images.outputs.cargo }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "1"
+          timeout: 10m
+
+  container-vulnerabilities:
+    name: Scan ${{ matrix.image }}
+    needs: images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.images.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build infrastructure recipe
+        if: matrix.context != ''
+        env:
+          IMAGE: ${{ matrix.image }}
+          CONTEXT: ${{ matrix.context }}
+        run: docker build --pull --tag "$IMAGE" "$CONTEXT"
+      - name: Scan OS and application packages
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          version: v0.76.1
+          scan-type: image
+          image-ref: ${{ matrix.image }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "1"
+          format: table
+          timeout: 10m
+      - name: Export scanned image for validation jobs
+        if: matrix.artifact != ''
+        env:
+          IMAGE: ${{ matrix.image }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: docker save --output "$RUNNER_TEMP/$ARTIFACT.tar" "$IMAGE"
+      - name: Share scanned image within this run
+        if: matrix.artifact != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: infra-image-${{ matrix.artifact }}
+          path: ${{ runner.temp }}/${{ matrix.artifact }}.tar
+          compression-level: 1
+          retention-days: 1
+          if-no-files-found: error
+
+  security:
+    name: Security checks
+    if: always()
+    needs: [gitleaks, dependencies, images, rust, container-vulnerabilities]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require all security jobs to succeed
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+          CARGO: ${{ needs.images.outputs.cargo }}
+        shell: python
+        run: |
+          import json, os
+          results = json.loads(os.environ["RESULTS"])
+          for name, job in results.items():
+              expected = "skipped" if name == "rust" and not os.environ["CARGO"] else "success"
+              if job["result"] != expected:
+                  raise SystemExit(f"Security job {name}: {job['result']} (expected {expected})")

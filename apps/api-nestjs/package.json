@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@faker-js/faker": "10.6.0",
-    "@nestjs/common": "11.2.3",
-    "@nestjs/core": "11.2.3",
-    "@nestjs/platform-express": "11.2.3",
+    "@nestjs/common": "11.2.7",
+    "@nestjs/core": "11.2.7",
+    "@nestjs/platform-express": "11.2.7",
     "@nestjs/swagger": "11.4.7",
     "@nestjs/throttler": "6.7.0",
     "@prometheus-io/client": "0.16.1",
@@ -30,7 +30,7 @@
     "@workspace/i18n": "workspace:*",
     "better-auth": "1.7.4",
     "cors": "2.8.5",
-    "express": "5.1.0",
+    "express": "5.3.0",
     "ioredis": "5.8.2",
     "nestjs-pino": "5.1.0",
     "nestjs-zod": "5.5.0",
@@ -42,7 +42,7 @@
     "zod": "4.6.2"
   },
   "devDependencies": {
-    "@nestjs/testing": "11.2.3",
+    "@nestjs/testing": "11.2.7",
     "@playwright/test": "1.63.0",
     "@swc/core": "1.13.5",
     "@tanstack/eslint-config": "0.3.2",
@@ -57,6 +57,6 @@
     "tsc-watch": "7.2.0",
     "typescript": "5.9.3",
     "unplugin-swc": "1.6.0",
-    "vitest": "5.0.0"
+    "vitest": "5.0.5"
   }
 }

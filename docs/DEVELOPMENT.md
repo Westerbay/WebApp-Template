@@ -44,6 +44,13 @@ orchestration and resource cleanup; Bash suits short shell-specific CI steps.
 executable stub is skipped on Windows). Integration, E2E and observability
 suites require Docker and clean only their own temporary resources.
 
+PostgreSQL and optional Grafana use maintained local image recipes rather than
+published custom tags. Their pinned sources, rebuild procedure and maintenance
+constraints are documented with the [PostgreSQL recipe](../infra/images/postgres/README.md)
+and [Grafana recipe](../infra/images/grafana/README.md). The first start builds
+them; later starts reuse the local images. Rebuild explicitly after recipe updates.
+Grafana bundles only the Loki and Prometheus integrations used by this template.
+
 ## Languages and public paths
 
 Edit `packages/i18n/messages/<locale>.json` for UI and email copy and
@@ -91,6 +98,36 @@ to exercise rejected and allowed dependencies in isolated fixtures.
 After changing Nest controllers or DTOs, run
 `pnpm api:generate` and include the generated API schema and web client types.
 `pnpm api:check` verifies drift without a database or SMTP connection.
+
+## Security and dependency updates
+
+The [CI guide](CI.md) describes event planning, validation reuse and required
+statuses. [Security CI](../.github/workflows/security.yml) is called once by the
+entry workflow for PRs, direct main pushes, manual runs and weekly security
+refreshes. It scans secrets, JavaScript and Rust dependencies, and a matrix of
+unique infrastructure images. HIGH/CRITICAL vulnerabilities, including unfixed
+findings, and scanner service errors fail the checks. No real environment file
+or database is needed. Require `CI checks` and `Security checks` in branch rules
+to enforce these results.
+
+[Renovate configuration](../renovate.json) prepares weekly update PRs for workspace
+dependencies, Compose/Dockerfile images and GitHub Actions. Install the
+[Renovate GitHub App](https://github.com/apps/renovate) on each repository using the
+template to activate updates. Compatible minor/patch updates are grouped; major
+updates stay separate and merging remains manual. pnpm updates remain manual
+because CI and project validation also pin its version. Keep image references in
+JavaScript test harnesses aligned when reviewing Compose image updates. Renovate
+does not update arbitrary image strings embedded in scripts.
+
+The security workflow and Renovate configuration are included in generated projects.
+To reproduce the dependency audit locally, run `pnpm -r audit --audit-level high`
+after installing dependencies. Image scanning requires access to public registries
+and Trivy's vulnerability database.
+
+The shared UI imports the extracted shadcn 4.21.0 utilities from
+`packages/ui/src/styles/shadcn.css`, retaining their MIT notice. The shadcn CLI is
+not an installed dependency; use `pnpm dlx shadcn@latest` when adding components.
+Upstream changes to `shadcn/tailwind.css` must be reviewed and copied explicitly.
 
 ## Local data and email
 

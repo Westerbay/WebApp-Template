@@ -2,6 +2,12 @@ packages:
   - apps/*
   - packages/*
 
+overrides:
+  # Swagger 11 pins a vulnerable js-yaml release (GHSA-r3ph-w7gj-g6xm).
+  "@nestjs/swagger>js-yaml": "5.4.1"
+  # Drizzle's legacy TypeScript loader pins esbuild <0.25 (GHSA-67mh-4wv8-2f99).
+  "@esbuild-kit/core-utils>esbuild": "0.25.12"
+
 allowBuilds:
   "@nestjs/core": true
   "@scarf/scarf": false
@@ -10,4 +16,4 @@ allowBuilds:
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
-  - nodemailer@10.0.9
+  - nodemailer@10.0.10

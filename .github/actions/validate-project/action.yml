@@ -1,0 +1,103 @@
+name: Validate application
+description: Check, test and build one generated or standalone application.
+inputs:
+  directory:
+    description: Application workspace directory
+    default: .
+  locales:
+    description: Comma-separated locales to exercise in the browser
+    default: en
+  infrastructure:
+    description: Validate optional NestJS infrastructure (owned separately in template source CI)
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Detect backend
+      id: backend
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: |
+        if [ -f apps/api/Cargo.toml ]; then
+          echo 'rust=true' >> "$GITHUB_OUTPUT"
+        else
+          echo 'rust=false' >> "$GITHUB_OUTPUT"
+        fi
+    - name: Install Rust
+      if: steps.backend.outputs.rust == 'true'
+      shell: bash
+      run: rustup toolchain install 1.90 --profile minimal --component rustfmt --component clippy && rustup default 1.90
+    - name: Install application dependencies
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: pnpm install --frozen-lockfile
+    - name: Quality, unit tests and production build
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: pnpm check
+    - name: Integration tests
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: pnpm test:integration
+    - name: Rust runtime and migrations
+      if: steps.backend.outputs.rust == 'true'
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: sh scripts/rust/runtime-check.sh
+    - name: Optional NestJS infrastructure
+      if: steps.backend.outputs.rust != 'true' && inputs.infrastructure == 'true'
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: |
+        pnpm valkey:test
+        pnpm logs:check
+        pnpm logs:test
+        pnpm logs:test:docker
+    - name: Install browser
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      env:
+        RUST: ${{ steps.backend.outputs.rust }}
+      run: |
+        if [ "$RUST" = true ]; then
+          pnpm --filter web exec playwright install --with-deps chromium
+        else
+          pnpm --filter @workspace/api exec playwright install --with-deps chromium
+        fi
+    - name: Browser journeys
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      env:
+        RUST: ${{ steps.backend.outputs.rust }}
+        LOCALES: ${{ inputs.locales }}
+      run: |
+        if [ "$RUST" = true ]; then
+          pnpm test:e2e
+        else
+          IFS=',' read -ra locales <<< "$LOCALES"
+          for locale in "${locales[@]}"; do
+            AUTH_TEST_LOCALE="$locale" pnpm test:e2e
+          done
+        fi
+    - name: Build Rust production image
+      if: steps.backend.outputs.rust == 'true'
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: pnpm docker:build
+    - name: Scan Rust production image
+      if: steps.backend.outputs.rust == 'true'
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+      with:
+        version: v0.76.1
+        scan-type: image
+        image-ref: webapp-api:local
+        scanners: vuln
+        severity: HIGH,CRITICAL
+        ignore-unfixed: false
+        exit-code: "1"
+        timeout: 10m
+    - name: Exercise Rust production image
+      if: steps.backend.outputs.rust == 'true'
+      working-directory: ${{ inputs.directory }}
+      shell: bash
+      run: sh scripts/rust/image-check.sh

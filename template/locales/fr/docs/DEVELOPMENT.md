@@ -26,6 +26,14 @@ ressources ; Bash convient aux courtes étapes de CI propres au shell.
 POSIX est ignoré sous Windows). Les suites d’intégration, E2E et d’observabilité
 nécessitent Docker et nettoient uniquement leurs propres ressources temporaires.
 
+PostgreSQL et Grafana optionnel utilisent des recettes locales maintenues. Leurs
+sources épinglées et procédures de reconstruction sont documentées avec les recettes
+[PostgreSQL](../infra/images/postgres/README.md) et
+[Grafana](../infra/images/grafana/README.md). Le premier démarrage construit ces
+images ; les suivants réutilisent les images locales. Reconstruire explicitement
+après une mise à jour des recettes. Grafana fournit uniquement les intégrations
+Loki et Prometheus utilisées par ce template.
+
 ## Langues et chemins publics
 
 Modifier `packages/i18n/messages/<locale>.json` pour les messages UI et email,
@@ -77,6 +85,39 @@ font échouer le contrôle, sauf les ressources CSS URL de Vite. Exécuter
 fixtures isolées. Après modification de contrôleurs ou DTO Nest, exécuter
 `pnpm api:generate` et inclure le schéma API et les types du client web générés.
 `pnpm api:check` vérifie les dérives sans base ni connexion SMTP.
+
+## Sécurité et mises à jour des dépendances
+
+Le [guide CI](CI.md) décrit les événements, la réutilisation des validations et
+les statuts obligatoires. La [CI de sécurité](../.github/workflows/security.yml)
+est appelée une seule fois par le workflow d’entrée pour les PR, pushs directs
+sur main, lancements manuels et scans hebdomadaires. Elle analyse les secrets,
+les dépendances JavaScript/Rust et une matrice d’images d’infrastructure uniques.
+Les vulnérabilités HIGH/CRITICAL, même sans correctif, et les erreurs de service
+du scanner bloquent. Aucun vrai fichier d’environnement ni base n’est nécessaire.
+Rendre `CI checks` et `Security checks` obligatoires dans les règles de branche
+pour imposer ces résultats.
+
+La [configuration Renovate](../renovate.json) prépare des PR de mise à jour
+hebdomadaires pour les dépendances du workspace, les images Compose et les GitHub
+Actions. Installer l’[application GitHub Renovate](https://github.com/apps/renovate)
+sur chaque dépôt utilisant le template pour activer les mises à jour. Les versions
+mineures et correctives compatibles sont regroupées ; les versions majeures restent
+séparées et la fusion reste manuelle. Les mises à jour de pnpm restent manuelles,
+car la CI et les contrôles du projet verrouillent aussi sa version. Lors des mises
+à jour Compose, aligner les références d’images présentes dans les scripts de test
+JavaScript : Renovate ne modifie pas ces chaînes intégrées aux scripts.
+
+Le workflow de sécurité et la configuration Renovate sont inclus dans les projets
+générés. Pour reproduire l’audit localement, exécuter
+`pnpm -r audit --audit-level high` après installation des dépendances. Le scan des
+images nécessite un accès aux registres publics et à la base de vulnérabilités Trivy.
+
+L’UI partagée importe les utilitaires extraits de shadcn 4.21.0 depuis
+`packages/ui/src/styles/shadcn.css`, avec leur notice MIT. Le CLI shadcn n’est pas
+une dépendance installée ; utiliser `pnpm dlx shadcn@latest` pour ajouter des
+composants. Les évolutions amont de `shadcn/tailwind.css` doivent être examinées
+et copiées explicitement.
 
 ## Données locales et email
 
