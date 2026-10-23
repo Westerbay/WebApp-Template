@@ -5,7 +5,11 @@ import { resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { buildUrlPatterns } from "../packages/i18n/routing-config.mjs"
 import { templateProfiles } from "./template-profiles.mjs"
-import { copyTemplateFiles, listTemplateFiles } from "./template-files.mjs"
+import {
+  copyTemplateFiles,
+  listTemplateFiles,
+  projectBackendPaths,
+} from "./template-files.mjs"
 
 const source = fileURLToPath(new URL("../", import.meta.url))
 
@@ -132,12 +136,16 @@ async function prepareTemplate({ locales, docsLocale }) {
   for (const document of documents)
     documentation.set(
       document,
-      (await readFile(resolve(source, docsRoot, document), "utf8")).replace(
+      projectBackendPaths(
+        await readFile(resolve(source, docsRoot, document), "utf8")
+      ).replace(
         /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
         ""
       )
     )
-  const manifest = await readJson("package.json")
+  const manifest = JSON.parse(
+    projectBackendPaths(JSON.stringify(await readJson("package.json")))
+  )
   delete manifest.devDependencies.fflate
   for (const name of Object.keys(manifest.scripts))
     if (name.startsWith("template:")) delete manifest.scripts[name]

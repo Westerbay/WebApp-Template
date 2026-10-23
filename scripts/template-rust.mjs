@@ -3,7 +3,7 @@ import { join } from "node:path"
 
 // Remove Nest-only runtime, tooling and documentation; the frontend stays shared.
 const excluded = [
-  "apps/api/",
+  "apps/api-nestjs/",
   "packages/database/",
   "packages/email/",
   "packages/core/",
@@ -21,10 +21,12 @@ export function includeRustFile(file) {
 
 export async function prepareRustTemplate(source, selected, plan) {
   const base = join(source, "template/backends/rust")
+  const crate = join(source, "apps/api-rust")
   const overlay = new Map()
   const read = (path) => readFile(join(base, path), "utf8")
+  const readCrate = (path) => readFile(join(crate, path), "utf8")
   for (const directory of ["src", "migrations", "tests"]) {
-    await collect(join(base, directory), `apps/api/${directory}`, overlay)
+    await collect(join(crate, directory), `apps/api/${directory}`, overlay)
   }
   for (const file of [
     "Cargo.toml",
@@ -33,7 +35,7 @@ export async function prepareRustTemplate(source, selected, plan) {
     ".gitignore",
     "openapi.json",
   ]) {
-    overlay.set(`apps/api/${file}`, await read(file))
+    overlay.set(`apps/api/${file}`, await readCrate(file))
   }
   overlay.set("apps/web/src/lib/api/schema.d.ts", await read("schema.d.ts"))
   overlay.set(
@@ -60,38 +62,48 @@ export async function prepareRustTemplate(source, selected, plan) {
   for (const locale of ["en", "fr"]) {
     const key = `apps/api/assets/email.${locale}.json`
     if (!overlay.has(key))
-      overlay.set(key, await read(`assets/email.${locale}.json`))
+      overlay.set(key, await readCrate(`assets/email.${locale}.json`))
   }
   for (const [from, to] of [
-    ["Dockerfile.runtime", "apps/api/Dockerfile"],
-    ["dockerignore", "apps/api/.dockerignore"],
-    ["Dockerfile", "apps/api/Dockerfile.test"],
-    ["compose.yml", "apps/api/compose.test.yml"],
+    ["Dockerfile", "apps/api/Dockerfile"],
+    [".dockerignore", "apps/api/.dockerignore"],
+    ["Dockerfile.test", "apps/api/Dockerfile.test"],
+    ["compose.test.yml", "apps/api/compose.test.yml"],
     ["compose.frontend.yml", "apps/api/compose.frontend.yml"],
-    ["check.sh", "apps/api/check.sh"],
-    ["frontend-journeys.mjs", "scripts/rust/frontend-journeys.mjs"],
-    ["frontend-generated.mjs", "scripts/rust/frontend-check.mjs"],
-    ["check-generated-assets.mjs", "scripts/rust/check-assets.mjs"],
-    ["runtime-check.sh", "apps/api/runtime-check.sh"],
-    ["compose.production.yml", "infra/compose/production.yml"],
   ]) {
-    let content = await read(from)
-    if (from === "compose.yml" || from === "compose.frontend.yml") {
-      content = content.replaceAll(
-        "build: .",
-        "build:\n      context: .\n      dockerfile: Dockerfile.test"
-      )
+    let content = await readCrate(from)
+    if (from === "compose.test.yml" || from === "compose.frontend.yml") {
       content = content.replaceAll(
         "/tmp/skull-rust-target:/work/target",
         "./target/fixture:/work/target"
       )
     }
-    if (from === "check.sh")
-      content = content
-        .replaceAll("node check-assets.mjs\n", "")
-        .replaceAll("-f compose.yml", "-f compose.test.yml")
     overlay.set(to, content)
   }
+  for (const file of ["check.sh", "runtime-check.sh"]) {
+    const content = await readFile(
+      join(source, "scripts/template-rust", file),
+      "utf8"
+    )
+    overlay.set(
+      `scripts/rust/${file}`,
+      content
+        .replaceAll("apps/api-rust", "apps/api")
+        .replaceAll("node ../../scripts/template-rust/check-assets.mjs\n", "")
+    )
+  }
+  for (const file of [
+    "frontend-journeys.mjs",
+    "frontend-check.mjs",
+    "check-assets.mjs",
+    "cli.mjs",
+  ]) {
+    overlay.set(`scripts/rust/${file}`, await read(`scripts/rust/${file}`))
+  }
+  overlay.set(
+    "infra/compose/production.yml",
+    await read("compose.production.yml")
+  )
   const docs = join(base, "docs", selected.docsLocale)
   for (const document of plan.documentation.keys()) {
     if (document === "docs/DESIGN.md") continue
@@ -105,7 +117,7 @@ export async function prepareRustTemplate(source, selected, plan) {
   Object.assign(manifest.scripts, {
     "db:migrate": "node --env-file-if-exists=.env scripts/rust/cli.mjs migrate",
     setup: "node --env-file-if-exists=.env scripts/rust/cli.mjs setup",
-    "test:integration": "sh apps/api/check.sh",
+    "test:integration": "sh scripts/rust/check.sh",
     "test:e2e": "node scripts/rust/frontend-check.mjs",
     "project:check":
       "pnpm boundaries:check && pnpm boundaries:test && node scripts/project-check.mjs",
@@ -116,7 +128,6 @@ export async function prepareRustTemplate(source, selected, plan) {
     "api:generate":
       "node scripts/rust/check-assets.mjs --write && node scripts/api-contract.mjs generate",
   })
-  overlay.set("scripts/rust/cli.mjs", await read("cli.mjs"))
   overlay.set(".env.example", await read("env.example"))
   overlay.set(".env.production.example", await read("production.env.example"))
   const compose = await readFile(join(source, "compose.yml"), "utf8")

@@ -11,7 +11,7 @@
 
 ## Boundaries
 
-- `apps/api` composes NestJS, Better Auth and server adapters.
+- `apps/api-nestjs` composes NestJS, Better Auth and server adapters.
 - `apps/web` must not import server modules.
 - `packages/contracts` owns framework-independent shared schemas.
 - `packages/core` stays independent of NestJS, React, Drizzle and Better Auth.

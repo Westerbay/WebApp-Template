@@ -1,5 +1,25 @@
 # Development
 
+<!-- template-maintainers:start -->
+
+## Backend maintenance
+
+The default pnpm commands target `apps/api-nestjs` (`@workspace/api`). Rust lives
+in `apps/api-rust`; its validation entry points are:
+
+```sh
+node scripts/template-rust/check-assets.mjs
+sh scripts/template-rust/check.sh
+sh scripts/template-rust/runtime-check.sh
+node scripts/template-rust/frontend-check.mjs
+```
+
+Run `pnpm template:check` to generate and inspect all six backend/locale archives.
+Each generated project contains its selected backend under `apps/api`.
+See the [Rust guide](../apps/api-rust/README.md) for contract generation and runtime details.
+
+<!-- template-maintainers:end -->
+
 ## Start locally
 
 Use Node.js 24 and pnpm 12. Copy `.env.example` to a local `.env`; never commit
@@ -84,7 +104,7 @@ pnpm db:seed -- --scenario auth --clean
 ```
 
 The auth scenario supplies two reference accounts and 60 sample profiles.
-Fixture configuration lives in `apps/api/src/seeds/auth/fixtures.config.ts`.
+Fixture configuration lives in `apps/api-nestjs/src/seeds/auth/fixtures.config.ts`.
 Clean fixtures with the old configuration before changing their IDs or count;
 cleanup recognizes only its own records. The initial migration is an auth-only
 baseline and does not apply to databases from an older migration history.

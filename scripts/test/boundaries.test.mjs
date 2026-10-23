@@ -117,6 +117,20 @@ test("rejects server dependencies through relative, dynamic, aliased and type im
   ])
 })
 
+test("protects the named NestJS source backend", async (t) => {
+  const violations = await checkBoundaries(t, {
+    "apps/api-nestjs/src/modules/users/model.ts": "export const user = 1\n",
+    "apps/api-nestjs/src/infrastructure/coupled.ts":
+      'export { user } from "../modules/users/model.js"\n',
+    "apps/web/src/coupled.ts":
+      'export { user } from "../../api-nestjs/src/modules/users/model.js"\n',
+  })
+  assert.deepEqual(violations.map(({ rule }) => rule.name).sort(), [
+    "api-support-no-modules",
+    "web-no-server",
+  ])
+})
+
 test("rejects application dependencies in packages and UI business contracts", async (t) => {
   const violations = await checkBoundaries(t, {
     "apps/api/src/internal.ts": "export const internal = 1\n",

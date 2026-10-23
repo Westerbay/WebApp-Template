@@ -2,10 +2,10 @@ import { spawnSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 import { mkdir } from "node:fs/promises"
 import { join, resolve } from "node:path"
-import { generateTemplate } from "../../../scripts/template-generator.mjs"
+import { generateTemplate } from "../template-generator.mjs"
 import "./check-assets.mjs"
 
-const root = resolve(import.meta.dirname, "../../..")
+const root = resolve(import.meta.dirname, "../..")
 const output = join(
   root,
   "output",

@@ -103,10 +103,19 @@ pnpm dev:down
 Seeding is explicit, requires fixture mode and restores two reference accounts
 plus 60 deterministic demo profiles. Local email is captured by Mailpit.
 
+<!-- template-maintainers:start -->
+
+Backend sources live in `apps/api-nestjs` and `apps/api-rust`. The root development
+commands run NestJS by default. Generation selects one backend and places it in
+`apps/api`; Rust maintainer tools live in `scripts/template-rust/` and its generated
+configuration/documentation in `template/backends/rust/`.
+
+<!-- template-maintainers:end -->
+
 ## Structure
 
 ```text
-apps/api             NestJS API and server integrations
+apps/api-nestjs      NestJS API and server integrations
 apps/web             TanStack Start application
 packages/contracts   shared schemas and interfaces
 packages/core        business rules and pure ports when required

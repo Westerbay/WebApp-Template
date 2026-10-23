@@ -4,7 +4,7 @@ import { createRequire, stripTypeScriptTypes } from "node:module"
 import { pathToFileURL } from "node:url"
 
 const contracts = createRequire(
-  new URL("../../../packages/contracts/package.json", import.meta.url)
+  new URL("../../packages/contracts/package.json", import.meta.url)
 )
 const zodPackage = contracts.resolve("zod/package.json")
 const zodMetadata = JSON.parse(await readFile(zodPackage, "utf8"))
@@ -13,10 +13,7 @@ const zodModule = new URL(
   pathToFileURL(zodPackage)
 )
 const generated = await readFile(
-  new URL(
-    "../../../output/rust-auth-prototype/identity.zod.ts",
-    import.meta.url
-  ),
+  new URL("../../output/rust-auth-prototype/identity.zod.ts", import.meta.url),
   "utf8"
 )
 // Run the actual generated validator with the workspace's Zod, without adding

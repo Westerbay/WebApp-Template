@@ -6,7 +6,7 @@ import { existsSync } from "node:fs"
 
 const mode = process.argv[2]
 const root = resolve(import.meta.dirname, "..")
-const committedSpec = join(root, "apps/api/openapi.json")
+const committedSpec = join(root, "apps/api-nestjs/openapi.json")
 const committedTypes = join(root, "apps/web/src/lib/api/schema.d.ts")
 
 function run(command, args) {
@@ -23,13 +23,13 @@ function run(command, args) {
 }
 
 async function generate(specPath, typesPath) {
-  if (existsSync(join(root, "apps/api/Cargo.toml"))) {
+  if (existsSync(join(root, "apps/api-nestjs/Cargo.toml"))) {
     const result = spawnSync(
       "cargo",
       [
         "run",
         "--manifest-path",
-        "apps/api/Cargo.toml",
+        "apps/api-nestjs/Cargo.toml",
         "--locked",
         "--",
         "--openapi",
@@ -41,7 +41,7 @@ async function generate(specPath, typesPath) {
     await writeFile(specPath, result.stdout)
   } else {
     run("pnpm", ["--filter", "@workspace/api", "build"])
-    run("node", ["apps/api/dist/openapi/generate.js", specPath])
+    run("node", ["apps/api-nestjs/dist/openapi/generate.js", specPath])
   }
   run("pnpm", [
     "--filter",

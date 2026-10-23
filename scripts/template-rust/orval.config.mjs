@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url"
 
-const output = new URL("../../../output/rust-auth-prototype/", import.meta.url)
+const output = new URL("../../output/rust-auth-prototype/", import.meta.url)
 
 export default {
   rustIdentity: {

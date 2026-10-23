@@ -38,11 +38,11 @@ and a stable owner. Keep feature-specific code and test helpers near their featu
 
 ## Server functions
 
-- `apps/api/src/infrastructure/pagination/cursor-page.ts` builds a cursor page
+- `apps/api-nestjs/src/infrastructure/pagination/cursor-page.ts` builds a cursor page
   from `limit + 1` rows. The query must use a matching unique order and cursor.
-- `apps/api/src/infrastructure/auth/guard.ts` supplies global session protection
+- `apps/api-nestjs/src/infrastructure/auth/guard.ts` supplies global session protection
   and the `Public` and `CurrentUser` decorators for Nest controllers.
-- `apps/api/src/infrastructure/rate-limit` supplies global quotas, per-route
+- `apps/api-nestjs/src/infrastructure/rate-limit` supplies global quotas, per-route
   overrides and probe exemptions.
 - `packages/core/src/email.ts` defines the framework-independent `EmailSender`
   port; `packages/email` renders localized HTML/text and provides transports.

@@ -3,11 +3,11 @@ import { readFile } from "node:fs/promises"
 import {
   authPasswordConstraints,
   authTokenConstraints,
-} from "../../../packages/contracts/src/auth.constraints.ts"
+} from "../../packages/contracts/src/auth.constraints.ts"
 
 for (const [locale, source] of [
-  ["en", "../../../packages/i18n/messages/en.json"],
-  ["fr", "../../locales/fr/messages.json"],
+  ["en", "../../packages/i18n/messages/en.json"],
+  ["fr", "../../template/locales/fr/messages.json"],
 ]) {
   const catalog = JSON.parse(
     await readFile(new URL(source, import.meta.url), "utf8")
@@ -17,7 +17,10 @@ for (const [locale, source] of [
   )
   const actual = JSON.parse(
     await readFile(
-      new URL(`assets/email.${locale}.json`, import.meta.url),
+      new URL(
+        `../../apps/api-rust/assets/email.${locale}.json`,
+        import.meta.url
+      ),
       "utf8"
     )
   )
@@ -28,7 +31,7 @@ for (const [locale, source] of [
   )
 }
 const settings = await readFile(
-  new URL("src/config/auth.rs", import.meta.url),
+  new URL("../../apps/api-rust/src/config/auth.rs", import.meta.url),
   "utf8"
 )
 for (const [name, expected] of [

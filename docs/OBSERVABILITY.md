@@ -99,7 +99,7 @@ browser measurements require platform exporters or additional instrumentation.
 ## Configuration and production integration
 
 The API owns validation in
-`apps/api/src/infrastructure/observability/observability.config.ts`:
+`apps/api-nestjs/src/infrastructure/observability/observability.config.ts`:
 
 - `METRICS_ENABLED=true` enables metrics on a separate HTTP listener.
 - `METRICS_HOST` selects its private interface; default `127.0.0.1`.

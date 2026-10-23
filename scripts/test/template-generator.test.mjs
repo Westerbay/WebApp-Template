@@ -20,6 +20,7 @@ import { fileURLToPath, pathToFileURL } from "node:url"
 import { buildUrlPatterns } from "../../packages/i18n/routing-config.mjs"
 import { templateProfiles } from "../template-profiles.mjs"
 import { generateTemplate } from "../template-generator.mjs"
+import { projectBackendPaths } from "../template-files.mjs"
 import { createTemplateArchive } from "../template-archives.mjs"
 
 const source = fileURLToPath(new URL("../../", import.meta.url))
@@ -27,7 +28,9 @@ const readJson = async (path) => JSON.parse(await readFile(path, "utf8"))
 const requireI18n = createRequire(
   new URL("../../packages/i18n/package.json", import.meta.url)
 )
-const { compile } = await import(requireI18n.resolve("@inlang/paraglide-js"))
+const { compile } = await import(
+  pathToFileURL(requireI18n.resolve("@inlang/paraglide-js")).href
+)
 
 for (const { id, locales, docsLocale } of templateProfiles) {
   test(`generates the ${id} profile with working translated URLs`, async () => {
@@ -56,7 +59,7 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       const pack = await readJson(join(packDirectory, "pack.json"))
       const documentationRoot = resolve(packDirectory, pack.documentation)
       for (const name of documentNames) {
-        const expected = (
+        const expected = projectBackendPaths(
           await readFile(join(documentationRoot, "docs", name), "utf8")
         ).replace(
           /<!-- template-maintainers:start -->[\s\S]*?<!-- template-maintainers:end -->\n*/g,
@@ -86,7 +89,9 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       for (const name of names) {
         assert.ok(!/\.(zip|tgz|tar\.gz)$/.test(name), `Nested archive: ${name}`)
         assert.ok(
-          !name.startsWith("template/") &&
+          !name.startsWith("apps/api-nestjs/") &&
+            !name.startsWith("apps/api-rust/") &&
+            !name.startsWith("template/") &&
             !name.startsWith("scripts/template-") &&
             !name.startsWith("scripts/test/template-") &&
             !name.startsWith(".github/workflows/template"),
@@ -153,6 +158,13 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         lockfile
       )
       assert.ok(names.some((name) => name.startsWith("apps/api/test/")))
+      assert.ok(!names.includes("apps/api/Cargo.toml"))
+      assert.match(
+        Buffer.from(entries["scripts/infra/test-auth.mjs"]).toString("utf8"),
+        /apps\/api\/dist\/cli\/seed/
+      )
+      assert.ok(lockfile.includes("  apps/api:"))
+      assert.ok(!lockfile.includes("apps/api-nestjs"))
       assert.ok(names.some((name) => name.startsWith("apps/web/test/")))
       for (const name of names.filter(
         (name) => name === "README.md" || name.startsWith("docs/")
@@ -168,7 +180,9 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       assert.ok(readme.includes("https://github.com/Westerbay/WebApp-Template"))
       assert.equal(
         await readFile(join(output, ".github/workflows/ci.yml"), "utf8"),
-        await readFile(join(source, ".github/workflows/ci.yml"), "utf8")
+        projectBackendPaths(
+          await readFile(join(source, ".github/workflows/ci.yml"), "utf8")
+        )
       )
       for (const excluded of [
         "template",
@@ -243,7 +257,7 @@ test("rejects a newly added document without a French translation before creatin
   await symlink(
     join(source, "node_modules"),
     join(fixture, "node_modules"),
-    "dir"
+    process.platform === "win32" ? "junction" : "dir"
   )
   const { generateTemplate: generateFixture } = await import(
     pathToFileURL(join(fixture, "scripts/template-generator.mjs")).href
@@ -339,7 +353,7 @@ async function createLocaleFixture(t) {
   await symlink(
     join(source, "node_modules"),
     join(fixture, "node_modules"),
-    "dir"
+    process.platform === "win32" ? "junction" : "dir"
   )
   execFileSync("git", ["init", "--quiet", fixture])
   const { generateTemplate: generateFixture } = await import(
@@ -408,7 +422,7 @@ async function verifyRouting(output, settings, routing) {
   await symlink(
     join(source, "packages/i18n/node_modules"),
     join(outdir, "node_modules"),
-    "dir"
+    process.platform === "win32" ? "junction" : "dir"
   )
   await writeFile(
     join(outdir, "package.json"),

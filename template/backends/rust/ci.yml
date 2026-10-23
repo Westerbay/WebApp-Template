@@ -58,7 +58,7 @@ jobs:
         run: rustup toolchain install 1.90 --profile minimal --component rustfmt --component clippy && rustup default 1.90
       - run: pnpm check
       - run: pnpm test:integration
-      - run: sh apps/api/runtime-check.sh
+      - run: sh scripts/rust/runtime-check.sh
       - run: pnpm --filter web exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - run: pnpm docker:build

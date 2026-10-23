@@ -54,8 +54,8 @@ try {
   env.WEB_URL = "http://127.0.0.1:3000"
   run("pnpm", ["--filter", "@workspace/api...", "build"], { env })
   run("node", ["packages/database/dist/cli/migrate.js"], { env })
-  run("node", ["apps/api/dist/cli/seed.js", "--all"], { env })
-  run("node", ["apps/api/dist/cli/seed.js", "--all"], { env })
+  run("node", ["apps/api-nestjs/dist/cli/seed.js", "--all"], { env })
+  run("node", ["apps/api-nestjs/dist/cli/seed.js", "--all"], { env })
   run(
     "pnpm",
     [
@@ -69,7 +69,7 @@ try {
     ],
     { env }
   )
-  run("node", ["apps/api/dist/cli/seed.js", "--all", "--clean"], {
+  run("node", ["apps/api-nestjs/dist/cli/seed.js", "--all", "--clean"], {
     env,
   })
 } finally {
