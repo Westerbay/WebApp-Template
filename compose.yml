@@ -2,7 +2,9 @@ name: webapp-template
 
 services:
   postgres:
-    image: postgres:17.11-alpine3.24
+    image: webapp-template-postgres:17.11-security.1
+    build:
+      context: ./infra/images/postgres
     restart: unless-stopped
     command:
       - postgres

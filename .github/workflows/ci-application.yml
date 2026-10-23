@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: ./.github/actions/setup-workspace
+      - uses: ./.github/actions/load-infrastructure
       - name: CI planning and security discovery tests
         run: python3 -m unittest discover -s scripts/test -p 'ci_*_test.py' -v
       - name: Read application locales

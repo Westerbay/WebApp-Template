@@ -1,3 +1,4 @@
+import { devNull } from "node:os"
 import { randomUUID } from "node:crypto"
 import { execFileSync } from "node:child_process"
 import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises"
@@ -72,7 +73,9 @@ export async function createLogsTestHarness() {
       overrideConfig +
         `
     postgres:
-      image: postgres:17.11-alpine3.24
+      image: webapp-template-postgres:17.11-security.1
+      build:
+        context: ${root}infra/images/postgres
       command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements", "-c", "compute_query_id=auto"]
       volumes:
         - ${root}infra/postgres/query-statistics.sql:/docker-entrypoint-initdb.d/query-statistics.sql:ro
@@ -101,7 +104,7 @@ export async function createLogsTestHarness() {
       [
         "compose",
         "--env-file",
-        "/dev/null",
+        devNull,
         "-p",
         project,
         "-f",
@@ -127,7 +130,7 @@ export async function createLogsTestHarness() {
       [
         "compose",
         "--env-file",
-        "/dev/null",
+        devNull,
         "-p",
         project + "-collector",
         "-f",
@@ -196,7 +199,7 @@ export async function createLogsTestHarness() {
         file + ":/probe.jsonl:ro",
         "--entrypoint",
         "/bin/sh",
-        "grafana/grafana:13.2.4",
+        "alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a",
         "-c",
         "sleep 3; cat /probe.jsonl; sleep 120",
       ],

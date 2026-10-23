@@ -1,3 +1,4 @@
+import { devNull } from "node:os"
 import { spawnSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
@@ -11,7 +12,7 @@ const project = `webapp-template-code004-test-${randomUUID().slice(0, 8)}`
 const compose = [
   "compose",
   "--env-file",
-  "/dev/null",
+  devNull,
   "-p",
   project,
   "-f",

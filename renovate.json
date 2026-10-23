@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "enabledManagers": ["npm", "docker-compose", "github-actions"],
+  "enabledManagers": ["npm", "docker-compose", "dockerfile", "github-actions"],
   "schedule": ["* 6-10 * * 1"],
   "timezone": "Europe/Paris",
   "prConcurrentLimit": 5,
@@ -15,7 +15,7 @@
     },
     {
       "description": "Group compatible infrastructure image updates",
-      "matchManagers": ["docker-compose"],
+      "matchManagers": ["docker-compose", "dockerfile"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "Docker images"
     },
@@ -28,6 +28,18 @@
     {
       "description": "Update pnpm manually together with CI and project checks",
       "matchPackageNames": ["pnpm"],
+      "enabled": false
+    },
+    {
+      "description": "Local recipe tags are not published to a registry",
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["/^webapp-template-/"],
+      "enabled": false
+    },
+    {
+      "description": "Review Grafana server source, frontend and plugin pins together",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": ["grafana/grafana"],
       "enabled": false
     }
   ]
