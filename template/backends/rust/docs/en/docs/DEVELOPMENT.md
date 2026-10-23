@@ -10,7 +10,7 @@ this Rust application, separate from an existing Nest database.
 ```sh
 pnpm check
 pnpm test:integration
-sh apps/api/runtime-check.sh
+sh scripts/rust/runtime-check.sh
 pnpm --filter web exec playwright install chromium
 pnpm test:e2e
 pnpm api:generate

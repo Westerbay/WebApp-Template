@@ -7,7 +7,7 @@ it does not prescribe the next project's business domain.
 <!-- template-maintainers:start -->
 
 The generator defaults to NestJS and also offers a standalone Rust backend.
-See the [Rust option](../template/backends/rust/README.md) for migrations,
+See the [Rust option](../apps/api-rust/README.md) for migrations,
 production configuration and differences in operational integrations.
 
 <!-- template-maintainers:end -->

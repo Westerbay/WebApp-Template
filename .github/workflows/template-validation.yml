@@ -72,7 +72,7 @@ jobs:
           pnpm check
           pnpm test:integration
           if [ "$BACKEND" = "rust" ]; then
-            sh apps/api/runtime-check.sh
+            sh scripts/rust/runtime-check.sh
             pnpm --filter web exec playwright install --with-deps chromium
             pnpm test:e2e
             pnpm docker:build

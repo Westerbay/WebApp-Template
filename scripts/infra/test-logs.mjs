@@ -4,12 +4,12 @@ import { readdir, readFile } from "node:fs/promises"
 import { createDatabase } from "../../packages/database/dist/index.js"
 import { MemoryEmailSender } from "../../packages/email/dist/index.js"
 import { DEFAULT_LOCALE } from "../../packages/i18n/src/config.ts"
-import { createApiApp } from "../../apps/api/dist/app.js"
-import { createApiLogger } from "../../apps/api/dist/infrastructure/logging/logging.js"
-import { createApiMetrics } from "../../apps/api/dist/infrastructure/observability/metrics.js"
-import { startMetricsServer } from "../../apps/api/dist/infrastructure/observability/server.js"
-import { createValkey } from "../../apps/api/dist/infrastructure/valkey/valkey.js"
-import { AuthEmailDispatcher } from "../../apps/api/dist/infrastructure/email/auth-email-dispatcher.js"
+import { createApiApp } from "../../apps/api-nestjs/dist/app.js"
+import { createApiLogger } from "../../apps/api-nestjs/dist/infrastructure/logging/logging.js"
+import { createApiMetrics } from "../../apps/api-nestjs/dist/infrastructure/observability/metrics.js"
+import { startMetricsServer } from "../../apps/api-nestjs/dist/infrastructure/observability/server.js"
+import { createValkey } from "../../apps/api-nestjs/dist/infrastructure/valkey/valkey.js"
+import { AuthEmailDispatcher } from "../../apps/api-nestjs/dist/infrastructure/email/auth-email-dispatcher.js"
 import {
   createLogsTestHarness,
   logsTestConfig,
@@ -17,7 +17,7 @@ import {
 } from "./support/logs-test-harness.mjs"
 
 const require = createRequire(
-  new URL("../../apps/api/package.json", import.meta.url)
+  new URL("../../apps/api-nestjs/package.json", import.meta.url)
 )
 const { Router } = require("express")
 

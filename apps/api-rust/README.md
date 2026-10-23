@@ -15,7 +15,8 @@ Generation never connects to a database or reads real environment files.
 ## Ownership and generated application
 
 This directory owns the Rust API source, integration fixtures, embedded migration
-source and backend-specific generated documentation. `scripts/template-rust.mjs`
+source. Backend-specific generated documentation and configuration live in
+`template/backends/rust/`; maintainer checks live in `scripts/template-rust/`. `scripts/template-rust.mjs`
 selects those files; frontend, UI, contracts and i18n remain shared. Generated
 applications contain Rust in `apps/api`, plus its Docker runtime, package commands,
 CI and matching documentation. Nest, Drizzle and server TypeScript packages/tools
@@ -24,19 +25,19 @@ an authentication service beside Rust.
 
 Generated projects include `.env.example` for local PostgreSQL/Mailpit and
 `.env.production.example` for deployed origins, PostgreSQL and SMTP. The latter
-comes from [production.env.example](production.env.example); replace its placeholders
+comes from [production.env.example](../../template/backends/rust/production.env.example); replace its placeholders
 and keep real environment files untracked. Public URLs are read from the environment,
 not from test fixture defaults.
 
-The generated [development guide](docs/en/docs/DEVELOPMENT.md) documents setup,
+The generated [development guide](../../template/backends/rust/docs/en/docs/DEVELOPMENT.md) documents setup,
 production environment, migrations, container deployment and verification. A
-[French guide](docs/fr/docs/DEVELOPMENT.md) ships in French projects. Email catalogs
+[French guide](../../template/backends/rust/docs/fr/docs/DEVELOPMENT.md) ships in French projects. Email catalogs
 come from the locale packs; generated `api:generate` also synchronizes their
 embedded copies and shared auth constraints. `api:check` detects drift.
 
 ## Architecture
 
-The [architecture guide](docs/en/docs/ARCHITECTURE.md) maps composition roots,
+The [architecture guide](../../template/backends/rust/docs/en/docs/ARCHITECTURE.md) maps composition roots,
 independent feature modules, shared DTOs, configuration and infrastructure.
 `src/lib.rs` exposes the crate; `app.rs` assembles the router, `bootstrap.rs`
 acquires resources, and each feature owns its HTTP handler and query.
@@ -98,10 +99,10 @@ Use Node 24 / pnpm 12 and Docker:
 
 ```sh
 pnpm template:check
-sh template/backends/rust/check.sh
-sh template/backends/rust/runtime-check.sh
-node template/backends/rust/frontend-check.mjs
-sh template/backends/rust/generate-contract.sh
+sh scripts/template-rust/check.sh
+sh scripts/template-rust/runtime-check.sh
+node scripts/template-rust/frontend-check.mjs
+sh scripts/template-rust/generate-contract.sh
 ```
 
 `check.sh` covers SQLite, PostgreSQL, Mailpit, HIBP fixtures, migration concurrency,

@@ -1,9 +1,10 @@
-import { cp, lstat, mkdir } from "node:fs/promises"
-import { dirname, relative, resolve } from "node:path"
+import { cp, lstat, mkdir, readFile, writeFile } from "node:fs/promises"
+import { dirname, extname, relative, resolve } from "node:path"
 import { execFileSync } from "node:child_process"
 
 const excluded = [
   "template/",
+  "apps/api-rust/",
   ".agents/",
   ".codex/",
   "scripts/template-",
@@ -50,10 +51,24 @@ export async function copyTemplateFiles(source, destination, files) {
   await mkdir(dirname(destination), { recursive: true })
   await mkdir(destination, { recursive: false })
   for (const file of files) {
-    const target = resolveSourcePath(destination, file)
+    const target = resolveSourcePath(destination, projectBackendPaths(file))
     await mkdir(dirname(target), { recursive: true })
     await cp(resolve(source, file), target)
+    if (
+      [".md", ".mjs", ".json", ".yaml", ".yml", ".ts", ".tsx", ".sh"].includes(
+        extname(file)
+      )
+    ) {
+      const content = await readFile(target, "utf8")
+      const normalized = projectBackendPaths(content)
+      if (normalized !== content) await writeFile(target, normalized)
+    }
   }
+}
+
+// Source backends have explicit names; generated projects contain only apps/api.
+export function projectBackendPaths(content) {
+  return content.replaceAll("apps/api-nestjs", "apps/api")
 }
 
 function resolveSourcePath(root, path) {

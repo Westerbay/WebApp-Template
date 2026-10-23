@@ -37,7 +37,7 @@ const packageEntries = await readdir(resolve(root, "packages"), {
   withFileTypes: true,
 })
 const sourceDirectories = [
-  resolve(root, "apps/api/src"),
+  resolve(root, "apps/api-nestjs/src"),
   resolve(root, "apps/web/src"),
   ...packageEntries
     .filter((entry) => entry.isDirectory())

@@ -1,0 +1,6 @@
+# False positives: public container image references, not credentials.
+# Suppress only these historical findings; keep generic-api-key enabled.
+6babaa19ad2d8e55fef0c696b78254cbe761ab57:scripts/infra/support/logs-test-harness.mjs:generic-api-key:91
+6babaa19ad2d8e55fef0c696b78254cbe761ab57:infra/compose/valkey.yml:generic-api-key:5
+# The same public image reference in the explanatory comment of this file.
+f135e4ffd1b016c5c721d79a1c34fbce0a3306d8:.gitleaksignore:generic-api-key:1

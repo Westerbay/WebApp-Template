@@ -3,7 +3,9 @@ services:
     ports:
       - "127.0.0.1::8025"
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.test
     image: webapp-template-rust-auth-prototype:local
     working_dir: /work
     environment:

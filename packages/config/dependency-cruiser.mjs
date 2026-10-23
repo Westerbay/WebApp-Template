@@ -17,7 +17,7 @@ export default {
         "The web consumes public contracts, never server implementations.",
       from: { path: "^apps/web/src/" },
       to: {
-        path: "^(apps/api/|packages/(?:database|email|core)/|@workspace/(?:database|email|core)(?:/|$))",
+        path: "^(apps/api(?:-nestjs|-rust)?/|packages/(?:database|email|core)/|@workspace/(?:database|email|core)(?:/|$))",
       },
     },
     {
@@ -54,7 +54,7 @@ export default {
     {
       name: "api-no-web",
       severity: "error",
-      from: { path: "^apps/api/src/" },
+      from: { path: "^apps/api(?:-nestjs|-rust)?/src/" },
       to: { path: "^(apps/web/|packages/ui/|@workspace/ui(?:/|$))" },
     },
     {
@@ -62,10 +62,10 @@ export default {
       severity: "error",
       comment:
         "Compose API modules in the application; share generic mechanisms through infrastructure or packages.",
-      from: { path: "^apps/api/src/modules/([^/]+)/" },
+      from: { path: "^apps/api(?:-nestjs|-rust)?/src/modules/([^/]+)/" },
       to: {
-        path: "^apps/api/src/modules/",
-        pathNot: "^apps/api/src/modules/$1/",
+        path: "^apps/api(?:-nestjs|-rust)?/src/modules/",
+        pathNot: "^apps/api(?:-nestjs|-rust)?/src/modules/$1/",
       },
     },
     {
@@ -73,17 +73,21 @@ export default {
       severity: "error",
       comment:
         "Infrastructure and configuration cannot depend on application modules.",
-      from: { path: "^apps/api/src/(?:infrastructure|config)/" },
-      to: { path: "^apps/api/src/modules/" },
+      from: {
+        path: "^apps/api(?:-nestjs|-rust)?/src/(?:infrastructure|config)/",
+      },
+      to: { path: "^apps/api(?:-nestjs|-rust)?/src/modules/" },
     },
     {
       name: "api-no-composition-dependencies",
       severity: "error",
       comment:
         "Modules, infrastructure and configuration cannot import runtime or OpenAPI composition.",
-      from: { path: "^apps/api/src/(?:modules|infrastructure|config)/" },
+      from: {
+        path: "^apps/api(?:-nestjs|-rust)?/src/(?:modules|infrastructure|config)/",
+      },
       to: {
-        path: "^apps/api/src/(?:app\\.ts$|bootstrap\\.ts$|index\\.ts$|openapi/)",
+        path: "^apps/api(?:-nestjs|-rust)?/src/(?:app\\.ts$|bootstrap\\.ts$|index\\.ts$|openapi/)",
       },
     },
     {

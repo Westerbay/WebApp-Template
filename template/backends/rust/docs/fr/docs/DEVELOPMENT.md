@@ -9,7 +9,7 @@ Aucun utilisateur n'est créé. Utiliser une base neuve distincte de celle d'un 
 ```sh
 pnpm check
 pnpm test:integration
-sh apps/api/runtime-check.sh
+sh scripts/rust/runtime-check.sh
 pnpm --filter web exec playwright install chromium
 pnpm test:e2e
 pnpm api:generate

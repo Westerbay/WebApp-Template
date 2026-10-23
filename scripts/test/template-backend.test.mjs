@@ -43,6 +43,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "apps/api/src/config/runtime.rs",
       "infra/compose/production.yml",
       "scripts/rust/frontend-check.mjs",
+      "scripts/rust/check.sh",
+      "scripts/rust/runtime-check.sh",
     ])
       assert.ok(entries[required], required)
     assert.deepEqual(
@@ -60,6 +62,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
         name
       )
       assert.ok(!/^apps\/api\/.*\.(?:ts|js)$/.test(name), name)
+      assert.ok(!/^apps\/api-(?:nestjs|rust)\//.test(name), name)
+      assert.ok(!name.startsWith("scripts/template-"), name)
       assert.ok(
         !name.includes("/node_modules/") && !name.includes("/target/"),
         name
@@ -68,6 +72,13 @@ for (const profile of ["en", "fr", "multilingual"]) {
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
     const root = JSON.parse(text("package.json"))
     assert.equal(root.scripts["db:studio"], undefined)
+    assert.equal(root.scripts["test:integration"], "sh scripts/rust/check.sh")
+    assert.match(text("scripts/rust/check.sh"), /\/\.\.\/\.\.\/apps\/api"/)
+    assert.doesNotMatch(text("scripts/rust/check.sh"), /template-rust/)
+    assert.match(
+      text(".github/workflows/ci.yml"),
+      /sh scripts\/rust\/runtime-check.sh/
+    )
     assert.match(root.scripts["test:e2e"], /rust\/frontend-check/)
     assert.match(text("apps/api/Dockerfile"), /USER 10001:10001/)
     assert.match(text("compose.yml"), /name: webapp-template-rust/)

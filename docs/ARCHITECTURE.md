@@ -1,10 +1,21 @@
 # Architecture
 
+<!-- template-maintainers:start -->
+
+`apps/api-nestjs` owns the NestJS backend; `apps/api-rust` owns the Rust crate.
+They are alternative backends. The generator emits the selected backend as
+`apps/api`, retaining the shared frontend and contracts. Rust-only generated
+configuration and documentation live in `template/backends/rust`; validation of
+the source template lives in `scripts/template-rust`. The root pnpm workspace
+runs NestJS; the Rust crate is checked separately through Cargo/Docker.
+
+<!-- template-maintainers:end -->
+
 ## Boundaries
 
 ```text
 apps/web → packages/contracts, packages/ui, packages/i18n, generated API types
-apps/api → packages/contracts, packages/database, packages/email
+apps/api-nestjs → packages/contracts, packages/database, packages/email
 packages/database → Drizzle ORM, PostgreSQL
 packages/core → framework-independent ports
 ```

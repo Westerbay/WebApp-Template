@@ -1,10 +1,9 @@
 #!/bin/sh
 set -eu
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/../../apps/api-rust"
 project="skull-rust-runtime-$$"
 export RUST_AUTH_TEST_OWNED="$project"
-compose_file=compose.yml
-if [ -f compose.test.yml ]; then compose_file=compose.test.yml; fi
+compose_file=compose.test.yml
 compose() { docker compose --env-file /dev/null -p "$project" -f "$compose_file" "$@"; }
 cleanup() { compose --profile runtime down --remove-orphans; }
 trap cleanup EXIT
