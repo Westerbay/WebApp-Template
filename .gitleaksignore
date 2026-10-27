@@ -4,3 +4,6 @@
 6babaa19ad2d8e55fef0c696b78254cbe761ab57:infra/compose/valkey.yml:generic-api-key:5
 # The same public image reference in the explanatory comment of this file.
 f135e4ffd1b016c5c721d79a1c34fbce0a3306d8:.gitleaksignore:generic-api-key:1
+# Same public image references in the dependency-update branch history.
+dd5d3b13472c99da49363f0673b9bcb62ceaaf0e:scripts/infra/support/logs-test-harness.mjs:generic-api-key:91
+dd5d3b13472c99da49363f0673b9bcb62ceaaf0e:infra/compose/valkey.yml:generic-api-key:5
