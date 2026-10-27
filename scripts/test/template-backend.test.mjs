@@ -72,6 +72,10 @@ for (const profile of ["en", "fr", "multilingual"]) {
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
     const root = JSON.parse(text("package.json"))
     assert.equal(root.scripts["db:studio"], undefined)
+    assert.equal(
+      root.scripts["clean:rust"],
+      "cargo clean --manifest-path apps/api/Cargo.toml"
+    )
     assert.equal(root.scripts["test:integration"], "sh scripts/rust/check.sh")
     assert.match(text("scripts/rust/check.sh"), /\/\.\.\/\.\.\/apps\/api"/)
     assert.doesNotMatch(text("scripts/rust/check.sh"), /template-rust/)

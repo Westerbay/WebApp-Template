@@ -64,6 +64,7 @@
       "persistent": true
     },
     "@workspace/api#dev": {
+      "dependsOn": ["@workspace/i18n#build"],
       "cache": false,
       "interruptible": true,
       "persistent": true,
@@ -76,10 +77,17 @@
     "@workspace/i18n#build": {
       "outputs": ["src/generated/**"]
     },
+    "@workspace/i18n#dev": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "interruptible": true,
+      "persistent": true
+    },
     "@workspace/i18n#typecheck": {
       "dependsOn": ["build"]
     },
     "web#dev": {
+      "dependsOn": ["@workspace/i18n#build"],
       "with": ["@workspace/i18n#dev"],
       "cache": false,
       "persistent": true

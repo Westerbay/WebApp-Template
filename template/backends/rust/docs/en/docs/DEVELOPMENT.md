@@ -7,6 +7,16 @@ explicit local migration command; it requires `APP_ENV=development` and
 `DATABASE_FIXTURE_MODE=enabled`. It never seeds users. Use a fresh database for
 this Rust application, separate from an existing Nest database.
 
+`pnpm dev` generates translations before starting Vite and the translation
+watcher. If generation fails, Vite does not start. Later catalog edits are
+regenerated automatically. pnpm remains the common entry point for frontend
+and Rust development commands.
+
+Stop development processes before running `pnpm clean:rust` to remove compiled
+Rust artifacts from `apps/api/target`. The next Rust build recompiles them;
+sources, Cargo downloads and database volumes are preserved. `pnpm store prune`
+separately removes unused packages from pnpm's shared store.
+
 ```sh
 pnpm check
 pnpm test:integration
