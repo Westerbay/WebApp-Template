@@ -8,6 +8,7 @@
     "valkey:down": "node scripts/infra/stack.mjs valkey down",
     "valkey:test": "pnpm --filter @workspace/api exec vitest run --config vitest.valkey.config.ts",
     "build": "turbo build",
+    "clean:rust": "cargo clean --manifest-path apps/api-rust/Cargo.toml",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm api:check && pnpm docs:check && pnpm project:check && pnpm build",
     "api:check": "node scripts/api-contract.mjs check",
     "api:generate": "node scripts/api-contract.mjs generate",

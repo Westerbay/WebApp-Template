@@ -17,6 +17,13 @@ Les ports par défaut sont web 3000, API 3001 et PostgreSQL 5433.
 il ne crée pas de données de test. `pnpm dev:down` arrête les services sans
 supprimer le volume de la base.
 
+`pnpm dev` génère les traductions avant de démarrer Vite, l’API Nest et la
+surveillance des traductions. Un échec de génération bloque leur démarrage ;
+les modifications suivantes des catalogues sont régénérées automatiquement.
+Conserver pnpm comme point d’entrée commun des commandes de développement.
+`pnpm store prune` supprime les paquets inutilisés du cache partagé de pnpm,
+sans nettoyer les compilations.
+
 Le `compose.yml` standard reste à la racine ; les stacks optionnelles et de test
 sont dans `infra/compose/`. Les scripts d’infrastructure sont dans `scripts/infra/` ;
 utiliser les commandes pnpm de la racine comme points d’entrée. Conserver `.mjs`

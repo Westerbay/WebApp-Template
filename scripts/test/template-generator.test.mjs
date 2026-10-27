@@ -134,6 +134,7 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         )
       const readme = await readFile(join(output, "README.md"), "utf8")
       const manifest = await readJson(join(output, "package.json"))
+      assert.equal(manifest.scripts["clean:rust"], undefined)
       assert.equal(manifest.devDependencies.fflate, undefined)
       assert.ok(
         !Object.keys(manifest.scripts).some((name) =>

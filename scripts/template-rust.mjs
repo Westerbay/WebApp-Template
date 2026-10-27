@@ -115,6 +115,7 @@ export async function prepareRustTemplate(source, selected, plan) {
       delete manifest.scripts[name]
   }
   Object.assign(manifest.scripts, {
+    "clean:rust": "cargo clean --manifest-path apps/api/Cargo.toml",
     "db:migrate": "node --env-file-if-exists=.env scripts/rust/cli.mjs migrate",
     setup: "node --env-file-if-exists=.env scripts/rust/cli.mjs setup",
     "test:integration": "sh scripts/rust/check.sh",

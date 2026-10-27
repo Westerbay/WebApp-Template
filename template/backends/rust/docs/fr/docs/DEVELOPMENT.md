@@ -6,6 +6,17 @@ le secret avant `pnpm setup`. Setup démarre PostgreSQL/Mailpit et applique les
 migrations locales avec `APP_ENV=development` et `DATABASE_FIXTURE_MODE=enabled`.
 Aucun utilisateur n'est créé. Utiliser une base neuve distincte de celle d'un projet Nest.
 
+`pnpm dev` génère les traductions avant de démarrer Vite et leur surveillance.
+Vite ne démarre pas si la génération échoue. Les modifications suivantes des
+catalogues sont régénérées automatiquement. pnpm reste le point d’entrée commun
+des commandes de développement frontend et Rust.
+
+Arrêter les processus de développement avant `pnpm clean:rust` pour supprimer
+les compilations Rust dans `apps/api/target`. La prochaine compilation les
+reconstruit ; les sources, téléchargements Cargo et volumes de base de données
+sont conservés. `pnpm store prune` supprime séparément les paquets inutilisés
+du cache partagé de pnpm.
+
 ```sh
 pnpm check
 pnpm test:integration
