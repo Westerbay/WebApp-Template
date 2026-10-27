@@ -8,14 +8,18 @@ use std::net::SocketAddr;
 
 pub(crate) async fn request_log(req: Request, next: Next) -> Response {
     let request_id = format!("{:032x}", rand::random::<u128>());
-    let route = match req.uri().path() {
-        "/api/me" => "/api/me",
-        "/api/users" => "/api/users",
-        "/health/live" => "/health/live",
-        "/health/ready" => "/health/ready",
-        path if path.starts_with("/api/auth/") => "/api/auth/*",
-        _ => "unmatched",
+    let route = req
+        .extensions()
+        .get::<axum::extract::MatchedPath>()
+        .map(|path| path.as_str())
+        .unwrap_or("unmatched");
+    // Keep provider route details out of logs while application routes follow Axum metadata.
+    let route = if route.starts_with("/api/auth/") {
+        "/api/auth/*"
+    } else {
+        route
     };
+    let route = route.to_owned();
     let started = std::time::Instant::now();
     let mut response = next.run(req).await;
     tracing::info!(
@@ -46,3 +50,23 @@ pub(crate) async fn peer_headers(mut req: Request, next: Next) -> Response {
 }
 
 pub(crate) mod logging;
+
+pub(crate) fn configure(
+    router: axum::Router,
+    web_origin: &str,
+) -> Result<axum::Router, axum::http::header::InvalidHeaderValue> {
+    use axum::{
+        http::{Method, header::CONTENT_TYPE},
+        middleware,
+    };
+    Ok(router
+        .layer(middleware::from_fn(peer_headers))
+        .layer(
+            tower_http::cors::CorsLayer::new()
+                .allow_origin(HeaderValue::from_str(web_origin)?)
+                .allow_credentials(true)
+                .allow_methods([Method::GET, Method::POST])
+                .allow_headers([CONTENT_TYPE]),
+        )
+        .layer(middleware::from_fn(request_log)))
+}

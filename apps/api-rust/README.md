@@ -40,7 +40,10 @@ embedded copies and shared auth constraints. `api:check` detects drift.
 The [architecture guide](../../template/backends/rust/docs/en/docs/ARCHITECTURE.md) maps composition roots,
 independent feature modules, shared DTOs, configuration and infrastructure.
 `src/lib.rs` exposes the crate; `app.rs` assembles the router, `bootstrap.rs`
-acquires resources, and each feature owns its HTTP handler and query.
+acquires resources, and `cli/` dispatches commands. Each feature owns its routes,
+quota policy, OpenAPI paths, HTTP handlers and queries. Adding an endpoint within
+an existing feature does not require changing the application composition root
+or a separate logging inventory.
 
 ## Runtime and migrations
 

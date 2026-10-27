@@ -1,28 +1,55 @@
 pub mod store;
 
-use axum::{Json, extract::Request, http::StatusCode, middleware::Next, response::Response};
+use axum::{
+    Json,
+    extract::{MatchedPath, Request},
+    http::StatusCode,
+    middleware::Next,
+    response::Response,
+};
+
+use better_auth::seaorm::DatabaseConnection;
+
+const API_QUOTA_WINDOW_SECONDS: i64 = 60;
+
+#[derive(Clone)]
+pub(crate) struct ApiQuota {
+    store: store::SharedQuotas,
+    maximum: i32,
+}
+
+impl ApiQuota {
+    pub(crate) fn new(database: DatabaseConnection, maximum: i32) -> Self {
+        Self {
+            store: store::SharedQuotas(database),
+            maximum,
+        }
+    }
+}
 
 pub(crate) async fn api_quota(
-    axum::extract::State(quota): axum::extract::State<store::SharedQuotas>,
+    axum::extract::State(quota): axum::extract::State<ApiQuota>,
     req: Request,
     next: Next,
 ) -> Response {
     use axum::response::IntoResponse;
-    if !matches!(req.uri().path(), "/api/me" | "/api/users") {
-        return next.run(req).await;
-    }
     let peer = req
         .headers()
         .get("x-forwarded-for")
         .and_then(|header| header.to_str().ok())
         .unwrap_or("unknown");
-    let maximum = if req.uri().path() == "/api/me" {
-        30
-    } else {
-        120
-    };
+    let route = req
+        .extensions()
+        .get::<MatchedPath>()
+        .map(|path| path.as_str())
+        .unwrap_or("unmatched");
     match quota
-        .consume(&format!("{peer}:{}", req.uri().path()), maximum, 60)
+        .store
+        .consume(
+            &format!("{peer}:{route}"),
+            quota.maximum,
+            API_QUOTA_WINDOW_SECONDS,
+        )
         .await
     {
         Ok(None) => next.run(req).await,

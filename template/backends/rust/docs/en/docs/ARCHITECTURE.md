@@ -7,10 +7,10 @@ crate, a generic repository or an extra service layer.
 ```text
 apps/api/src/
   main.rs                  process exit handling
-  cli.rs                   server, migration and OpenAPI commands
+  cli/                     command parsing and dispatch; migration and health commands
   app.rs                   router and dependency composition
   bootstrap.rs             resource acquisition and startup cleanup
-  server.rs                HTTP serving and graceful shutdown
+  server.rs                server startup, HTTP serving and graceful shutdown
   config/                  validated settings; no connections or transports
   contracts/               application DTOs shared by feature modules
   modules/
@@ -27,12 +27,20 @@ apps/api/src/
   fixtures/                disposable frontend server; fixtures feature only
 ```
 
-`main.rs` calls the CLI. `app.rs`, `bootstrap.rs`, `cli.rs` and `openapi/` are
+`main.rs` calls the CLI. `app.rs`, `bootstrap.rs`, `cli/` and `openapi/` are
 composition roots: they may assemble feature modules, configuration and concrete
 adapters. Feature modules stay independent of one another; shared response DTOs
 belong in `contracts/`. Infrastructure and configuration never import features or
 composition roots. Configuration validates values; database connections and SMTP
 transports are created by their infrastructure adapters during bootstrap.
+
+Each feature owns its `router(database)` and OpenAPI `ApiDocument` in
+`modules/<feature>/mod.rs`. Add endpoints and their quota policy there; merge a
+new feature once in `app.rs` and its document once in `openapi/mod.rs`.
+Shared HTTP setup owns peer normalization, CORS and logging; it runs outside
+feature policies, so preflight requests still bypass session and quota checks.
+Logs use matched route metadata rather than another inventory of endpoint paths.
+Health and OpenAPI routes remain outside application quotas. Keep each feature’s quota policy beside its router.
 
 Feature implementation modules are private outside the crate. Auth compatibility
 adapters and the users SQL query are private to their owner. Rust visibility

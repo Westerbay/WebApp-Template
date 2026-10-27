@@ -20,5 +20,5 @@ Integration fixtures use isolated Docker resources. Follow `docs/DESIGN.md` for 
 
 Keep `modules/<feature>` independent. Shared feature DTOs belong in `contracts/`.
 Infrastructure and configuration never import features or composition roots.
-Compose in `app.rs`, `bootstrap.rs`, `cli.rs` and `openapi/`; keep `main.rs` thin.
+Compose in `app.rs`, `bootstrap.rs`, `cli/` and `openapi/`; keep `main.rs` thin.
 Configuration validates values; infrastructure owns connections and transports.

@@ -1,4 +1,20 @@
-use crate::Application;
+use crate::{Application, config::runtime::RuntimeSettings};
+
+pub(crate) async fn run(get: &impl Fn(&str) -> Option<String>) -> Result<(), &'static str> {
+    let config = RuntimeSettings::from_values(get)?;
+    let listener = tokio::net::TcpListener::bind(config.bind)
+        .await
+        .map_err(|_| "HTTP_BIND_FAILED")?;
+    let app = Application::from_settings(config).await?;
+    tracing::info!(event = "api.ready", "Rust API ready");
+    serve(app, listener).await
+}
+
+pub(crate) async fn run_fixture() -> Result<(), &'static str> {
+    let (app, listener) = fixture().await?;
+    tracing::info!(event = "api.ready", "Rust API ready");
+    serve(app, listener).await
+}
 
 pub async fn serve(
     app: Application,
@@ -44,4 +60,19 @@ async fn shutdown() {
     if tokio::signal::ctrl_c().await.is_err() {
         tracing::error!(event = "api.shutdown_signal.failed");
     }
+}
+
+#[cfg(feature = "fixtures")]
+async fn fixture() -> Result<(Application, tokio::net::TcpListener), &'static str> {
+    let app = crate::fixtures::test_server::create()
+        .await
+        .map_err(|_| "FIXTURE_STARTUP_FAILED")?;
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:4100")
+        .await
+        .map_err(|_| "HTTP_BIND_FAILED")?;
+    Ok((app, listener))
+}
+#[cfg(not(feature = "fixtures"))]
+async fn fixture() -> Result<(Application, tokio::net::TcpListener), &'static str> {
+    Err("INVALID_ARGUMENTS")
 }
