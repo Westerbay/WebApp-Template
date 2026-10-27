@@ -7,7 +7,7 @@ import type {
   Row,
   Table,
 } from "@tanstack/react-table"
-import type { CurrentUser } from "@workspace/contracts/identity"
+import type { CurrentUser } from "@/lib/api/contracts"
 
 function renderHeader(header: Header<CurrentUser, unknown>) {
   return (

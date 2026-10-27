@@ -1,5 +1,5 @@
 import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query"
-import type { CursorPage } from "@workspace/contracts/pagination"
+import type { CursorPage } from "@workspace/contracts/pagination/types"
 import type {
   InfiniteData,
   GetPreviousPageParamFunction,

@@ -1,5 +1,5 @@
 import { welcome, home_description } from "@workspace/i18n/messages"
-import type { CurrentUser } from "@workspace/contracts/identity"
+import type { CurrentUser } from "@/lib/api/contracts"
 
 export function AccountSummary({ user }: { user: CurrentUser }) {
   return (

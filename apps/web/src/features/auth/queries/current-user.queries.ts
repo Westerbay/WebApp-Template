@@ -4,6 +4,7 @@ import { httpStatus } from "@/lib/api/http-status"
 import type { QueryClient } from "@tanstack/react-query"
 
 import { apiClient } from "@/lib/api/client"
+import { currentUserSchema } from "@/lib/api/contracts"
 import { privateQueryKeyPrefix } from "@/lib/query/query-keys"
 
 export class AuthenticationRequiredError extends Error {}
@@ -24,7 +25,7 @@ export const currentUserQueryOptions = queryOptions({
       throw new Error("Unable to load the authenticated user")
     }
 
-    return data
+    return currentUserSchema.parse(data)
   },
   retry: false,
   staleTime: queryConfig.staleTimeMs,

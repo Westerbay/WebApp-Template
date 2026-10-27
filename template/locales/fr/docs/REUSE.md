@@ -9,6 +9,7 @@ de test propres à une fonctionnalité avec celle-ci.
 
 - `packages/contracts/src/auth.constraints.ts` possède les limites de mot de passe et durées des tokens utilisées par la validation, la configuration auth et le rendu email.
 - `packages/contracts/src/pagination.ts` et `pagination.constraints.ts` définissent les requêtes à curseur bornées et la réponse `{ items, nextCursor }`.
+- `packages/contracts/src/pagination.types.ts` possède le type générique `CursorPage` partagé avec la pagination frontend.
 - `packages/i18n/messages/<locale>.json` contient les messages UI et email. Le runtime généré fournit les langues supportées ; `routing.json` associe les chemins internes stables aux chemins publics. Utiliser `packages/i18n/src/routing.ts` pour les liens localisés et les URL de callback externes.
 
 ## Hooks web et UX
@@ -19,6 +20,7 @@ de test propres à une fonctionnalité avec celle-ci.
 - `apps/web/src/lib/query/private-cache.ts` annule et retire les requêtes privées lors des transitions d’identité, en conservant les publiques. Construire les clés privées avec `lib/query/query-keys.ts` pour inclure automatiquement les nouvelles fonctionnalités.
 - `apps/web/src/features/auth/form-context.ts` et `hooks/use-auth-form.ts` composent les contextes TanStack Form partagés. Réutiliser `AuthInput` et `AuthSubmitButton` pour les formulaires auth correspondants ; garder la navigation et les retours de formulaire dans les hooks de fonctionnalité. Les options d’écriture dans `features/auth/mutations/auth.mutations.ts` préservent les résultats fournisseur et nettoient le cache privé après une écriture d’identité réussie.
 - `apps/web/src/lib/api/client.ts` est le client HTTP typé utilisant les cookies. Utiliser `lib/auth/redirect.ts` pour valider les redirections internes.
+- `apps/web/src/lib/api/contracts.ts` expose les validateurs de réponse et types d’identité utilisés par les queries, selon le backend sélectionné.
 
 ## Fonctions serveur
 

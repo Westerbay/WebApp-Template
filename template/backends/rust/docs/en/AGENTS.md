@@ -5,7 +5,8 @@ existing changes. Search contracts and consumers before adding shared code.
 
 `apps/api` owns Rust runtime, auth, SeaORM entities and versioned SQLx migrations.
 `apps/web` never imports server implementations. `packages/contracts` owns shared
-frontend schemas; application HTTP DTOs originate in Rust OpenAPI. `packages/ui`
+frontend constraints and pagination types; HTTP DTOs and generated Zod validators
+originate in Rust OpenAPI. `packages/ui`
 contains reusable primitives. Keep business rules with their owner.
 
 Never read or edit real environment files, secrets or credentials. Never migrate,

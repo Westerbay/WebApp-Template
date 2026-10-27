@@ -98,6 +98,14 @@ sondes et arrêt gracieux. Exécuter les migrations avant le serveur. La platefo
 gère secrets, TLS, certificats, sauvegardes et sondes externes. Les modes capture/mémoire
 sont refusés en production. Voir l'[exploitation](OBSERVABILITY.md).
 
+`pnpm api:generate` exporte OpenAPI Rust et actualise `apps/web/src/lib/api/schema.d.ts`
+et `responses.zod.ts` avec openapi-typescript et Orval. Versionner ces fichiers
+générés avec les changements de DTO ; `pnpm api:check` les régénère temporairement
+et refuse les dérives. Ne pas modifier les validateurs générés à la main. Les queries
+valident les réponses via `apps/web/src/lib/api/contracts.ts` avant leur mise en cache ;
+les schémas de formulaire restent locaux. Le projet Rust omet les schémas HTTP partagés
+propres à Nest.
+
 `pnpm api:generate` synchronise aussi les emails embarqués et les limites Rust
 depuis `packages/i18n` et `packages/contracts` ; `pnpm api:check` détecte la dérive.
 

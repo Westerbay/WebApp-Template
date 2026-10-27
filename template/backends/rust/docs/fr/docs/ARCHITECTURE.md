@@ -58,8 +58,15 @@ l'accès. L'adresse vient du socket ; un reverse proxy partage donc son quota.
 seule la commande explicite applique les migrations. SQLite reste réservé aux
 tests jetables. L'arrêt attend les emails puis ferme PostgreSQL.
 
-Le frontend utilise le SDK Better Auth et les DTO OpenAPI. `packages/contracts`
-possède la validation frontend, `packages/i18n` les traductions et chemins, et
-`packages/ui` les primitives. Le web n'importe jamais le serveur.
-`pnpm api:generate` exporte Utoipa sans base ni SMTP ; les types du SDK d'auth
-restent séparés de l'inventaire OpenAPI upstream.
+Le frontend utilise le SDK Better Auth et les DTO OpenAPI. `pnpm api:generate`
+exporte Utoipa, génère les types HTTP avec openapi-typescript et les validateurs
+de réponse avec Orval ciblant Zod 4, sans base ni SMTP. `lib/api/contracts.ts`
+expose ces validateurs et les types d’identité déduits. Les queries identité et
+utilisateurs valident les réponses réussies avant leur mise en cache par TanStack
+Query ; les erreurs HTTP conservent leur traitement existant. `openapi-fetch`
+reste le client typé. La validation des formulaires appartient à leur fonctionnalité.
+
+`packages/contracts` possède les contraintes partagées et types de pagination,
+`packages/i18n` les traductions et chemins, et `packages/ui` les primitives.
+Le web n'importe jamais le serveur. Les types du SDK d'auth restent séparés de
+l'inventaire OpenAPI upstream.

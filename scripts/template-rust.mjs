@@ -13,6 +13,10 @@ const excluded = [
   "scripts/worktree.mjs",
   "scripts/test/worktree.test.mjs",
   "scripts/test/infra-stack.test.mjs",
+  "packages/contracts/src/common.ts",
+  "packages/contracts/src/identity.ts",
+  "packages/contracts/src/users.ts",
+  "packages/contracts/src/pagination.ts",
 ]
 
 export function includeRustFile(file) {
@@ -38,6 +42,11 @@ export async function prepareRustTemplate(source, selected, plan) {
     overlay.set(`apps/api/${file}`, await readCrate(file))
   }
   overlay.set("apps/web/src/lib/api/schema.d.ts", await read("schema.d.ts"))
+  overlay.set(
+    "apps/web/src/lib/api/responses.zod.ts",
+    await read("responses.zod.ts")
+  )
+  overlay.set("apps/web/src/lib/api/contracts.ts", await read("contracts.ts"))
   overlay.set(
     "apps/api/assets/locales.json",
     JSON.stringify({
@@ -97,6 +106,7 @@ export async function prepareRustTemplate(source, selected, plan) {
     "frontend-check.mjs",
     "check-assets.mjs",
     "cli.mjs",
+    "generate-zod.mjs",
   ]) {
     overlay.set(`scripts/rust/${file}`, await read(`scripts/rust/${file}`))
   }
@@ -110,6 +120,10 @@ export async function prepareRustTemplate(source, selected, plan) {
     overlay.set(document, await readFile(join(docs, document), "utf8"))
   }
   const manifest = plan.manifest
+  const sourceManifest = JSON.parse(
+    await readFile(join(source, "package.json"), "utf8")
+  )
+  manifest.devDependencies.orval = sourceManifest.devDependencies.orval
   for (const name of Object.keys(manifest.scripts)) {
     if (/^(valkey:|logs:|worktree:|db:)/.test(name) || name === "dev:logs")
       delete manifest.scripts[name]
@@ -146,6 +160,13 @@ export async function prepareRustTemplate(source, selected, plan) {
   )
   web.devDependencies["@playwright/test"] = "1.63.0"
   overlay.set("apps/web/package.json", JSON.stringify(web))
+  const contracts = JSON.parse(
+    await readFile(join(source, "packages/contracts/package.json"), "utf8")
+  )
+  for (const name of ["./common", "./identity", "./users", "./pagination"])
+    delete contracts.exports[name]
+  delete contracts.dependencies.zod
+  overlay.set("packages/contracts/package.json", JSON.stringify(contracts))
   const workspace = await readFile(join(source, "pnpm-workspace.yaml"), "utf8")
   overlay.set(
     "pnpm-workspace.yaml",
@@ -182,10 +203,6 @@ export async function prepareRustTemplate(source, selected, plan) {
   overlay.set(
     ".gitignore",
     `${await readFile(join(source, ".gitignore"), "utf8")}\n# Rust build artifacts\n**/target/\n!.env.production.example\n`
-  )
-  overlay.set(
-    ".prettierignore",
-    `${await readFile(join(source, ".prettierignore"), "utf8")}\n**/target/\n`
   )
   return overlay
 }
