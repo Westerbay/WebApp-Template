@@ -9,6 +9,15 @@ configuration and documentation live in `template/backends/rust`; validation of
 the source template lives in `scripts/template-rust`. The root pnpm workspace
 runs NestJS; the Rust crate is checked separately through Cargo/Docker.
 
+Rust feature modules own their route tree, HTTP quotas and OpenAPI paths.
+`app.rs` merges these trees and supplies dependencies; `infrastructure/http`
+applies peer identity, CORS and request logging in that order. Logs use Axum's
+matched route metadata, so new application routes need no separate logging list.
+`cli/` parses and dispatches commands; `server.rs` owns server startup and shutdown,
+and `bootstrap.rs` acquires the configured application resources. See the
+[generated Rust architecture](../template/backends/rust/docs/en/docs/ARCHITECTURE.md)
+for the extension workflow.
+
 <!-- template-maintainers:end -->
 
 ## Boundaries
@@ -104,7 +113,9 @@ and treats wildcard characters literally.
 
 The web hook wraps `useInfiniteQuery`; query keys include page size and applied
 search. The sample feature owns the debounce, cached navigation, retry and table
-rendering. Search changes reset navigation. No total count or random page
+rendering. `useUsersPagination` owns search, navigation and retries;
+`useUsersTable` composes it with the columns and TanStack Table row model.
+Search changes reset navigation. No total count or random page
 access is implied by this cursor contract.
 
 ## Localization and email

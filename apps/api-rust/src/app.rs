@@ -5,12 +5,11 @@ use crate::{
         database::schema::{self, AppSchema},
         email::mail::Mailbox,
         http,
-        rate_limit::{self, store as quotas},
     },
     modules::{health, identity, users},
     openapi,
 };
-use axum::{Json, Router, http::HeaderValue, middleware, routing::get};
+use axum::Router;
 use better_auth::{
     AuthConfig, BetterAuth,
     integrations::axum::AxumIntegration,
@@ -64,32 +63,13 @@ impl Application {
             .clone();
         let auth = auth::create(config, database.clone(), services).await?;
         let router = Router::new()
-            .route("/health/live", get(health::live))
-            .route(
-                "/health/ready",
-                get(health::ready).layer(axum::Extension(database.clone())),
-            )
-            .route("/api/me", get(identity::me))
-            .route(
-                "/api/users",
-                get(users::list).layer(axum::Extension(database.clone())),
-            )
-            .route("/openapi.json", get(|| async { Json(openapi::document()) }))
+            .merge(health::router(database.clone()))
+            .merge(identity::router(database.clone()))
+            .merge(users::router(database.clone()))
+            .merge(openapi::router())
             .nest(settings::AUTH_PATH, auth.clone().axum_router())
-            .with_state(auth.clone())
-            .layer(middleware::from_fn_with_state(
-                quotas::SharedQuotas(database.clone()),
-                rate_limit::api_quota,
-            ))
-            .layer(middleware::from_fn(http::peer_headers))
-            .layer(
-                tower_http::cors::CorsLayer::new()
-                    .allow_origin(HeaderValue::from_str(&web_origin)?)
-                    .allow_credentials(true)
-                    .allow_methods([axum::http::Method::GET, axum::http::Method::POST])
-                    .allow_headers([axum::http::header::CONTENT_TYPE]),
-            )
-            .layer(middleware::from_fn(http::request_log));
+            .with_state(auth.clone());
+        let router = http::configure(router, &web_origin)?;
         Ok(Self {
             router,
             auth,

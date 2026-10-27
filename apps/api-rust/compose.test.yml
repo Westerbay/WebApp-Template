@@ -39,8 +39,8 @@ services:
       - -ec
       - |
         cargo fmt --check
-        cargo test --locked --lib --bins --test parity --test acceptance --test services --test runtime
-        RUST_AUTH_PROTOTYPE_POSTGRES=1 cargo test --locked --test parity --test acceptance --test services --test runtime --test migrations
+        cargo test --locked --lib --bins --test parity --test acceptance --test services --test runtime --test routing
+        RUST_AUTH_PROTOTYPE_POSTGRES=1 cargo test --locked --test parity --test acceptance --test services --test runtime --test routing --test migrations
         cargo clippy --locked --all-targets --all-features -- -D warnings
 
   runtime:

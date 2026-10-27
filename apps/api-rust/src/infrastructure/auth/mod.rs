@@ -22,6 +22,8 @@ use password::ExactPasswordHasher;
 use signup::SignupWithVerification;
 use std::sync::Arc;
 
+pub(crate) type AuthState = Arc<BetterAuth<AppSchema>>;
+
 pub struct AuthServices {
     pub mailbox: Mailbox,
     pub password_check: hibp::PasswordCheck,

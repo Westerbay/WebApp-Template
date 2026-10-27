@@ -15,5 +15,5 @@ Vérifier le diff et les documents pertinents. Pour l'auth : `pnpm check`,
 
 Garder les modules métier indépendants. Les DTO communs appartiennent à `contracts/`.
 Infrastructure et configuration n'importent ni les fonctionnalités ni leurs racines.
-Assembler dans `app.rs`, `bootstrap.rs`, `cli.rs` et `openapi/` ; garder `main.rs` minimal.
+Assembler dans `app.rs`, `bootstrap.rs`, `cli/` et `openapi/` ; garder `main.rs` minimal.
 La configuration valide les valeurs ; l'infrastructure possède connexions et transports.

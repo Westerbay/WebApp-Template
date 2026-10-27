@@ -20,11 +20,12 @@ import { ValkeyRateLimitStore } from "./infrastructure/rate-limit/valkey-rate-li
 import { getObservabilityConfig } from "./infrastructure/observability/observability.config.js"
 import { createApiMetrics } from "./infrastructure/observability/metrics.js"
 import { startMetricsServer } from "./infrastructure/observability/server.js"
+import { createSessionReader } from "./infrastructure/auth/session.js"
+import { createProviderLogger } from "./infrastructure/auth/logging.js"
 import type { ValkeyConnection } from "./infrastructure/valkey/valkey.js"
 import type { EmailSender } from "@workspace/core/email"
 import type { EmailEvent } from "./infrastructure/email/auth-email-dispatcher.js"
 import type { ShutdownEvent } from "./infrastructure/lifecycle/shutdown.js"
-import type { GetSession } from "./infrastructure/auth/session.js"
 import type { ApiMetrics } from "./infrastructure/observability/metrics.js"
 import type { MetricsServer } from "./infrastructure/observability/server.js"
 
@@ -106,33 +107,9 @@ export async function startApi(
       if (event.event === "email.accepted") logger.info(event)
       else logger.error(event)
     }
-    const reportProviderLog = (level: string) => {
-      const event = { event: "auth.provider", providerLevel: level }
-      if (level === "error") {
-        logger.error(event)
-        return
-      }
-      if (level === "warn") {
-        logger.warn(event)
-        return
-      }
-      logger.info(event)
-    }
     emails = new AuthEmailDispatcher(sender, reportEmailEvent)
-    const auth = createAuth(db, env, emails, reportProviderLog)
-    const getSession: GetSession = async (headers) => {
-      const session = await auth.api.getSession({ headers })
-      if (!session) return null
-      return {
-        user: {
-          id: session.user.id,
-          name: session.user.name,
-          email: session.user.email,
-          emailVerified: session.user.emailVerified,
-        },
-        session: { id: session.session.id },
-      }
-    }
+    const auth = createAuth(db, env, emails, createProviderLogger(logger))
+    const getSession = createSessionReader(auth.api)
     const infrastructureReady = async () => {
       await Promise.all([databaseReady(), valkey?.ready()])
     }

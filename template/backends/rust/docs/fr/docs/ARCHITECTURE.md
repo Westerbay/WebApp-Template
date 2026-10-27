@@ -7,10 +7,10 @@ ou une couche de service supplémentaire.
 ```text
 apps/api/src/
   main.rs                  sortie du processus
-  cli.rs                   commandes serveur, migrations et OpenAPI
+  cli/                     analyse et dispatch des commandes, migrations et sonde santé
   app.rs                   assemblage du routeur et des dépendances
   bootstrap.rs             acquisition des ressources et nettoyage au démarrage
-  server.rs                serveur HTTP et arrêt propre
+  server.rs                démarrage du serveur HTTP et arrêt propre
   config/                  paramètres validés, sans connexion ni transport
   contracts/               DTO applicatifs partagés entre modules
   modules/
@@ -27,7 +27,7 @@ apps/api/src/
   fixtures/                serveur jetable, uniquement avec la feature fixtures
 ```
 
-`main.rs` appelle la CLI. `app.rs`, `bootstrap.rs`, `cli.rs` et `openapi/`
+`main.rs` appelle la CLI. `app.rs`, `bootstrap.rs`, `cli/` et `openapi/`
 assemblent modules, configuration et adaptateurs. Les modules métier restent
 indépendants ; leurs DTO communs appartiennent à `contracts/`. Infrastructure et
 configuration n'importent ni les fonctionnalités ni les racines d'assemblage.
@@ -38,6 +38,15 @@ Les fonctionnalités sont privées à la crate ; les adaptateurs d'auth et la
 requête SQL utilisateurs sont privés à leur propriétaire. Rust contrôle cette
 visibilité. Le vérificateur de dépendances du workspace couvre TypeScript,
 pas les directions de dépendance Rust : les respecter lors de l'ajout de modules.
+
+Chaque fonctionnalité possède son `router(database)` et son `ApiDocument`
+OpenAPI dans `modules/<feature>/mod.rs`. Ajouter ses endpoints et leur quota
+localement ; enregistrer une nouvelle fonctionnalité une seule fois dans `app.rs`
+et son document dans `openapi/mod.rs`. Le socle HTTP gère l’identité réseau,
+CORS et les logs avant les politiques du module : les requêtes preflight restent
+exemptées des contrôles de session et de quota. Les logs utilisent les métadonnées
+de route Axum, sans liste parallèle des chemins. Les sondes et OpenAPI restent
+hors quotas applicatifs ; chaque module conserve sa propre politique de quota.
 
 Le handler utilisateurs vérifie la session et décode les entrées ; `list_users.rs`
 possède validation, recherche paramétrée et pagination. Aucun repository générique
