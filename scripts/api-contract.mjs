@@ -6,8 +6,19 @@ import { existsSync } from "node:fs"
 
 const mode = process.argv[2]
 const root = resolve(import.meta.dirname, "..")
-const committedSpec = join(root, "apps/api-nestjs/openapi.json")
-const committedTypes = join(root, "apps/web/src/lib/api/schema.d.ts")
+const rustSource = process.argv[3] === "--rust"
+if (process.argv.length > 4 || (process.argv[3] && !rustSource)) {
+  throw new Error("Usage: api-contract.mjs <generate|check> [--rust]")
+}
+const apiDirectory = rustSource ? "apps/api-rust" : "apps/api-nestjs"
+const isRust = existsSync(join(root, apiDirectory, "Cargo.toml"))
+if (rustSource && !isRust) throw new Error("Rust source crate not found")
+const outputDirectory = rustSource
+  ? "template/backends/rust"
+  : "apps/web/src/lib/api"
+const committedSpec = join(root, apiDirectory, "openapi.json")
+const committedTypes = join(root, outputDirectory, "schema.d.ts")
+const committedValidators = join(root, outputDirectory, "responses.zod.ts")
 
 function run(command, args) {
   const result = spawnSync(command, args, {
@@ -22,14 +33,14 @@ function run(command, args) {
   }
 }
 
-async function generate(specPath, typesPath) {
-  if (existsSync(join(root, "apps/api-nestjs/Cargo.toml"))) {
+async function generate(specPath, typesPath, validatorsPath) {
+  if (isRust) {
     const result = spawnSync(
       "cargo",
       [
         "run",
         "--manifest-path",
-        "apps/api-nestjs/Cargo.toml",
+        `${apiDirectory}/Cargo.toml`,
         "--locked",
         "--",
         "--openapi",
@@ -39,6 +50,14 @@ async function generate(specPath, typesPath) {
     if (result.error) throw result.error
     if (result.status !== 0) throw new Error("Rust OpenAPI export failed")
     await writeFile(specPath, result.stdout)
+    const generator = rustSource
+      ? new URL(
+          "../template/backends/rust/scripts/rust/generate-zod.mjs",
+          import.meta.url
+        )
+      : new URL("./rust/generate-zod.mjs", import.meta.url)
+    const { generateZod } = await import(generator.href)
+    await generateZod(specPath, validatorsPath)
   } else {
     run("pnpm", ["--filter", "@workspace/api", "build"])
     run("node", ["apps/api-nestjs/dist/openapi/generate.js", specPath])
@@ -60,21 +79,24 @@ async function generate(specPath, typesPath) {
     "--write",
     specPath,
     typesPath,
+    ...(isRust ? [validatorsPath] : []),
   ])
 }
 
 if (mode === "generate") {
-  await generate(committedSpec, committedTypes)
+  await generate(committedSpec, committedTypes, committedValidators)
 } else if (mode === "check") {
   const directory = await mkdtemp(join(tmpdir(), "webapp-template-api-"))
   const generatedSpec = join(directory, "openapi.json")
   const generatedTypes = join(directory, "schema.d.ts")
+  const generatedValidators = join(directory, "responses.zod.ts")
 
   try {
-    await generate(generatedSpec, generatedTypes)
+    await generate(generatedSpec, generatedTypes, generatedValidators)
     const files = [
       [committedSpec, generatedSpec],
       [committedTypes, generatedTypes],
+      ...(isRust ? [[committedValidators, generatedValidators]] : []),
     ]
 
     for (const [committed, generated] of files) {
@@ -92,6 +114,6 @@ if (mode === "generate") {
     await rm(directory, { recursive: true, force: true })
   }
 } else {
-  console.error("Usage: api-contract.mjs <generate|check>")
+  console.error("Usage: api-contract.mjs <generate|check> [--rust]")
   process.exitCode = 1
 }

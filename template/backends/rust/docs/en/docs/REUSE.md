@@ -7,6 +7,9 @@
 - `apps/api/src/infrastructure/email/mail.rs` / `infrastructure/email/smtp.rs` render localized email and apply transport rules.
 - `apps/api/src/openapi/mod.rs` and endpoint DTOs own application API generation.
 - `apps/web/src/lib/api/client.ts` is the typed cookie-based application client.
+- `apps/web/src/lib/api/contracts.ts` exposes generated response validators and
+  identity types; regenerate them with `pnpm api:generate` after changing Rust DTOs.
+- `packages/contracts/src/pagination.types.ts` owns the generic cursor page type.
 - `apps/web/src/features/auth/queries/current-user.queries.ts` supplies fresh identity.
 - `apps/web/src/lib/query/private-cache.ts` clears private queries on auth changes.
 - `apps/web/src/lib/query/use-cursor-infinite-query.ts` supplies cursor navigation.

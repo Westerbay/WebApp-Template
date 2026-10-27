@@ -98,6 +98,13 @@ Run the migration job first. The platform supplies secrets, TLS termination,
 certificates, backups, deployment ordering and external probes. Capture/memory
 email modes are rejected in production. See [operations](OBSERVABILITY.md).
 
+`pnpm api:generate` exports Rust OpenAPI and updates `apps/web/src/lib/api/schema.d.ts`
+and `responses.zod.ts` using openapi-typescript and Orval. Commit these generated
+files with DTO changes; `pnpm api:check` regenerates them temporarily and rejects
+drift. Do not edit generated validators manually. Queries validate responses via
+`apps/web/src/lib/api/contracts.ts` before caching them; form schemas remain local.
+The Rust project omits the Nest-only shared HTTP schemas.
+
 `pnpm api:generate` also synchronizes embedded email catalogs and Rust auth limits
 from `packages/i18n` and `packages/contracts`; `pnpm api:check` detects drift.
 

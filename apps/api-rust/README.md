@@ -89,8 +89,8 @@ remain non-enumerating. Delivery after a process crash is not guaranteed.
 The installed Better Auth 1.7.4 SDK and actual React frontend exercise signup,
 verification, signin, resend, reset/reuse, session revocation and logout in Chromium.
 The sample private `/api/users` contract preserves bounded cursor search. Utoipa
-exports application DTOs to frontend TypeScript without a database; the optional
-contract demo also executes generated Zod validators. Upstream auth OpenAPI only
+exports application DTOs to frontend TypeScript and Orval-generated Zod validators
+without a database. Queries validate responses before caching them. Upstream auth OpenAPI only
 lists routes at this revision, so it does not replace the auth SDK's DTOs.
 
 ## Maintainer validation
@@ -102,7 +102,8 @@ pnpm template:check
 sh scripts/template-rust/check.sh
 sh scripts/template-rust/runtime-check.sh
 node scripts/template-rust/frontend-check.mjs
-sh scripts/template-rust/generate-contract.sh
+pnpm api:generate:rust
+pnpm api:check:rust
 ```
 
 `check.sh` covers SQLite, PostgreSQL, Mailpit, HIBP fixtures, migration concurrency,

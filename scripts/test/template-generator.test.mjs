@@ -135,6 +135,16 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       const readme = await readFile(join(output, "README.md"), "utf8")
       const manifest = await readJson(join(output, "package.json"))
       assert.equal(manifest.scripts["clean:rust"], undefined)
+      assert.equal(manifest.devDependencies.orval, undefined)
+      assert.equal(manifest.scripts["api:generate:rust"], undefined)
+      assert.equal(manifest.scripts["api:check:rust"], undefined)
+      assert.equal(entries["apps/web/src/lib/api/responses.zod.ts"], undefined)
+      assert.match(
+        Buffer.from(entries["apps/web/src/lib/api/contracts.ts"]).toString(
+          "utf8"
+        ),
+        /@workspace\/contracts\/identity/
+      )
       assert.equal(manifest.devDependencies.fflate, undefined)
       assert.ok(
         !Object.keys(manifest.scripts).some((name) =>

@@ -59,8 +59,14 @@ history; the explicit migration command applies SQL. SQLite initialization is
 reserved for disposable tests. Shutdown drains mail and closes the database.
 
 The frontend consumes cookies through Better Auth's SDK and application DTOs
-through OpenAPI. `packages/contracts` owns independent frontend validation,
+through OpenAPI. `pnpm api:generate` exports Utoipa, generates HTTP types with
+openapi-typescript and response validators with Orval targeting Zod 4, without
+a database or SMTP connection. `lib/api/contracts.ts` exposes these validators
+and derived identity types. Identity and users queries parse successful responses
+before caching them in TanStack Query; HTTP errors retain their existing handling.
+`openapi-fetch` remains the typed client. Form validation stays with its feature.
+
+`packages/contracts` owns shared frontend constraints and pagination types,
 `packages/i18n` owns copy/public paths, and `packages/ui` owns primitives. Web
-never imports server implementations. `pnpm api:generate` exports Utoipa without
-a database or SMTP connection; upstream auth OpenAPI remains only a route
+never imports server implementations. Upstream auth OpenAPI remains only a route
 inventory at the pinned revision, separate from the SDK's auth types.

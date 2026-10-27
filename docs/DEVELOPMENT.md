@@ -13,6 +13,8 @@ sh scripts/template-rust/check.sh
 sh scripts/template-rust/runtime-check.sh
 node scripts/template-rust/frontend-check.mjs
 pnpm clean:rust
+pnpm api:generate:rust
+pnpm api:check:rust
 ```
 
 `pnpm clean:rust` removes compiled Rust artifacts from `apps/api-rust/target`.
@@ -102,6 +104,10 @@ to exercise rejected and allowed dependencies in isolated fixtures.
 After changing Nest controllers or DTOs, run
 `pnpm api:generate` and include the generated API schema and web client types.
 `pnpm api:check` verifies drift without a database or SMTP connection.
+
+The frontend validates `/api/me` and `/api/users` before caching their responses.
+`apps/web/src/lib/api/contracts.ts` reuses the shared Nest Zod schemas directly;
+Nest projects do not install Orval or regenerate these schemas through OpenAPI.
 
 ## Local data and email
 

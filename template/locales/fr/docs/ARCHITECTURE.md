@@ -68,6 +68,13 @@ providers inertes et produit les types du client web sans connexion à une base
 ni à SMTP. Les deux clients API envoient les cookies de session. Le web lit
 l’URL de l’API via `lib/api/config.ts`.
 
+Avant la mise en cache par TanStack Query, les queries identité et utilisateurs
+valident les réponses réussies via `lib/api/contracts.ts`. Ce point d’entrée
+réutilise les schémas de `packages/contracts` pour Nest ; les projets Rust y
+exposent les schémas Zod générés par Orval depuis OpenAPI Rust. `openapi-fetch`
+reste le client HTTP typé. Les erreurs HTTP conservent leur traitement existant,
+y compris les redirections d’authentification.
+
 L’adaptateur HTTP Better Auth dérive les modèles de route de télémétrie depuis
 les métadonnées des endpoints configurés, avec le moteur de routage Better Auth.
 Il enregistre uniquement le modèle reconnu sur la requête ; les logs et métriques

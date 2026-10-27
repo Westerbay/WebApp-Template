@@ -4,7 +4,7 @@ import { getUsersColumns } from "../components/users-table.columns"
 import { usersTableConfig } from "../users.config"
 import { usersQueryOptions } from "../queries/users.queries"
 import { useCursorInfiniteQuery } from "@/lib/query/use-cursor-infinite-query"
-import type { CurrentUser } from "@workspace/contracts/identity"
+import type { CurrentUser } from "@/lib/api/contracts"
 import { useDebouncedValue } from "@/lib/hooks/use-debounced-value"
 import type { ChangeEvent } from "react"
 

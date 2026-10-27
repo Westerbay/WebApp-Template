@@ -6,7 +6,7 @@ import {
   users_unverified,
 } from "@workspace/i18n/messages"
 import type { CellContext, ColumnDef } from "@tanstack/react-table"
-import type { CurrentUser } from "@workspace/contracts/identity"
+import type { CurrentUser } from "@/lib/api/contracts"
 
 function renderEmailVerification({ row }: CellContext<CurrentUser, unknown>) {
   return row.original.emailVerified ? users_verified() : users_unverified()

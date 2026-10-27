@@ -10,6 +10,8 @@ and a stable owner. Keep feature-specific code and test helpers near their featu
   lifetimes used by validation, auth configuration and email rendering.
 - `packages/contracts/src/pagination.ts` and `pagination.constraints.ts` define
   bounded cursor queries and the `{ items, nextCursor }` response shape.
+- `packages/contracts/src/pagination.types.ts` owns the framework-independent
+  `CursorPage` type shared with frontend pagination.
 - `packages/i18n/messages/<locale>.json` holds UI and email copy. The generated
   runtime supplies supported locales; `routing.json` maps stable internal paths
   to public paths. Use `packages/i18n/src/routing.ts` for localized links and
@@ -35,6 +37,8 @@ and a stable owner. Keep feature-specific code and test helpers near their featu
   private cache after successful identity writes.
 - `apps/web/src/lib/api/client.ts` is the typed cookie-based HTTP client.
   Use `lib/auth/redirect.ts` for internal redirect validation.
+- `apps/web/src/lib/api/contracts.ts` exposes response validators and identity
+  types for feature queries; it selects the contract source for each backend.
 
 ## Server functions
 

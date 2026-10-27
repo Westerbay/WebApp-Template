@@ -45,6 +45,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "scripts/rust/frontend-check.mjs",
       "scripts/rust/check.sh",
       "scripts/rust/runtime-check.sh",
+      "scripts/rust/generate-zod.mjs",
+      "apps/web/src/lib/api/responses.zod.ts",
     ])
       assert.ok(entries[required], required)
     assert.deepEqual(
@@ -71,6 +73,22 @@ for (const profile of ["en", "fr", "multilingual"]) {
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
     const root = JSON.parse(text("package.json"))
+    assert.ok(root.devDependencies.orval)
+    assert.match(text("apps/web/src/lib/api/contracts.ts"), /responses\.zod/)
+    for (const name of ["identity", "users", "common", "pagination"]) {
+      assert.equal(entries[`packages/contracts/src/${name}.ts`], undefined)
+      assert.equal(
+        JSON.parse(text("packages/contracts/package.json")).exports[
+          `./${name}`
+        ],
+        undefined
+      )
+    }
+    assert.equal(
+      JSON.parse(text("packages/contracts/package.json")).dependencies.zod,
+      undefined
+    )
+    assert.ok(entries["packages/contracts/src/pagination.types.ts"])
     assert.equal(root.scripts["db:studio"], undefined)
     assert.equal(
       root.scripts["clean:rust"],

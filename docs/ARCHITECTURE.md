@@ -70,6 +70,12 @@ generated from Nest controllers with inert providers and produces web client
 types without a database or SMTP connection. Both API clients send session
 cookies. The web reads the API URL through `lib/api/config.ts`.
 
+Before data enters TanStack Query's cache, the identity and users queries parse
+successful responses through `lib/api/contracts.ts`. In Nest projects this entry
+point reuses `packages/contracts` schemas; Rust projects supply Orval-generated
+Zod schemas from Rust OpenAPI. `openapi-fetch` remains the typed HTTP client.
+HTTP failures retain their existing handling, including authentication redirects.
+
 The Better Auth HTTP adapter derives telemetry route templates from configured
 endpoint metadata using Better Auth's routing engine. It records only the matched
 template on the request; logs and metrics share that template. Nest routes use

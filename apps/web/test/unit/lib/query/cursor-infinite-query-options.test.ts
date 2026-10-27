@@ -2,7 +2,7 @@ import { InfiniteQueryObserver, QueryClient } from "@tanstack/react-query"
 import { expect, it } from "vitest"
 import { cursorInfiniteQueryOptions } from "@/lib/query/use-cursor-infinite-query"
 import type { InfiniteData } from "@tanstack/react-query"
-import type { CursorPage } from "@workspace/contracts/pagination"
+import type { CursorPage } from "@workspace/contracts/pagination/types"
 
 it("preserves native select options without asserting page parameter types", async () => {
   const client = new QueryClient()

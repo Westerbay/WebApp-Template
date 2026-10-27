@@ -147,7 +147,10 @@ async function prepareTemplate({ locales, docsLocale }) {
     projectBackendPaths(JSON.stringify(await readJson("package.json")))
   )
   delete manifest.devDependencies.fflate
+  delete manifest.devDependencies.orval
   delete manifest.scripts["clean:rust"]
+  delete manifest.scripts["api:generate:rust"]
+  delete manifest.scripts["api:check:rust"]
   for (const name of Object.keys(manifest.scripts))
     if (name.startsWith("template:")) delete manifest.scripts[name]
   return {

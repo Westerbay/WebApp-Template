@@ -21,4 +21,4 @@ export function cursorPageSchema<T extends z.ZodType>(item: T) {
 }
 
 export type CursorPagination = z.infer<typeof cursorPaginationSchema>
-export type CursorPage<T> = { items: Array<T>; nextCursor: string | null }
+export type { CursorPage } from "./pagination.types.js"

@@ -85,6 +85,11 @@ fixtures isolées. Après modification de contrôleurs ou DTO Nest, exécuter
 `pnpm api:generate` et inclure le schéma API et les types du client web générés.
 `pnpm api:check` vérifie les dérives sans base ni connexion SMTP.
 
+Le frontend valide les réponses de `/api/me` et `/api/users` avant leur mise en
+cache. `apps/web/src/lib/api/contracts.ts` réutilise directement les schémas Zod
+partagés de Nest ; les projets Nest n’installent pas Orval et ne régénèrent pas
+ces schémas depuis OpenAPI.
+
 ## Données locales et email
 
 Les commandes de migration et de données de test refusent staging, production
