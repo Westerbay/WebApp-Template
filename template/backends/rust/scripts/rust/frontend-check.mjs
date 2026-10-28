@@ -193,7 +193,7 @@ try {
         await ready(publicUrl("/sign-in"), vite)
         await compose(["up", "-d", "--force-recreate", "api"])
         await ready(`${api}/api/auth/ok`)
-        console.log(`Testing Better Auth 1.7.4 SDK: ${profile}/${locale}`)
+        console.log(`Testing Better Auth SDK: ${profile}/${locale}`)
         await sdkJourney({
           createAuthClient,
           api,

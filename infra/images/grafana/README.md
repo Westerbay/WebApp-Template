@@ -1,13 +1,14 @@
 # Grafana image
 
 The optional observability stack builds
-`webapp-template-grafana:13.2.4-security.1` locally for Linux amd64 or arm64. It is
+`webapp-template-grafana:13.2.4-security.2` locally for Linux amd64 or arm64. It is
 not a registry publication or an unmodified official Grafana image.
 
 The official 13.2.4 server and bundled datasource executables contain vulnerable
 Go dependencies. Updating the tag alone does not fix them. This recipe:
 
-- rebuilds the Grafana 13.2.4 server with Go 1.27.3 and `kin-openapi` 0.149.0;
+- rebuilds the Grafana 13.2.4 server with Go 1.27.3, `kin-openapi` 0.149.0
+  and `go-jose/v4` 4.1.6 (CVE-2026-116587);
 - rebuilds Loki datasource 13.2.2 from its exact upstream commit with Go 1.27.3
   and `golang.org/x/net` 0.60.0;
 - retains the official signed Prometheus datasource 13.2.4 unchanged;
@@ -32,8 +33,8 @@ mix incompatible server and frontend versions. Renovate leaves this coupled
 upstream Grafana pin for manual review.
 
 ```sh
-docker build --pull -t webapp-template-grafana:13.2.4-security.1 infra/images/grafana
-trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed=false --exit-code 1 webapp-template-grafana:13.2.4-security.1
+docker build --pull -t webapp-template-grafana:13.2.4-security.2 infra/images/grafana
+trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed=false --exit-code 1 webapp-template-grafana:13.2.4-security.2
 pnpm logs:test
 pnpm logs:test:docker
 ```

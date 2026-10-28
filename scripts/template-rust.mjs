@@ -182,11 +182,11 @@ export async function prepareRustTemplate(source, selected, plan) {
     workspace
       .replace(/^  "@(?:nestjs\/core|swc\/core)": true\n/gm, "")
       .replace(
-        /^  #[^\n]*\n(?=  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":)/gm,
+        /^  #[^\n]*\n(?=  "@(?:nestjs\/swagger>js-yaml|nestjs\/platform-express>multer|esbuild-kit\/core-utils>esbuild)":)/gm,
         ""
       )
       .replace(
-        /^  "@(?:nestjs\/swagger>js-yaml|esbuild-kit\/core-utils>esbuild)":[^\n]*\n/gm,
+        /^  "@(?:nestjs\/swagger>js-yaml|nestjs\/platform-express>multer|esbuild-kit\/core-utils>esbuild)":[^\n]*\n/gm,
         ""
       )
       .replace(/^overrides:\n(?=\n|$)/m, "")

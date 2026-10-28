@@ -3,7 +3,7 @@ name: webapp-template-log-collector-${APP_ENV:?Set APP_ENV to staging or product
 
 services:
   alloy:
-    image: grafana/alloy:v1.21.1
+    image: grafana/alloy:v1.21.3
     restart: unless-stopped
     command:
       - run

@@ -7,7 +7,7 @@ WORKDIR /src
 ADD --checksum=sha256:fdd57503b5f591e951ea3dff80ab53a41487c3373dc89370da2e36e7bf752f52 https://codeload.github.com/grafana/grafana/tar.gz/refs/tags/v13.2.4 /tmp/source.tgz
 RUN tar -xzf /tmp/source.tgz --strip-components=1 && rm /tmp/source.tgz
 ENV CGO_ENABLED=0 GOMAXPROCS=2 GOFLAGS=-p=2 COMMIT_SHA=af4a33e BUILD_BRANCH=13.2.x
-RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build go get github.com/getkin/kin-openapi@v0.149.0 && go work sync
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build go get github.com/getkin/kin-openapi@v0.149.0 github.com/go-jose/go-jose/v4@v4.1.6 && go work sync
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build make gen-go && make build-go
 
 FROM golang:1.27.3-alpine3.24@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS loki

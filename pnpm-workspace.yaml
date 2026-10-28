@@ -3,6 +3,8 @@ packages:
   - packages/*
 
 overrides:
+  # Nest 11 pins multer before its pending fileFilter teardown fix (GHSA-q7qp-rjg7-q26m).
+  "@nestjs/platform-express>multer": "2.5.0"
   # Swagger 11 pins a vulnerable js-yaml release (GHSA-r3ph-w7gj-g6xm).
   "@nestjs/swagger>js-yaml": "5.4.1"
   # Drizzle's legacy TypeScript loader pins esbuild <0.25 (GHSA-67mh-4wv8-2f99).
