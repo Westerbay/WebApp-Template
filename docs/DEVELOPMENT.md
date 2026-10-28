@@ -25,6 +25,16 @@ Run `pnpm template:check` to generate and inspect all six backend/locale archive
 Each generated project contains its selected backend under `apps/api`.
 See the [Rust guide](../apps/api-rust/README.md) for contract generation and runtime details.
 
+## Template releases
+
+The [release workflow](../.github/workflows/template-release.yml) validates all six
+ZIPs before publication. It reuses the tag's published release, or resumes its sole
+draft, before creating a new draft. Uploads and publication target that release's
+ID. A retry skips identical assets and refuses to overwrite different or incomplete
+files; resolve those conflicts before retrying. Existing duplicate drafts are not
+deleted automatically. Run `node --test scripts/test/template-release.test.mjs`
+to check publication paths without contacting GitHub.
+
 <!-- template-maintainers:end -->
 
 ## Start locally
