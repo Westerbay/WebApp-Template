@@ -16,6 +16,3 @@ allowBuilds:
   "@swc/core": true
   esbuild: true
   unrs-resolver: true
-
-minimumReleaseAgeExclude:
-  - nodemailer@10.0.10

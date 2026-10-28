@@ -514,8 +514,8 @@ importers:
         specifier: workspace:*
         version: link:../i18n
       nodemailer:
-        specifier: 10.0.10
-        version: 10.0.10
+        specifier: 10.1.4
+        version: 10.1.4
       react:
         specifier: ^19.2.6
         version: 19.3.1
@@ -4835,8 +4835,8 @@ packages:
     resolution: {integrity: sha512-5qr2okC4ItAI0hG5SaV0HoYMpnM/Y6+Oqr7AmPYy/2uEoGvS+GbSKLeRxSS1uAdu59yz0ouzcuXievSgg///WA==}
     engines: {node: '>=18'}
 
-  nodemailer@10.0.10:
-    resolution: {integrity: sha512-He9XskOFms62SyAKkLu8CcGcYHAo+BSHSsORI8s4PJH8qZgZY4L4lDfvyN0twvmbpyG+eGrxpyBlskj9d9rJ8A==}
+  nodemailer@10.1.4:
+    resolution: {integrity: sha512-EsMnOR2oRv4LGnWvHgcVYkkQ4O2j8KO4WTw6l+PHR4sOXo8SAgIraxtEnGDmotjbhv0hDsu3IuDIFZm8iXwO4A==}
     engines: {node: '>=20.0.0'}
 
   npm-run-path@6.0.0:
@@ -10114,7 +10114,7 @@ snapshots:
 
   node-releases@2.0.59: {}
 
-  nodemailer@10.0.10: {}
+  nodemailer@10.1.4: {}
 
   npm-run-path@6.0.0:
     dependencies:
