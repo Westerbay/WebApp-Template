@@ -46,7 +46,8 @@
     "logs:test:docker": "node scripts/infra/test-docker-logs.mjs",
     "worktree:create": "node scripts/worktree.mjs create",
     "worktree:remove": "node scripts/worktree.mjs remove",
-    "worktree:check": "node --test scripts/test/worktree.test.mjs"
+    "worktree:check": "node --test scripts/test/worktree.test.mjs",
+    "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs"
   },
   "devDependencies": {
     "dependency-cruiser": "18.6.0",
@@ -55,7 +56,8 @@
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "2.9.18",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "deepmerge": "4.3.1"
   },
   "packageManager": "pnpm@12.4.1",
   "engines": {
