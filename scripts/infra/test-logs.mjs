@@ -99,6 +99,19 @@ try {
     assert.equal((await fetch(prometheus + "/-/ready")).status, 200)
     await databaseReady()
   })
+  // Exercise the rebuilt core Loki component and the signed Prometheus plugin.
+  for (const [id, signature] of [
+    ["loki", "internal"],
+    ["prometheus", "valid"],
+  ]) {
+    const settings = await fetch(`${grafana}/api/plugins/${id}/settings`)
+    assert.equal(settings.status, 200)
+    assert.equal((await settings.json()).signature, signature)
+    assert.equal(
+      (await fetch(`${grafana}/public/plugins/${id}/module.js`)).status,
+      200
+    )
+  }
   harness.executePostgres("SELECT 'private-sql-literal'::text")
   const response = await fetch(
     api + "/health/live?token=private-query-secret",
