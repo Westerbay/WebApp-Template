@@ -33,7 +33,6 @@ try {
     file: harness.directory + "/api.jsonl",
     version: "observability-fixture",
   })
-  logger.debug({ event: "logs.debug_probe" })
   logger.info({ event: "api.started" })
   let failSession = false
   let authStatus = 200
@@ -112,6 +111,8 @@ try {
       200
     )
   }
+  // Image builds can exceed the Loki query window; emit the probe once ready.
+  logger.debug({ event: "logs.debug_probe" })
   harness.executePostgres("SELECT 'private-sql-literal'::text")
   const response = await fetch(
     api + "/health/live?token=private-query-secret",
@@ -189,9 +190,9 @@ try {
       )
     )
     assert.ok(lines.some((line) => line.event === "email.failed"))
+    assert.ok(lines.some((line) => line.event === "logs.debug_probe"))
     return lines
   })
-  assert.ok(result.some((line) => line.event === "logs.debug_probe"))
   const requestLines = result.filter(
     (line) => line.request?.requestId === requestId && line.response
   )
