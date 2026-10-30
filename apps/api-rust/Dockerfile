@@ -7,8 +7,8 @@ COPY migrations ./migrations
 COPY assets ./assets
 RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/usr/local/cargo/git --mount=type=cache,target=/build/target cargo build --release --locked && cp target/release/webapp-api /webapp-api
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
+# Retain glibc, libgcc, OpenSSL and their package inventory without unrelated OS tools.
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:83b9b50586253821cf63ffcec87d3d94265a093ad30da232039af962dd8f4edf
 COPY --from=build /webapp-api /usr/local/bin/webapp-api
 USER 10001:10001
 ENV API_HOST=0.0.0.0 API_PORT=3001

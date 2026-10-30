@@ -33,7 +33,6 @@ try {
     file: harness.directory + "/api.jsonl",
     version: "observability-fixture",
   })
-  logger.debug({ event: "logs.debug_probe" })
   logger.info({ event: "api.started" })
   let failSession = false
   let authStatus = 200
@@ -99,6 +98,21 @@ try {
     assert.equal((await fetch(prometheus + "/-/ready")).status, 200)
     await databaseReady()
   })
+  // Exercise the rebuilt core Loki component and the signed Prometheus plugin.
+  for (const [id, signature] of [
+    ["loki", "internal"],
+    ["prometheus", "valid"],
+  ]) {
+    const settings = await fetch(`${grafana}/api/plugins/${id}/settings`)
+    assert.equal(settings.status, 200)
+    assert.equal((await settings.json()).signature, signature)
+    assert.equal(
+      (await fetch(`${grafana}/public/plugins/${id}/module.js`)).status,
+      200
+    )
+  }
+  // Image builds can exceed the Loki query window; emit the probe once ready.
+  logger.debug({ event: "logs.debug_probe" })
   harness.executePostgres("SELECT 'private-sql-literal'::text")
   const response = await fetch(
     api + "/health/live?token=private-query-secret",
@@ -176,9 +190,9 @@ try {
       )
     )
     assert.ok(lines.some((line) => line.event === "email.failed"))
+    assert.ok(lines.some((line) => line.event === "logs.debug_probe"))
     return lines
   })
-  assert.ok(result.some((line) => line.event === "logs.debug_probe"))
   const requestLines = result.filter(
     (line) => line.request?.requestId === requestId && line.response
   )

@@ -45,6 +45,8 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "scripts/rust/frontend-check.mjs",
       "scripts/rust/check.sh",
       "scripts/rust/runtime-check.sh",
+      "scripts/rust/image-check.sh",
+      "infra/images/postgres/Dockerfile",
       "scripts/rust/generate-zod.mjs",
       "apps/web/src/lib/api/responses.zod.ts",
     ])
@@ -66,12 +68,14 @@ for (const profile of ["en", "fr", "multilingual"]) {
       assert.ok(!/^apps\/api\/.*\.(?:ts|js)$/.test(name), name)
       assert.ok(!/^apps\/api-(?:nestjs|rust)\//.test(name), name)
       assert.ok(!name.startsWith("scripts/template-"), name)
+      assert.ok(!name.startsWith("infra/images/grafana/"), name)
       assert.ok(
         !name.includes("/node_modules/") && !name.includes("/target/"),
         name
       )
     }
     assert.ok(!text("pnpm-lock.yaml").includes("@nestjs/"))
+    assert.ok(!text("pnpm-workspace.yaml").includes("@esbuild-kit/core-utils"))
     const root = JSON.parse(text("package.json"))
     assert.ok(root.devDependencies.orval)
     assert.match(text("apps/web/src/lib/api/contracts.ts"), /responses\.zod/)

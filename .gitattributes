@@ -1,0 +1,2 @@
+# Patch context preserves upstream whitespace and is validated by package installation.
+patches/*.patch -whitespace

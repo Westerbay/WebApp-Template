@@ -78,6 +78,9 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         ".env.example",
         ".gitignore",
         ".github/workflows/ci.yml",
+        "infra/images/postgres/Dockerfile",
+        "infra/images/grafana/Dockerfile",
+        "infra/images/grafana/plugins.json",
       ])
         assert.ok(entries[required], `Missing ZIP entry: ${required}`)
       assert.deepEqual(

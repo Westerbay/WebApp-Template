@@ -1,0 +1,15 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Public versioned Valkey image references, not API keys"
+condition = "AND"
+paths = [
+  '''^infra/compose/valkey\.yml$''',
+  '''^scripts/infra/support/logs-test-harness\.mjs$''',
+]
+regexTarget = "line"
+regexes = ['''^\s*image:\s*valkey/valkey:\d+\.\d+\.\d+-alpine\d+\.\d+\s*$''']
