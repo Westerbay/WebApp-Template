@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: webapp-template-postgres:17.11-security.1
+    image: webapp-template-postgres:17.11-security.2
     build:
       context: ../images/postgres
     environment:
