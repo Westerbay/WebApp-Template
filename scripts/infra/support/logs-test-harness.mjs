@@ -94,6 +94,11 @@ export async function createLogsTestHarness() {
       image: valkey/valkey:8.1.10-alpine3.24
       command: ["valkey-server", "--save", "", "--appendonly", "no"]
       ports: ["127.0.0.1::6379"]
+      healthcheck:
+        test: ["CMD", "valkey-cli", "ping"]
+        interval: 1s
+        timeout: 3s
+        retries: 40
   `
     )
   }
@@ -207,7 +212,14 @@ export async function createLogsTestHarness() {
     )
   }
 
-  const start = () => compose("up", "-d")
+  const start = () =>
+    compose(
+      "up",
+      "-d",
+      "--wait",
+      "--wait-timeout",
+      String(logsTestConfig.startupTimeoutMs / 1000)
+    )
   const diagnostics = () =>
     compose("logs", "--tail", logsTestConfig.diagnosticTail)
   const close = async () => {
