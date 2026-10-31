@@ -3,9 +3,9 @@ name: Grafana image
 on:
   pull_request:
     paths:
-      - 'infra/images/grafana/**'
-      - 'infra/compose/observability.yml'
-      - '.github/workflows/grafana-image.yml'
+      - "infra/images/grafana/**"
+      - "infra/compose/observability.yml"
+      - ".github/workflows/grafana-image.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,6 +26,7 @@ jobs:
       - name: Build the pinned Grafana image
         run: docker build --progress plain --platform linux/amd64 -t grafana-security:test infra/images/grafana
       - name: Verify the compiled server version without network access
+        shell: bash
         run: |
           docker run --rm --network none --entrypoint /usr/share/grafana/bin/grafana grafana-security:test --version | tee /tmp/grafana-version.txt
           grep -F '13.2.5' /tmp/grafana-version.txt
