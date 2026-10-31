@@ -47,7 +47,7 @@
     "worktree:create": "node scripts/worktree.mjs create",
     "worktree:remove": "node scripts/worktree.mjs remove",
     "worktree:check": "node --test scripts/test/worktree.test.mjs",
-    "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs"
+    "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs scripts/security/dependency-dos.test.cjs"
   },
   "devDependencies": {
     "dependency-cruiser": "18.6.0",

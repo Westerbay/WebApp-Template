@@ -194,6 +194,7 @@ overrides:
 
 patchedDependencies:
   deepmerge@4.3.1: 7ccd624debce7e013ec28bdbacb3a015a1450efadb23c0b5db5c8bbe6337c4c3
+  minimatch@10.2.6: fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7
 
 importers:
 
@@ -8551,7 +8552,7 @@ snapshots:
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/visitor-keys': 8.72.0
       debug: 4.4.3(supports-color@10.2.2)
-      minimatch: 10.2.6
+      minimatch: 10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7)
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -8566,7 +8567,7 @@ snapshots:
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/visitor-keys': 8.72.0
       debug: 4.4.3(supports-color@7.2.0)
-      minimatch: 10.2.6
+      minimatch: 10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7)
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -9247,7 +9248,7 @@ snapshots:
       eslint: 9.36.0(jiti@2.7.0)(supports-color@10.2.2)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
-      minimatch: 10.2.6
+      minimatch: 10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7)
       semver: 7.8.5
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
@@ -9264,7 +9265,7 @@ snapshots:
       eslint: 9.36.0(supports-color@10.2.2)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
-      minimatch: 10.2.6
+      minimatch: 10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7)
       semver: 7.8.5
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
@@ -9281,7 +9282,7 @@ snapshots:
       eslint: 9.36.0(supports-color@7.2.0)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
-      minimatch: 10.2.6
+      minimatch: 10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7)
       semver: 7.8.5
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
@@ -10081,7 +10082,7 @@ snapshots:
 
   mime@2.6.0: {}
 
-  minimatch@10.2.6:
+  minimatch@10.2.6(patch_hash=fd5e188e8fcc6fc16c49879acc34bda0c6b0bcb7dbe1594ddae1759fa79dfcf7):
     dependencies:
       brace-expansion: 5.0.12
 
