@@ -4,9 +4,9 @@
 FROM golang:1.27.3-alpine3.24@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
 RUN apk add --no-cache make git bash
 WORKDIR /src
-ADD --checksum=sha256:fdd57503b5f591e951ea3dff80ab53a41487c3373dc89370da2e36e7bf752f52 https://codeload.github.com/grafana/grafana/tar.gz/refs/tags/v13.2.4 /tmp/source.tgz
+ADD --checksum=sha256:550ac8e140b3886c078e9996a9550f5e7cdb058c6d94c56ea05b40baa74d7bd8 https://codeload.github.com/grafana/grafana/tar.gz/refs/tags/v13.2.5 /tmp/source.tgz
 RUN tar -xzf /tmp/source.tgz --strip-components=1 && rm /tmp/source.tgz
-ENV CGO_ENABLED=0 GOMAXPROCS=2 GOFLAGS=-p=2 COMMIT_SHA=af4a33e BUILD_BRANCH=13.2.x
+ENV CGO_ENABLED=0 GOMAXPROCS=2 GOFLAGS=-p=2 COMMIT_SHA=ce471d8 BUILD_BRANCH=13.2.x
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build go get github.com/getkin/kin-openapi@v0.149.0 github.com/go-jose/go-jose/v4@v4.1.6 && go work sync
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build make gen-go && make build-go
 
@@ -23,7 +23,7 @@ ARG TARGETARCH
 COPY plugins.json fetch-plugins.sh /build/
 RUN sh /build/fetch-plugins.sh "$TARGETARCH"
 
-FROM grafana/grafana:13.2.4@sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f AS upstream
+FROM grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84 AS upstream
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 ARG TARGETARCH
 RUN apk add --no-cache bash ca-certificates tzdata && adduser -S -D -H -u 472 -G root grafana
