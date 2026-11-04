@@ -2,7 +2,7 @@
 
 ## Démarrage local
 
-Utiliser Node.js 24 et pnpm 12. Copier `.env.example` vers un `.env` local ;
+Utiliser Node.js 24.22.1 et pnpm 12.11.2. Copier `.env.example` vers un `.env` local ;
 ne jamais versionner ni partager le vrai fichier.
 
 ```bash
@@ -186,3 +186,40 @@ nouvelle depuis le HEAD du checkout principal. La suppression doit être exécut
 hors du worktree cible et conserve sa branche ; Git refuse les worktrees modifiés
 ou verrouillés. Les dépendances et fichiers d’environnement locaux ne sont pas
 copiés dans un nouveau checkout.
+
+## Réparer le gestionnaire de paquets
+
+Le projet impose pnpm 12.11.2. En 12.4.1, l'installation propre à pnpm pouvait
+écraser son exécutable natif en écrivant un alias partageant le même fichier par
+un lien physique. Chaque commande pouvait ensuite invoquer `pnpm dlx` en boucle,
+sans atteindre les scripts du projet. Restaurer seulement le binaire en gardant
+la version concernée ne supprimait pas le risque de récidive.
+[L'implémentation 12.11.2](https://github.com/pnpm/pnpm/blob/v12.11.2/pnpm/crates/cli/src/cli_args/setup.rs)
+remplace les alias de manière atomique.
+
+Si pnpm bloque avant toute sortie du projet, l'arrêter avec Ctrl+C. Depuis un
+checkout actualisé utilisant Node 24.22.1, exécuter les commandes suivantes pour
+réparer la sélection de Corepack et l'installation autonome. Avec nvm,
+sélectionner d'abord Node avec `nvm use 24.22.1`. npm et Corepack doivent être
+accessibles dans `PATH`.
+
+```bash
+node --version # v24.22.1
+corepack install --global pnpm@12.11.2
+corepack pnpm --version # 12.11.2
+npx --yes --package=pnpm@12.11.2 pnpm self-update 12.11.2
+corepack enable pnpm
+hash -r # bash/zsh
+pnpm --version # 12.11.2
+pnpm run docs:check
+```
+
+L'étape `npx` lance un pnpm neuf sans passer par le lanceur défectueux. Ne pas
+utiliser `corepack pnpm self-update` : pnpm refuse cette opération sous Corepack.
+Sur macOS/Linux, `type -a pnpm` liste les installations concurrentes si la dernière
+vérification échoue encore. Ne pas supprimer les caches Cargo ou volumes de base
+pour réparer pnpm.
+
+Utiliser `pnpm run setup` pour l'infrastructure et les migrations de l'application ;
+`pnpm pm setup` configure le gestionnaire de paquets lui-même. Garder alignés la
+version du projet, le minimum moteur, le lockfile, le contrôleur et les versions CI.

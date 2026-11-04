@@ -6,7 +6,7 @@ stack for logs, metrics, dashboards and alerts.
 
 ## Stack
 
-Node.js 24, pnpm 12, Turborepo, NestJS 11/Express, TanStack Start/Router/Query/Form,
+Node.js 24.22.1, pnpm 12.11.2, Turborepo, NestJS 11/Express, TanStack Start/Router/Query/Form,
 Tailwind/shadcn, Better Auth, Zod, OpenAPI/openapi-typescript/openapi-fetch,
 Drizzle/PostgreSQL 17, Vitest, React Email/Nodemailer, Mailpit, Paraglide,
 Sonner, Playwright, Docker Compose, Pino, Grafana, Prometheus, Loki, Alloy,
@@ -14,9 +14,12 @@ Blackbox Exporter, GitHub Actions and Gitleaks.
 
 ## Start
 
-Requires Node.js 24, pnpm 12 and Docker.
+Requires Node.js 24.22.1, pnpm 12.11.2 and Docker.
 
 ```bash
+corepack enable pnpm
+corepack install
+pnpm --version # 12.11.2
 pnpm install --frozen-lockfile
 cp .env.example .env
 pnpm run setup

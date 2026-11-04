@@ -1,8 +1,8 @@
 # Development
 
-Use Node 24, pnpm 12, Rust 1.90 with Clippy/rustfmt, OpenSSL development headers,
+Use Node 24.22.1, pnpm 12.11.2, Rust 1.90 with Clippy/rustfmt, OpenSSL development headers,
 a C toolchain and Docker. Copy `.env.example` yourself and replace the placeholder
-secret before `pnpm setup`. Setup starts local PostgreSQL/Mailpit and runs the
+secret before `pnpm run setup`. Setup starts local PostgreSQL/Mailpit and runs the
 explicit local migration command; it requires `APP_ENV=development` and
 `DATABASE_FIXTURE_MODE=enabled`. It never seeds users. Use a fresh database for
 this Rust application, separate from an existing Nest database.
@@ -60,7 +60,7 @@ Normal startup refuses missing, pending, unknown or modified migration history.
 It does not adopt an existing Nest/Drizzle schema or migrate password hashes.
 
 The local `.env.example` intentionally uses localhost. Commands such as `pnpm dev`
-and `pnpm setup` load your root `.env` explicitly. Test defaults remain isolated
+and `pnpm run setup` load your root `.env` explicitly. Test defaults remain isolated
 from the normal server configuration.
 
 For deployment, copy [.env.production.example](../.env.production.example) to a
@@ -117,3 +117,38 @@ parameters are limited to canonical `sslmode`, `sslrootcert`, `sslcert`, `sslkey
 Docker fixture compilation uses `apps/api/target/fixture`, isolated from other
 projects and the native build. Cargo downloads may share the temporary registry
 cache; PostgreSQL/Mailpit containers remain unique to each test run.
+
+## Package manager recovery
+
+The project pins pnpm 12.11.2. In 12.4.1, pnpm's own setup could overwrite its
+native executable when writing an alias that shared the same file through a
+hard link. Every subsequent command could then recursively invoke `pnpm dlx`
+before reaching any project script. Restoring only the binary while retaining
+the affected version did not prevent recurrence. The
+[12.11.2 implementation](https://github.com/pnpm/pnpm/blob/v12.11.2/pnpm/crates/cli/src/cli_args/setup.rs)
+replaces aliases atomically instead.
+
+If pnpm hangs before project output, stop it with Ctrl+C. From an updated
+checkout using Node 24.22.1, run the following to repair Corepack's selection and
+the standalone installation. With nvm, select Node first using `nvm use 24.22.1`.
+npm and Corepack must be available on `PATH`.
+
+```bash
+node --version # v24.22.1
+corepack install --global pnpm@12.11.2
+corepack pnpm --version # 12.11.2
+npx --yes --package=pnpm@12.11.2 pnpm self-update 12.11.2
+corepack enable pnpm
+hash -r # bash/zsh
+pnpm --version # 12.11.2
+pnpm run docs:check
+```
+
+The `npx` step runs a fresh pnpm without using the broken launcher. Do not use
+`corepack pnpm self-update`: pnpm refuses self-update when launched by Corepack.
+On macOS/Linux, `type -a pnpm` lists competing installations if the final version
+check still fails. Do not delete Cargo caches or database volumes to repair pnpm.
+
+Use `pnpm run setup` for the application's infrastructure and migrations;
+`pnpm pm setup` configures the package manager itself. Keep the project pin,
+engine minimum, lockfile, project checker and CI versions aligned when upgrading.

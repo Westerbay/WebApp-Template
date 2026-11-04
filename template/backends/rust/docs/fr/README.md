@@ -2,15 +2,18 @@
 
 Frontend TanStack Start, React, Zod et Paraglide dans `apps/web` et `packages/i18n`.
 L'API `apps/api` utilise Axum, Better Auth RS et PostgreSQL, entièrement en Rust.
-Node 24 et pnpm 12 servent au frontend et aux outils de développement.
+Node 24.22.1 et pnpm 12.11.2 servent au frontend et aux outils de développement.
 
 Installer Rust 1.90 avec rustfmt/Clippy, une chaîne C, les bibliothèques de développement
 OpenSSL et Docker. Copier soi-même `.env.example` vers `.env`, remplacer le secret
 par au moins 32 caractères aléatoires, puis :
 
 ```sh
+corepack enable pnpm
+corepack install
+pnpm --version # 12.11.2
 pnpm install --frozen-lockfile
-pnpm setup
+pnpm run setup
 pnpm dev
 ```
 
