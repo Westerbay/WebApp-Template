@@ -17,8 +17,8 @@ async function filesUnder(directory) {
 
 const failures = []
 const rootManifest = JSON.parse(await readFile(resolve(root, "package.json")))
-if (rootManifest.packageManager !== "pnpm@12.4.1") {
-  failures.push("packageManager must remain pnpm@12.4.1")
+if (rootManifest.packageManager !== "pnpm@12.11.2") {
+  failures.push("packageManager must remain pnpm@12.11.2")
 }
 
 const specializedComposeFiles = (await readdir(resolve(root, "infra/compose")))

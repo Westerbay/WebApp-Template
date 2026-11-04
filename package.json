@@ -59,9 +59,9 @@
     "typescript": "5.9.3",
     "deepmerge": "4.3.1"
   },
-  "packageManager": "pnpm@12.4.1",
+  "packageManager": "pnpm@12.11.2",
   "engines": {
     "node": ">=24.22.1 <25",
-    "pnpm": ">=12"
+    "pnpm": ">=12.11.2"
   }
 }

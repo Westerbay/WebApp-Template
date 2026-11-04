@@ -2,15 +2,18 @@
 
 TanStack Start, React, Zod and Paraglide in `apps/web` / `packages/i18n`, with an
 Axum + Better Auth RS API and PostgreSQL in `apps/api`. The backend runs entirely
-in Rust. Node 24 and pnpm 12 build and serve the frontend and run tooling.
+in Rust. Node 24.22.1 and pnpm 12.11.2 build and serve the frontend and run tooling.
 
 Use Rust 1.90 (rustfmt and Clippy), a C toolchain, OpenSSL development libraries,
 and Docker. Copy `.env.example` to `.env` yourself, replace the secret with at
 least 32 random characters, then run:
 
 ```sh
+corepack enable pnpm
+corepack install
+pnpm --version # 12.11.2
 pnpm install --frozen-lockfile
-pnpm setup
+pnpm run setup
 pnpm dev
 ```
 

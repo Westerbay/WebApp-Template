@@ -1,8 +1,8 @@
 # Développement
 
-Utiliser Node 24, pnpm 12, Rust 1.90 avec rustfmt/Clippy, une chaîne C, OpenSSL de
+Utiliser Node 24.22.1, pnpm 12.11.2, Rust 1.90 avec rustfmt/Clippy, une chaîne C, OpenSSL de
 développement et Docker. Copier soi-même `.env.example` vers `.env` et remplacer
-le secret avant `pnpm setup`. Setup démarre PostgreSQL/Mailpit et applique les
+le secret avant `pnpm run setup`. Setup démarre PostgreSQL/Mailpit et applique les
 migrations locales avec `APP_ENV=development` et `DATABASE_FIXTURE_MODE=enabled`.
 Aucun utilisateur n'est créé. Utiliser une base neuve distincte de celle d'un projet Nest.
 
@@ -61,7 +61,7 @@ Le serveur refuse un historique absent, incomplet, inconnu ou altéré sans le m
 Il n'adopte pas un schéma Nest/Drizzle existant ni ses anciens hachages.
 
 Le `.env.example` local utilise volontairement localhost. `pnpm dev` et
-`pnpm setup` chargent explicitement le `.env` à la racine. Les valeurs des fixtures
+`pnpm run setup` chargent explicitement le `.env` à la racine. Les valeurs des fixtures
 ne servent pas au démarrage normal du serveur.
 
 Pour le déploiement, copier [.env.production.example](../.env.production.example)
@@ -118,3 +118,40 @@ de cible et les alias TLS sont refusés.
 Les fixtures Docker compilent dans `apps/api/target/fixture`, séparé des autres
 projets et du build natif. Seuls les téléchargements Cargo peuvent partager le
 cache temporaire ; PostgreSQL/Mailpit restent propres à chaque exécution.
+
+## Réparer le gestionnaire de paquets
+
+Le projet impose pnpm 12.11.2. En 12.4.1, l'installation propre à pnpm pouvait
+écraser son exécutable natif en écrivant un alias partageant le même fichier par
+un lien physique. Chaque commande pouvait ensuite invoquer `pnpm dlx` en boucle,
+sans atteindre les scripts du projet. Restaurer seulement le binaire en gardant
+la version concernée ne supprimait pas le risque de récidive.
+[L'implémentation 12.11.2](https://github.com/pnpm/pnpm/blob/v12.11.2/pnpm/crates/cli/src/cli_args/setup.rs)
+remplace les alias de manière atomique.
+
+Si pnpm bloque avant toute sortie du projet, l'arrêter avec Ctrl+C. Depuis un
+checkout actualisé utilisant Node 24.22.1, exécuter les commandes suivantes pour
+réparer la sélection de Corepack et l'installation autonome. Avec nvm,
+sélectionner d'abord Node avec `nvm use 24.22.1`. npm et Corepack doivent être
+accessibles dans `PATH`.
+
+```bash
+node --version # v24.22.1
+corepack install --global pnpm@12.11.2
+corepack pnpm --version # 12.11.2
+npx --yes --package=pnpm@12.11.2 pnpm self-update 12.11.2
+corepack enable pnpm
+hash -r # bash/zsh
+pnpm --version # 12.11.2
+pnpm run docs:check
+```
+
+L'étape `npx` lance un pnpm neuf sans passer par le lanceur défectueux. Ne pas
+utiliser `corepack pnpm self-update` : pnpm refuse cette opération sous Corepack.
+Sur macOS/Linux, `type -a pnpm` liste les installations concurrentes si la dernière
+vérification échoue encore. Ne pas supprimer les caches Cargo ou volumes de base
+pour réparer pnpm.
+
+Utiliser `pnpm run setup` pour l'infrastructure et les migrations de l'application ;
+`pnpm pm setup` configure le gestionnaire de paquets lui-même. Garder alignés la
+version du projet, le minimum moteur, le lockfile, le contrôleur et les versions CI.

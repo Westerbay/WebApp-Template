@@ -39,7 +39,7 @@ to check publication paths without contacting GitHub.
 
 ## Start locally
 
-Use Node.js 24 and pnpm 12. Copy `.env.example` to a local `.env`; never commit
+Use Node.js 24.22.1 and pnpm 12.11.2. Copy `.env.example` to a local `.env`; never commit
 or share the real file.
 
 ```bash
@@ -208,3 +208,38 @@ checks out an existing local branch or starts a new one at main checkout HEAD.
 Removal must run outside the target worktree and preserves its branch; Git
 refuses dirty or locked worktrees. Dependencies and local env files are not
 copied into a new checkout.
+
+## Package manager recovery
+
+The project pins pnpm 12.11.2. In 12.4.1, pnpm's own setup could overwrite its
+native executable when writing an alias that shared the same file through a
+hard link. Every subsequent command could then recursively invoke `pnpm dlx`
+before reaching any project script. Restoring only the binary while retaining
+the affected version did not prevent recurrence. The
+[12.11.2 implementation](https://github.com/pnpm/pnpm/blob/v12.11.2/pnpm/crates/cli/src/cli_args/setup.rs)
+replaces aliases atomically instead.
+
+If pnpm hangs before project output, stop it with Ctrl+C. From an updated
+checkout using Node 24.22.1, run the following to repair Corepack's selection and
+the standalone installation. With nvm, select Node first using `nvm use 24.22.1`.
+npm and Corepack must be available on `PATH`.
+
+```bash
+node --version # v24.22.1
+corepack install --global pnpm@12.11.2
+corepack pnpm --version # 12.11.2
+npx --yes --package=pnpm@12.11.2 pnpm self-update 12.11.2
+corepack enable pnpm
+hash -r # bash/zsh
+pnpm --version # 12.11.2
+pnpm run docs:check
+```
+
+The `npx` step runs a fresh pnpm without using the broken launcher. Do not use
+`corepack pnpm self-update`: pnpm refuses self-update when launched by Corepack.
+On macOS/Linux, `type -a pnpm` lists competing installations if the final version
+check still fails. Do not delete Cargo caches or database volumes to repair pnpm.
+
+Use `pnpm run setup` for the application's infrastructure and migrations;
+`pnpm pm setup` configures the package manager itself. Keep the project pin,
+engine minimum, lockfile, project checker and CI versions aligned when upgrading.
