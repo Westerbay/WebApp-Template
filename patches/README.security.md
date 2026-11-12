@@ -1,17 +1,17 @@
 # Dependency security fixes
 
-Reviewed against official releases on 2026-11-02. Prefer a compatible published
+Minimatch compatibility rechecked against official releases on 2026-11-12. Prefer a compatible published
 release over a local patch; keep the lockfile as the source of installed versions.
 
 - `minimatch@11.0.4` replaces the backports for compatible consumers. The official
   fix for [CVE-2026-118764](https://github.com/isaacs/minimatch/security/advisories/GHSA-g3hv-75wg-m249)
   is available from 11.0.1. Overrides exclude legacy major versions.
-- `eslint-plugin-import-x` still calls `makeRe()`, removed in minimatch 11. Even
-  its current official 4.17.1 release retains that call. Its scoped override therefore
-  keeps patched `minimatch@10.2.6`; other consumers use 11.0.4. This backport adapts
-  [upstream commit 77a0f5c](https://github.com/isaacs/minimatch/commit/77a0f5c4b80bdc641c3c930a1d9edf5ad2db57f8)
-  to the published CommonJS/ESM files. Remove it when the plugin supports the fixed
-  API, then rerun lint and the bounded-matching regressions.
+- `eslint-plugin-import-x@4.18.1` includes the [upstream compatibility fix](https://github.com/un-ts/eslint-plugin-import-x/commit/72540485d12bea99039f30a636ace9ab8ce84ead) for minimatch 11.
+  Its `no-internal-modules` rule now uses `Minimatch.match()` instead of the
+  removed `makeRe()` export, so the scoped minimatch 10 override and backport
+  are no longer needed. Existing lint checks exercise this consumer.
+  The retired dependency-only backport tests have been removed; the remaining
+  maintained patches keep their regression tests.
 
 ## Remaining local patches
 

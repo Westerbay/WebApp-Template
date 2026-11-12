@@ -4,7 +4,7 @@ packages:
 
 overrides:
   "minimatch@>=9 <11": "11.0.4"
-  "eslint-plugin-import-x>minimatch": "10.2.6"
+  "eslint-plugin-import-x@^4": "4.18.1"
   # Nest 11 pins multer before its pending fileFilter teardown fix (GHSA-q7qp-rjg7-q26m).
   "@nestjs/platform-express>multer": "2.5.0"
   # Swagger 11 pins a vulnerable js-yaml release (GHSA-r3ph-w7gj-g6xm).
@@ -20,7 +20,6 @@ allowBuilds:
   unrs-resolver: true
 
 patchedDependencies:
-  minimatch@10.2.6: patches/minimatch@10.2.6.patch
   deepmerge@4.3.1: patches/deepmerge@4.3.1.patch
 
 minimumReleaseAgeExclude:
