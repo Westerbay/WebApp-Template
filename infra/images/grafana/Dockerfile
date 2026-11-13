@@ -1,17 +1,6 @@
-# Rebuild the server and the Loki component used by this template. Prometheus
+# Use the official server and rebuild the Loki component used by this template. Prometheus
 # remains an unmodified, signed upstream plugin. Other datasource backends are
 # not bundled; external plugin signature verification keeps its upstream default.
-FROM golang:1.27.3-alpine3.24@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS build
-RUN apk add --no-cache make git bash
-WORKDIR /src
-ADD --checksum=sha256:550ac8e140b3886c078e9996a9550f5e7cdb058c6d94c56ea05b40baa74d7bd8 https://codeload.github.com/grafana/grafana/tar.gz/refs/tags/v13.2.5 /tmp/source.tgz
-RUN tar -xzf /tmp/source.tgz --strip-components=1 && rm /tmp/source.tgz
-ENV CGO_ENABLED=0 GOMAXPROCS=2 GOFLAGS=-p=2 COMMIT_SHA=ce471d8 BUILD_BRANCH=13.2.x
-RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build go get github.com/getkin/kin-openapi@v0.151.0 github.com/go-jose/go-jose/v4@v4.1.6 && go work sync
-# The pinned release includes its Wire graph; dependency patches do not change
-# providers. Regenerating it needlessly loads the full graph into CI memory.
-RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build make build-go
-
 FROM golang:1.27.3-alpine3.24@sha256:b8c9b82affbbb82a020bbcf998dad2ba9516944ac7e883524642a481a9505e9c AS loki
 WORKDIR /src
 ADD --checksum=sha256:d195ba01a3ff22541f197fd0f8cecf3fdfc2e2fba8034d45439cfb497c5a8933 https://codeload.github.com/grafana/grafana-loki-datasource/tar.gz/6d076df3d695f5fda342fbbad1f52547b55a96e2 /tmp/source.tgz
@@ -25,7 +14,7 @@ ARG TARGETARCH
 COPY plugins.json fetch-plugins.sh /build/
 RUN sh /build/fetch-plugins.sh "$TARGETARCH"
 
-FROM grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84 AS upstream
+FROM grafana/grafana:13.2.6@sha256:b21409d7951ddcfd63a4b49083e4ef2cc35bc1437d071813bf82bfb238b00bca AS upstream
 FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 ARG TARGETARCH
 RUN apk add --no-cache bash ca-certificates tzdata && adduser -S -D -H -u 472 -G root grafana
@@ -42,7 +31,7 @@ COPY --from=upstream /usr/share/grafana/conf ./conf
 COPY --from=upstream /usr/share/grafana/LICENSE ./LICENSE
 COPY --from=upstream /etc/grafana /etc/grafana
 COPY --from=upstream /run.sh /run.sh
-COPY --from=build /src/bin/grafana ./bin/grafana
+COPY --from=upstream /usr/share/grafana/bin/grafana ./bin/grafana
 COPY --from=assets /plugins/loki ./public/app/plugins/datasource/loki
 COPY --from=loki /loki ./public/app/plugins/datasource/loki/gpx_grafana-loki-datasource_linux_${TARGETARCH}
 COPY --from=assets /plugins/prometheus ./data/plugins-bundled/prometheus
