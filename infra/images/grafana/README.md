@@ -1,25 +1,23 @@
 # Grafana image
 
 The optional observability stack builds
-`webapp-template-grafana:13.2.5-security.3` locally for Linux amd64 or arm64. It is
+`webapp-template-grafana:13.2.6-security.1` locally for Linux amd64 or arm64. It is
 not a registry publication or an unmodified official Grafana image.
 
-The server and frontend assets are updated together to 13.2.5. The recipe retains
-the existing Go dependency hardening and datasource pins; the final image still
-requires its full vulnerability scan and observability tests. This recipe:
+The server and frontend assets are updated together to 13.2.6, which fixes
+[CVE-2026-107509](https://grafana.com/security/security-advisories/cve-2026-107509/)
+(SQL Expressions memory exhaustion available to the anonymous Viewer). The recipe retains
+the existing Loki dependency hardening and datasource pins. Validate the final image
+with a vulnerability scan and observability tests after each update. This recipe:
 
-- rebuilds the Grafana 13.2.5 server with Go 1.27.3, `kin-openapi` 0.151.0
-  and `go-jose/v4` 4.1.6 (CVE-2026-116587);
+- uses the official Grafana 13.2.6 server binary, which already includes
+  `kin-openapi` 0.151.0 and `go-jose/v4` 4.1.6 (CVE-2026-116587); the
+  previous server rebuild and dependency overrides are no longer needed;
 - rebuilds Loki datasource 13.2.2 from its exact upstream commit with Go 1.27.3
   and `golang.org/x/net` 0.60.0;
 - retains the official signed Prometheus datasource 13.2.4 unchanged;
 - reuses upstream frontend assets, configuration, license and entrypoint on a
   maintained Alpine base, running as UID 472.
-
-The server build uses the Wire graph already generated in the pinned release.
-Regenerating it is unnecessary for these dependency patches and can exhaust CI
-memory. Keep `kin-openapi` at the release's version or newer; an older security
-pin must not downgrade the dependency required by Grafana.
 
 Only Loki and Prometheus datasource backends are bundled, matching the template's
 dashboards. Other integrations must be added deliberately and scanned. The rebuilt
@@ -39,8 +37,8 @@ mix incompatible server and frontend versions. Keep these coupled
 upstream pins under manual review.
 
 ```sh
-docker build --pull -t webapp-template-grafana:13.2.5-security.3 infra/images/grafana
-trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed=false --exit-code 1 webapp-template-grafana:13.2.5-security.3
+docker build --pull -t webapp-template-grafana:13.2.6-security.1 infra/images/grafana
+trivy image --scanners vuln --ignore-unfixed=false --exit-code 1 webapp-template-grafana:13.2.6-security.1
 pnpm logs:test
 pnpm logs:test:docker
 ```
@@ -50,7 +48,7 @@ ignoring unfixed CVEs. Local users can run
 `docker compose -f infra/compose/observability.yml build grafana` to rebuild.
 
 The build changes are fully expressed in the Dockerfile and fetch script. Sources:
-[Grafana 13.2.5](https://github.com/grafana/grafana/tree/v13.2.5),
+[Grafana 13.2.6](https://github.com/grafana/grafana/tree/v13.2.6),
 [Loki datasource commit](https://github.com/grafana/grafana-loki-datasource/tree/6d076df3d695f5fda342fbbad1f52547b55a96e2),
 [Prometheus datasource](https://github.com/grafana/grafana-prometheus-datasource).
 Grafana and Loki retain their upstream AGPL licensing; this repository's MIT
