@@ -25,8 +25,10 @@ jobs:
           persist-credentials: false
       - name: Build the pinned Grafana image
         run: docker build --progress plain --platform linux/amd64 -t grafana-security:test infra/images/grafana
-      - name: Verify the compiled server version without network access
+      - name: Verify the server matches the pinned upstream release
         shell: bash
         run: |
           docker run --rm --network none --entrypoint /usr/share/grafana/bin/grafana grafana-security:test --version | tee /tmp/grafana-version.txt
-          grep -F '13.2.5' /tmp/grafana-version.txt
+          expected_version=$(sed -n 's/^FROM grafana\/grafana:\([^@ ]*\).*/\1/p' infra/images/grafana/Dockerfile)
+          test -n "$expected_version"
+          grep -Fx "grafana version $expected_version" /tmp/grafana-version.txt
