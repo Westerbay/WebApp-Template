@@ -172,7 +172,7 @@ export async function browserJourney({
   const password = "Browser-Local-Password-2026!"
   const nextPassword = "Browser-New-Password-2026!"
   const login = async (value) => {
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByLabel(message("password_label"), { exact: true })
       .fill(value)
@@ -184,7 +184,7 @@ export async function browserJourney({
     await page.goto(publicUrl("/sign-up"))
     await expect(page.locator("html")).toHaveAttribute("lang", locale)
     await page.getByLabel(message("name_label"), { exact: true }).fill("Élodie")
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByLabel(message("password_label"), { exact: true })
       .fill(password)
@@ -230,7 +230,7 @@ export async function browserJourney({
     await expect(
       page.getByRole("heading", { name: message("forgot_title") })
     ).toBeVisible()
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByRole("button", { name: message("send_reset"), exact: true })
       .click()
