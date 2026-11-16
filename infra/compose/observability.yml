@@ -63,7 +63,7 @@ services:
       - loki
 
   grafana:
-    image: webapp-template-grafana:13.2.5-security.3
+    image: webapp-template-grafana:13.2.6-security.1
     build:
       context: ../images/grafana
     restart: unless-stopped

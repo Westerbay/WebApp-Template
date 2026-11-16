@@ -165,6 +165,7 @@ export async function browserJourney({
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
   })
+  await context.tracing.start({ screenshots: true, snapshots: true })
   const page = await context.newPage()
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
@@ -172,7 +173,7 @@ export async function browserJourney({
   const password = "Browser-Local-Password-2026!"
   const nextPassword = "Browser-New-Password-2026!"
   const login = async (value) => {
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByLabel(message("password_label"), { exact: true })
       .fill(value)
@@ -184,7 +185,7 @@ export async function browserJourney({
     await page.goto(publicUrl("/sign-up"))
     await expect(page.locator("html")).toHaveAttribute("lang", locale)
     await page.getByLabel(message("name_label"), { exact: true }).fill("Élodie")
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByLabel(message("password_label"), { exact: true })
       .fill(password)
@@ -230,7 +231,7 @@ export async function browserJourney({
     await expect(
       page.getByRole("heading", { name: message("forgot_title") })
     ).toBeVisible()
-    await page.getByLabel(message("email_label")).fill(email)
+    await page.getByLabel(message("email_label"), { exact: true }).fill(email)
     await page
       .getByRole("button", { name: message("send_reset"), exact: true })
       .click()
@@ -285,6 +286,10 @@ export async function browserJourney({
       (url) => url.pathname === new URL(publicUrl("/sign-in")).pathname
     )
   } catch (error) {
+    if (errors.length) console.error(`Browser errors (${locale}):`, errors)
+    await context.tracing.stop({
+      path: join(directory, `${locale}-failure-trace.zip`),
+    })
     await page.screenshot({
       path: join(directory, `${locale}-failure.png`),
       fullPage: true,
