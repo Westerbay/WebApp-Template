@@ -165,6 +165,7 @@ export async function browserJourney({
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
   })
+  await context.tracing.start({ screenshots: true, snapshots: true })
   const page = await context.newPage()
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
@@ -285,6 +286,10 @@ export async function browserJourney({
       (url) => url.pathname === new URL(publicUrl("/sign-in")).pathname
     )
   } catch (error) {
+    if (errors.length) console.error(`Browser errors (${locale}):`, errors)
+    await context.tracing.stop({
+      path: join(directory, `${locale}-failure-trace.zip`),
+    })
     await page.screenshot({
       path: join(directory, `${locale}-failure.png`),
       fullPage: true,
