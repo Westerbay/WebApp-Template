@@ -171,6 +171,7 @@ overrides:
 
 patchedDependencies:
   deepmerge@4.3.1: 7ccd624debce7e013ec28bdbacb3a015a1450efadb23c0b5db5c8bbe6337c4c3
+  sonner@2.0.7: c56f64cc4d406556d481df78c6efea91d01f3d249c8f78ce8340a4b343782f40
 
 importers:
 
@@ -200,6 +201,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vnu-jar:
+        specifier: 26.10.7
+        version: 26.10.7
 
   apps/api-nestjs:
     dependencies:
@@ -395,7 +399,7 @@ importers:
         version: 19.3.1(react@19.3.1)
       sonner:
         specifier: 2.0.7
-        version: 2.0.7(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 2.0.7(patch_hash=c56f64cc4d406556d481df78c6efea91d01f3d249c8f78ce8340a4b343782f40)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       tailwindcss:
         specifier: ^4
         version: 4.3.3
@@ -403,6 +407,9 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       '@tanstack/eslint-config':
         specifier: 0.3.2
         version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
@@ -450,10 +457,10 @@ importers:
     devDependencies:
       '@tanstack/eslint-config':
         specifier: 0.3.2
-        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       eslint:
         specifier: 9.36.0
-        version: 9.36.0(supports-color@7.2.0)
+        version: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -484,7 +491,7 @@ importers:
     devDependencies:
       '@tanstack/eslint-config':
         specifier: 0.3.2
-        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@types/node':
         specifier: 24.5.2
         version: 24.5.2
@@ -496,7 +503,7 @@ importers:
         version: 0.31.10
       eslint:
         specifier: 9.36.0
-        version: 9.36.0(supports-color@7.2.0)
+        version: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -506,9 +513,6 @@ importers:
 
   packages/email:
     dependencies:
-      '@react-email/components':
-        specifier: 1.0.12
-        version: 1.0.12(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@react-email/render':
         specifier: 2.1.0
         version: 2.1.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -527,6 +531,9 @@ importers:
       react:
         specifier: ^19.2.6
         version: 19.3.1
+      react-dom:
+        specifier: ^19.2.6
+        version: 19.3.1(react@19.3.1)
       zod:
         specifier: 4.6.7
         version: 4.6.7
@@ -543,6 +550,9 @@ importers:
       '@types/react':
         specifier: ^19
         version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.3.0(@types/react@19.3.0)
       eslint:
         specifier: 9.36.0
         version: 9.36.0(jiti@2.7.0)(supports-color@10.2.2)
@@ -590,7 +600,7 @@ importers:
         version: 19.3.1(react@19.3.1)
       sonner:
         specifier: ^2.0.7
-        version: 2.0.7(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 2.0.7(patch_hash=c56f64cc4d406556d481df78c6efea91d01f3d249c8f78ce8340a4b343782f40)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.7.0
@@ -606,7 +616,7 @@ importers:
         version: 4.3.3(vite@8.3.5(@types/node@24.5.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@tanstack/eslint-config':
         specifier: 0.3.2
-        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+        version: 0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@turbo/gen':
         specifier: ^2.9.15
         version: 2.11.10(@types/node@24.5.2)
@@ -621,7 +631,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       eslint:
         specifier: 9.36.0
-        version: 9.36.0(supports-color@7.2.0)
+        version: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       tailwindcss:
         specifier: ^4
         version: 4.3.3
@@ -2331,191 +2341,12 @@ packages:
   '@radix-ui/rect@1.1.3':
     resolution: {integrity: sha512-JtyZR+mqgBibTo8xea3B6ZRmzZiM/YeVBtUkas6zMuXjAlfIFIW2FgqeM9eLyvEaYX66vr6DJMK+4U6LV0KhNw==}
 
-  '@react-email/body@0.3.0':
-    resolution: {integrity: sha512-uGo0BOOzjbMUo3lu+BIDWayvn5o6Xyfmnlla5VGf05n8gHMvO1ll7U4FtzWe3hxMLwt53pmc4iE0M+B5slG+Ug==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/button@0.2.1':
-    resolution: {integrity: sha512-qXyj7RZLE7POy9BMKSoqQ00tOXThjOZSUnI2Yu9i29IHngPlmrNayIWBoVKtElES7OWwypUcpiajwi1mUWx6/A==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/code-block@0.2.1':
-    resolution: {integrity: sha512-M3B7JpVH4ytgn83/ujRR1k1DQHvTeABiDM61OvAbjLRPhC/5KLHU5KkzIbbuGIrjWwxAbL1kSQzU8MhLEtSxyw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/code-inline@0.0.6':
-    resolution: {integrity: sha512-jfhebvv3dVsp3OdPgKXnk8+e2pBiDVZejDOBFzBa/IblrAJ9cQDkN6rBD5IyEg8hTOxwbw3iaI/yZFmDmIguIA==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/column@0.0.14':
-    resolution: {integrity: sha512-f+W+Bk2AjNO77zynE33rHuQhyqVICx4RYtGX9NKsGUg0wWjdGP0qAuIkhx9Rnmk4/hFMo1fUrtYNqca9fwJdHg==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/components@1.0.12':
-    resolution: {integrity: sha512-tH18JhPDWgE+3jnYkzyB6ZrZdfNnEsFe4PwmuXmlOw4NGIysP8wPY5aXZg++pTG9qUabXg1nzX/FGHGkObH8xQ==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/container@0.0.16':
-    resolution: {integrity: sha512-QWBB56RkkU0AJ9h+qy33gfT5iuZknPC7Un/IjZv9B0QmMIK+WWacc0cH6y2SV5Cv/b99hU94fjEMOOO4enpkbQ==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/font@0.0.10':
-    resolution: {integrity: sha512-0urVSgCmQIfx5r7Xc586miBnQUVnGp3OTYUm8m5pwtQRdTRO5XrTtEfNJ3JhYhSOruV0nD8fd+dXtKXobum6tA==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/head@0.0.13':
-    resolution: {integrity: sha512-AJg6le/08Gz4tm+6MtKXqtNNyKHzmooOCdmtqmWxD7FxoAdU1eVcizhtQ0gcnVaY6ethEyE/hnEzQxt1zu5Kog==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/heading@0.0.16':
-    resolution: {integrity: sha512-jmsKnQm1ykpBzw4hCYHwBkt5pW2jScXffPeEH5ZRF5tZeF5b1pvlFTO9han7C0pCkZYo1kEvWiRtx69yfCIwuw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/hr@0.0.12':
-    resolution: {integrity: sha512-TwmOmBDibavUQpXBxpmZYi2Iks/yeZOzFYh+di9EltMSnEabH8dMZXrl+pxNXzCgZ2XE8HY7VmUL65Lenfu5PA==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/html@0.0.12':
-    resolution: {integrity: sha512-KTShZesan+UsreU7PDUV90afrZwU5TLwYlALuCSU0OT+/U8lULNNbAUekg+tGwCnOfIKYtpDPKkAMRdYlqUznw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/img@0.0.12':
-    resolution: {integrity: sha512-sRCpEARNVTf3FQhZOC+JTvu5r6ubiYWkT0ucYXg8ctkyi4G8QG+jgYPiNUqVeTLA2STOfmPM/nrk1nb84y6CPQ==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/link@0.0.13':
-    resolution: {integrity: sha512-lkWc/NjOcefRZMkQoSDDbuKBEBDES9aXnFEOuPH845wD3TxPwh+QTf0fStuzjoRLUZWpHnio4z7qGGRYusn/sw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/markdown@0.0.18':
-    resolution: {integrity: sha512-gSuYK5fsMbGk87jDebqQ6fa2fKcWlkf2Dkva8kMONqLgGCq8/0d+ZQYMEJsdidIeBo3kmsnHZPrwdFB4HgjUXg==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/preview@0.0.14':
-    resolution: {integrity: sha512-aYK8q0IPkBXyMsbpMXgxazwHxYJxTrXrV95GFuu2HbEiIToMwSyUgb8HDFYwPqqfV03/jbwqlsXmFxsOd+VNaw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/render@2.0.6':
-    resolution: {integrity: sha512-xOzaYkH3jLZKqN5MqrTXYnmqBYUnZSVbkxdb5PGGmDcK6sKDVMliaDiSwfXajRC9JtSHTcGc2tmGLHWuCgVpog==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-      react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
-
   '@react-email/render@2.1.0':
     resolution: {integrity: sha512-F+zE3O6d6sW6Aj2UjvZAA17R7tJKM7kcq2mgV6k4HCT8jeLLFaVP2txMtH1lgqYFRMZ0Gxsd37q2PRyiXLXXxA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/row@0.0.13':
-    resolution: {integrity: sha512-bYnOac40vIKCId7IkwuLAAsa3fKfSfqCvv6epJKmPE0JBuu5qI4FHFCl9o9dVpIIS08s/ub+Y/txoMt0dYziGw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/section@0.0.17':
-    resolution: {integrity: sha512-qNl65ye3W0Rd5udhdORzTV9ezjb+GFqQQSae03NDzXtmJq6sqVXNWNiVolAjvJNypim+zGXmv6J9TcV5aNtE/w==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/tailwind@2.0.7':
-    resolution: {integrity: sha512-kGw80weVFXikcnCXbigTGXGWQ0MRCSYNCudcdkWxebkWYd0FG6/NPoN3V1p/u68/4+NxZwYPVi2fhnp0x23HdA==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      '@react-email/body': '>=0'
-      '@react-email/button': '>=0'
-      '@react-email/code-block': '>=0'
-      '@react-email/code-inline': '>=0'
-      '@react-email/container': '>=0'
-      '@react-email/heading': '>=0'
-      '@react-email/hr': '>=0'
-      '@react-email/img': '>=0'
-      '@react-email/link': '>=0'
-      '@react-email/preview': '>=0'
-      '@react-email/text': '>=0'
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-    peerDependenciesMeta:
-      '@react-email/body':
-        optional: true
-      '@react-email/button':
-        optional: true
-      '@react-email/code-block':
-        optional: true
-      '@react-email/code-inline':
-        optional: true
-      '@react-email/container':
-        optional: true
-      '@react-email/heading':
-        optional: true
-      '@react-email/hr':
-        optional: true
-      '@react-email/img':
-        optional: true
-      '@react-email/link':
-        optional: true
-      '@react-email/preview':
-        optional: true
-
-  '@react-email/text@0.1.6':
-    resolution: {integrity: sha512-TYqkioRS45wTR5il3dYk/SbUjjEdhSwh9BtRNB99qNH1pXAwA45H7rAuxehiu8iJQJH0IyIr+6n62gBz9ezmsw==}
-    engines: {node: '>=20.0.0'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@redocly/ajv@8.11.2':
     resolution: {integrity: sha512-io1JpnwtIcvojV7QKDUSIuMN/ikdOUd1ReEnUnMKGfDVridQZ31J0MmIuqwuRjWDZfmvr+Q0MqCcfHM2gTivOg==}
@@ -4716,11 +4547,6 @@ packages:
   map-stream@0.1.0:
     resolution: {integrity: sha512-CkYQrPYZfWnu/DAmVCpTSX/xHpKZ80eKh2lAkyA6AJTef6bW+6JpbQZN5rofum7da+SyN1bi5ctTm+lTfcCW3g==}
 
-  marked@15.0.12:
-    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
-    engines: {node: '>= 18'}
-    hasBin: true
-
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -5082,10 +4908,6 @@ packages:
   pretty-ms@9.3.1:
     resolution: {integrity: sha512-HzMy3Geq23nVALD/M2LliU+F+M+gVNsvkQWWqeBZ8HDiCgzo6YPJ/Omrmtq24EFrIsk0a3EkQGEd7bDOo+IhGA==}
     engines: {node: '>=18'}
-
-  prismjs@1.30.0:
-    resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
-    engines: {node: '>=6'}
 
   process-warning@5.1.1:
     resolution: {integrity: sha512-oCkNVj4OKnKEcocVBcDfiIugN1/cE6rgfT3nCtzeqZPA8+rIxMaQ0xXzIkGP8Gj2qUaP1UR7uhJ1VD8lUCpzCg==}
@@ -5778,6 +5600,11 @@ packages:
       jsdom:
         optional: true
 
+  vnu-jar@26.10.7:
+    resolution: {integrity: sha512-ozfi5W63HbnOQdwaLjzy1NN8NZJCbl3KDGZifu3QhUIHOkikOp73dUj6MB5F7rg5FCJeIUkRH7rbNG/mJ2MQxg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   vue-eslint-parser@10.4.1:
     resolution: {integrity: sha512-Gk6gRDj0n/fkRa3C3l0bBheoBckUq/Rs0F/TvMWIS6nzzx67amAViMe9CkNgsP2tXyQONvGiHQESHwFtZ3aYDA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -6203,9 +6030,9 @@ snapshots:
       eslint: 9.36.0(jiti@2.7.0)(supports-color@10.2.2)
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/eslint-utils@4.10.1(eslint@9.36.0(supports-color@7.2.0))':
+  '@eslint-community/eslint-utils@4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))':
     dependencies:
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
@@ -7489,101 +7316,6 @@ snapshots:
 
   '@radix-ui/rect@1.1.3': {}
 
-  '@react-email/body@0.3.0(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/button@0.2.1(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/code-block@0.2.1(react@19.3.1)':
-    dependencies:
-      prismjs: 1.30.0
-      react: 19.3.1
-
-  '@react-email/code-inline@0.0.6(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/column@0.0.14(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/components@1.0.12(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
-    dependencies:
-      '@react-email/body': 0.3.0(react@19.3.1)
-      '@react-email/button': 0.2.1(react@19.3.1)
-      '@react-email/code-block': 0.2.1(react@19.3.1)
-      '@react-email/code-inline': 0.0.6(react@19.3.1)
-      '@react-email/column': 0.0.14(react@19.3.1)
-      '@react-email/container': 0.0.16(react@19.3.1)
-      '@react-email/font': 0.0.10(react@19.3.1)
-      '@react-email/head': 0.0.13(react@19.3.1)
-      '@react-email/heading': 0.0.16(react@19.3.1)
-      '@react-email/hr': 0.0.12(react@19.3.1)
-      '@react-email/html': 0.0.12(react@19.3.1)
-      '@react-email/img': 0.0.12(react@19.3.1)
-      '@react-email/link': 0.0.13(react@19.3.1)
-      '@react-email/markdown': 0.0.18(react@19.3.1)
-      '@react-email/preview': 0.0.14(react@19.3.1)
-      '@react-email/render': 2.0.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@react-email/row': 0.0.13(react@19.3.1)
-      '@react-email/section': 0.0.17(react@19.3.1)
-      '@react-email/tailwind': 2.0.7(@react-email/body@0.3.0(react@19.3.1))(@react-email/button@0.2.1(react@19.3.1))(@react-email/code-block@0.2.1(react@19.3.1))(@react-email/code-inline@0.0.6(react@19.3.1))(@react-email/container@0.0.16(react@19.3.1))(@react-email/heading@0.0.16(react@19.3.1))(@react-email/hr@0.0.12(react@19.3.1))(@react-email/img@0.0.12(react@19.3.1))(@react-email/link@0.0.13(react@19.3.1))(@react-email/preview@0.0.14(react@19.3.1))(@react-email/text@0.1.6(react@19.3.1))(react@19.3.1)
-      '@react-email/text': 0.1.6(react@19.3.1)
-      react: 19.3.1
-    transitivePeerDependencies:
-      - react-dom
-
-  '@react-email/container@0.0.16(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/font@0.0.10(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/head@0.0.13(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/heading@0.0.16(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/hr@0.0.12(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/html@0.0.12(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/img@0.0.12(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/link@0.0.13(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/markdown@0.0.18(react@19.3.1)':
-    dependencies:
-      marked: 15.0.12
-      react: 19.3.1
-
-  '@react-email/preview@0.0.14(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/render@2.0.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
-    dependencies:
-      html-to-text: 9.0.5
-      prettier: 3.8.3
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-
   '@react-email/render@2.1.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       entities: 4.5.0
@@ -7592,35 +7324,6 @@ snapshots:
       prettier: 3.8.3
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
-
-  '@react-email/row@0.0.13(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/section@0.0.17(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
-
-  '@react-email/tailwind@2.0.7(@react-email/body@0.3.0(react@19.3.1))(@react-email/button@0.2.1(react@19.3.1))(@react-email/code-block@0.2.1(react@19.3.1))(@react-email/code-inline@0.0.6(react@19.3.1))(@react-email/container@0.0.16(react@19.3.1))(@react-email/heading@0.0.16(react@19.3.1))(@react-email/hr@0.0.12(react@19.3.1))(@react-email/img@0.0.12(react@19.3.1))(@react-email/link@0.0.13(react@19.3.1))(@react-email/preview@0.0.14(react@19.3.1))(@react-email/text@0.1.6(react@19.3.1))(react@19.3.1)':
-    dependencies:
-      '@react-email/text': 0.1.6(react@19.3.1)
-      react: 19.3.1
-      tailwindcss: 4.3.3
-    optionalDependencies:
-      '@react-email/body': 0.3.0(react@19.3.1)
-      '@react-email/button': 0.2.1(react@19.3.1)
-      '@react-email/code-block': 0.2.1(react@19.3.1)
-      '@react-email/code-inline': 0.0.6(react@19.3.1)
-      '@react-email/container': 0.0.16(react@19.3.1)
-      '@react-email/heading': 0.0.16(react@19.3.1)
-      '@react-email/hr': 0.0.12(react@19.3.1)
-      '@react-email/img': 0.0.12(react@19.3.1)
-      '@react-email/link': 0.0.13(react@19.3.1)
-      '@react-email/preview': 0.0.14(react@19.3.1)
-
-  '@react-email/text@0.1.6(react@19.3.1)':
-    dependencies:
-      react: 19.3.1
 
   '@redocly/ajv@8.11.2':
     dependencies:
@@ -7781,11 +7484,11 @@ snapshots:
       estraverse: 5.3.0
       picomatch: 4.0.7
 
-  '@stylistic/eslint-plugin@5.10.0(eslint@9.36.0(supports-color@7.2.0))':
+  '@stylistic/eslint-plugin@5.10.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))':
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       '@typescript-eslint/types': 8.72.0
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       estraverse: 5.3.0
@@ -7929,15 +7632,15 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tanstack/eslint-config@0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+  '@tanstack/eslint-config@0.3.2(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@eslint/js': 9.39.5
-      '@stylistic/eslint-plugin': 5.10.0(eslint@9.36.0(supports-color@7.2.0))
-      eslint-plugin-import-x: 4.18.1(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)
-      eslint-plugin-n: 17.24.0(eslint@9.36.0(supports-color@7.2.0))(typescript@5.9.3)
+      '@stylistic/eslint-plugin': 5.10.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
+      eslint-plugin-import-x: 4.18.1(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
+      eslint-plugin-n: 17.24.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.9.3)
       globals: 16.5.0
-      typescript-eslint: 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
-      vue-eslint-parser: 10.4.1(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)
+      typescript-eslint: 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      vue-eslint-parser: 10.4.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
     transitivePeerDependencies:
       - '@typescript-eslint/utils'
       - eslint
@@ -8363,15 +8066,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.72.0
-      '@typescript-eslint/type-utils': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.72.0
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       ignore: 7.0.13
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -8391,14 +8094,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.72.0
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/typescript-estree': 8.72.0(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.72.0
       debug: 4.4.3(supports-color@7.2.0)
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -8442,13 +8145,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/type-utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/typescript-estree': 8.72.0(supports-color@7.2.0)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       debug: 4.4.3(supports-color@7.2.0)
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -8497,13 +8200,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       '@typescript-eslint/scope-manager': 8.72.0
       '@typescript-eslint/types': 8.72.0
       '@typescript-eslint/typescript-estree': 8.72.0(supports-color@7.2.0)(typescript@5.9.3)
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -9106,9 +8809,9 @@ snapshots:
       eslint: 9.36.0(jiti@2.7.0)(supports-color@10.2.2)
       semver: 7.8.5
 
-  eslint-compat-utils@0.5.1(eslint@9.36.0(supports-color@7.2.0)):
+  eslint-compat-utils@0.5.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0)):
     dependencies:
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       semver: 7.8.5
 
   eslint-import-context@0.1.9(unrs-resolver@1.12.2):
@@ -9125,12 +8828,12 @@ snapshots:
       eslint: 9.36.0(jiti@2.7.0)(supports-color@10.2.2)
       eslint-compat-utils: 0.5.1(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))
 
-  eslint-plugin-es-x@7.8.0(eslint@9.36.0(supports-color@7.2.0)):
+  eslint-plugin-es-x@7.8.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0)):
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint-community/regexpp': 4.12.2
-      eslint: 9.36.0(supports-color@7.2.0)
-      eslint-compat-utils: 0.5.1(eslint@9.36.0(supports-color@7.2.0))
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
+      eslint-compat-utils: 0.5.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
 
   eslint-plugin-import-x@4.18.1(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
@@ -9151,14 +8854,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import-x@4.18.1(@typescript-eslint/utils@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0):
+  eslint-plugin-import-x@4.18.1(@typescript-eslint/utils@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       '@typescript-eslint/types': 8.72.0
       cjs-module-lexer: 2.3.0
       comment-parser: 1.4.9
       debug: 4.4.3(supports-color@7.2.0)
       es-module-lexer: 3.0.4
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-import-context: 0.1.9(unrs-resolver@1.12.2)
       is-glob: 4.0.3
       minimatch: 11.0.4
@@ -9166,7 +8869,7 @@ snapshots:
       stable-hash-x: 0.2.0
       unrs-resolver: 1.12.2
     optionalDependencies:
-      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -9185,12 +8888,12 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-n@17.24.0(eslint@9.36.0(supports-color@7.2.0))(typescript@5.9.3):
+  eslint-plugin-n@17.24.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(typescript@5.9.3):
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       enhanced-resolve: 5.26.0
-      eslint: 9.36.0(supports-color@7.2.0)
-      eslint-plugin-es-x: 7.8.0(eslint@9.36.0(supports-color@7.2.0))
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
+      eslint-plugin-es-x: 7.8.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       get-tsconfig: 4.14.3
       globals: 15.15.0
       globrex: 0.1.2
@@ -9260,9 +8963,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint@9.36.0(supports-color@7.2.0):
+  eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.10.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.21.2(supports-color@7.2.0)
       '@eslint/config-helpers': 0.3.1
@@ -9297,6 +9000,8 @@ snapshots:
       minimatch: 3.1.5
       natural-compare: 1.4.0
       optionator: 0.9.4
+    optionalDependencies:
+      jiti: 2.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -9880,8 +9585,6 @@ snapshots:
 
   map-stream@0.1.0: {}
 
-  marked@15.0.12: {}
-
   math-intrinsics@1.1.0: {}
 
   media-typer@0.3.0: {}
@@ -10184,8 +9887,6 @@ snapshots:
   pretty-ms@9.3.1:
     dependencies:
       parse-ms: 4.0.0
-
-  prismjs@1.30.0: {}
 
   process-warning@5.1.1: {}
 
@@ -10490,7 +10191,7 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
-  sonner@2.0.7(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  sonner@2.0.7(patch_hash=c56f64cc4d406556d481df78c6efea91d01f3d249c8f78ce8340a4b343782f40)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
@@ -10706,13 +10407,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  typescript-eslint@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3):
+  typescript-eslint@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
-      '@typescript-eslint/parser': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.72.0(@typescript-eslint/parser@8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       '@typescript-eslint/typescript-estree': 8.72.0(supports-color@7.2.0)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
-      eslint: 9.36.0(supports-color@7.2.0)
+      '@typescript-eslint/utils': 8.72.0(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -10879,6 +10580,8 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
+  vnu-jar@26.10.7: {}
+
   vue-eslint-parser@10.4.1(eslint@9.36.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
@@ -10891,10 +10594,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vue-eslint-parser@10.4.1(eslint@9.36.0(supports-color@7.2.0))(supports-color@7.2.0):
+  vue-eslint-parser@10.4.1(eslint@9.36.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       debug: 4.4.3(supports-color@7.2.0)
-      eslint: 9.36.0(supports-color@7.2.0)
+      eslint: 9.36.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-scope: 9.1.2
       eslint-visitor-keys: 5.0.1
       espree: 11.2.0

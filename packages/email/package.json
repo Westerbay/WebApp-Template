@@ -20,12 +20,12 @@
   "dependencies": {
     "@workspace/core": "workspace:*",
     "@workspace/i18n": "workspace:*",
-    "@react-email/components": "1.0.12",
     "@react-email/render": "2.1.0",
     "nodemailer": "10.1.4",
     "react": "^19.2.6",
     "zod": "4.6.7",
-    "@workspace/contracts": "workspace:*"
+    "@workspace/contracts": "workspace:*",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@types/node": "24.5.2",
@@ -34,6 +34,7 @@
     "typescript": "5.9.3",
     "vitest": "5.0.5",
     "eslint": "9.36.0",
-    "@tanstack/eslint-config": "0.3.2"
+    "@tanstack/eslint-config": "0.3.2",
+    "@types/react-dom": "^19"
   }
 }

@@ -47,6 +47,10 @@ for (const profile of ["en", "fr", "multilingual"]) {
       "scripts/rust/runtime-check.sh",
       "scripts/rust/image-check.sh",
       "infra/images/postgres/Dockerfile",
+      "scripts/html-check.mjs",
+      "apps/web/playwright.html.config.ts",
+      "apps/web/vite.html.config.ts",
+      "apps/web/test/html/documents.spec.ts",
       "scripts/rust/generate-zod.mjs",
       "apps/web/src/lib/api/responses.zod.ts",
     ])
@@ -106,6 +110,12 @@ for (const profile of ["en", "fr", "multilingual"]) {
       /sh scripts\/rust\/runtime-check.sh/
     )
     assert.match(root.scripts["test:e2e"], /rust\/frontend-check/)
+    assert.equal(root.scripts["test:html"], "node scripts/html-check.mjs")
+    assert.match(text(".github/workflows/ci.yml"), /pnpm test:html/)
+    assert.match(
+      text("apps/api/src/infrastructure/email/mail.rs"),
+      /mod html_documents/
+    )
     assert.match(text("apps/api/Dockerfile"), /USER 10001:10001/)
     assert.match(text("compose.yml"), /name: webapp-template-rust/)
     assert.match(text(".env.example"), /POSTGRES_PORT=5434/)
