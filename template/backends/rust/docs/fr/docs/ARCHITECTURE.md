@@ -79,3 +79,12 @@ reste le client typé. La validation des formulaires appartient à leur fonction
 `packages/i18n` les traductions et chemins, et `packages/ui` les primitives.
 Le web n'importe jamais le serveur. Les types du SDK d'auth restent séparés de
 l'inventaire OpenAPI upstream.
+
+## Modules de code cohérents
+
+Extraire les responsabilités au sein de leur fonctionnalité ou infrastructure.
+Regrouper les modules cohérents dans des dossiers nommés et préserver les points
+d’entrée publics. Le contrôle de taille complète celui des dépendances :
+`pnpm size:check` avertit au-delà de 300 lignes par fichier et rejette les fichiers
+au-delà de 500. La politique commune se trouve dans `packages/config/source-size.mjs` ;
+toute exception doit être bornée et justifiée.

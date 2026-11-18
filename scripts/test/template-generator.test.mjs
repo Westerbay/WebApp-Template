@@ -1,3 +1,4 @@
+import { verifyGeneratedSourceSize } from "./template-source-size.mjs"
 import { test } from "node:test"
 import { unzipSync } from "fflate"
 import assert from "node:assert/strict"
@@ -227,6 +228,7 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       execFileSync(process.execPath, ["scripts/docs-check.mjs"], {
         cwd: output,
       })
+      await verifyGeneratedSourceSize(output)
       await verifyRouting(output, settings, routing)
       await assert.rejects(generateTemplate({ output, profile: id }), {
         code: "EEXIST",

@@ -173,3 +173,12 @@ glissante Nest. Il ne stocke ni sessions ni données applicatives. Son service
 Compose local est éphémère et limité à la boucle locale ; l’accès et la
 disponibilité en environnement déployé relèvent de la plateforme. Voir
 [DEVELOPMENT.md](DEVELOPMENT.md) pour l’installation et les commandes de validation.
+
+## Modules de code cohérents
+
+Extraire les responsabilités au sein de leur fonctionnalité ou infrastructure.
+Regrouper les modules cohérents dans des dossiers nommés et préserver les points
+d’entrée publics. Le contrôle de taille complète celui des dépendances :
+`pnpm size:check` avertit au-delà de 300 lignes par fichier et rejette les fichiers
+au-delà de 500. La politique commune se trouve dans `packages/config/source-size.mjs` ;
+toute exception doit être bornée et justifiée.

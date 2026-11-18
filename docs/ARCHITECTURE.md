@@ -168,3 +168,11 @@ Valkey is enabled explicitly and holds only Nest rolling-window counters. It
 does not store sessions or application data. Its local Compose service is
 loopback-only and ephemeral; deployed access and availability belong to the
 platform. See [DEVELOPMENT.md](DEVELOPMENT.md) for setup and validation commands.
+
+## Cohesive source modules
+
+Extract responsibilities within their existing feature or infrastructure owner.
+Use named folders for cohesive modules and keep public entry points stable.
+Size checks complement dependency boundaries: `pnpm size:check` warns above
+300 source lines per file and rejects files above 500. Shared policy lives in
+`packages/config/source-size.mjs`; any exception must be bounded and justified.

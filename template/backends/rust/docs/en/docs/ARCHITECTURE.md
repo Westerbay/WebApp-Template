@@ -78,3 +78,11 @@ before caching them in TanStack Query; HTTP errors retain their existing handlin
 `packages/i18n` owns copy/public paths, and `packages/ui` owns primitives. Web
 never imports server implementations. Upstream auth OpenAPI remains only a route
 inventory at the pinned revision, separate from the SDK's auth types.
+
+## Cohesive source modules
+
+Extract responsibilities within their existing feature or infrastructure owner.
+Use named folders for cohesive modules and keep public entry points stable.
+Size checks complement dependency boundaries: `pnpm size:check` warns above
+300 source lines per file and rejects files above 500. Shared policy lives in
+`packages/config/source-size.mjs`; any exception must be bounded and justified.

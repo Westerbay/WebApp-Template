@@ -81,3 +81,10 @@ Si vous réutilisez WebApp Template, merci de le mentionner et de fournir un lie
 vers [son dépôt](https://github.com/Westerbay/WebApp-Template) dans la documentation
 du projet créé. Cette mention est facultative et ne constitue pas une condition
 de la licence MIT.
+
+Exécuter `pnpm size:check` après une extraction. Plus de 300 lignes de code par
+fichier déclenche un avertissement ; plus de 500 fait échouer le contrôle.
+ESLint avertit au-delà de 50 lignes par fonction. Le code généré est exclu.
+Toute exception doit être bornée et justifiée dans `packages/config/source-size.mjs`.
+Extraire par responsabilité chez son propriétaire, avec des dossiers nommés
+pour les modules cohérents plutôt que des fragments mécaniques.

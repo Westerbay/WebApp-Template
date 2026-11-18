@@ -279,3 +279,22 @@ Errors fail the command without message filters; warnings remain informational.
 Generated HTML, browser traces and failures stay under ignored
 `output/html-check/run-*/`. Screenshots and generated documents are not source
 assets. This verifies HTML conformance, not Gmail/Outlook/Apple Mail compatibility.
+
+## Source size and module organization
+
+`pnpm size:check` warns above 300 source lines per file and fails above 500.
+ESLint also warns above 50 source lines per JavaScript/TypeScript function.
+Blank lines and comments do not count; strings and JSX content remain source.
+Generated API types, validators and translations are excluded. The shared policy
+and any bounded, justified exception belong in `packages/config/source-size.mjs`.
+No exceptions are currently needed.
+
+The file check runs through `pnpm project:check` and `pnpm check` in CI. It checks
+maintained JavaScript, TypeScript, Rust and CSS, including scripts and tests.
+It works in both Git checkouts and extracted project archives; the latter omit
+Git metadata, so scanning excludes dependency, build and cache directories.
+
+Treat size as a signal to review responsibility, not as proof of SRP. Keep
+extractions with their owner and group cohesive implementations in named folders.
+Preserve entry points, lifecycle and transaction boundaries; avoid numbered
+fragments or flat collections of unrelated files.

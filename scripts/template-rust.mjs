@@ -136,8 +136,9 @@ export async function prepareRustTemplate(source, selected, plan) {
     "test:integration": "sh scripts/rust/check.sh",
     "test:e2e": "node scripts/rust/frontend-check.mjs",
     "project:check":
-      "pnpm boundaries:check && pnpm boundaries:test && node scripts/project-check.mjs",
-    "tooling:test": "pnpm boundaries:test",
+      "pnpm size:check && pnpm tooling:test && pnpm boundaries:check && node scripts/project-check.mjs",
+    "tooling:test":
+      "pnpm boundaries:test && node --test scripts/test/source-size.test.mjs",
     "docker:build": "docker build -t webapp-api:local apps/api",
     "api:check":
       "node scripts/rust/check-assets.mjs && node scripts/api-contract.mjs check",
