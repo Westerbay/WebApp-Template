@@ -25,11 +25,11 @@
     "lint": "turbo lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "project:check": "pnpm tooling:test && pnpm boundaries:check && pnpm boundaries:test && node scripts/project-check.mjs",
+    "project:check": "pnpm size:check && pnpm tooling:test && pnpm boundaries:check && pnpm boundaries:test && node scripts/project-check.mjs",
     "boundaries:check": "depcruise --config packages/config/dependency-cruiser.mjs apps packages",
     "boundaries:test": "node --test scripts/test/boundaries.test.mjs",
     "setup": "node scripts/infra/setup.mjs",
-    "tooling:test": "node --test scripts/test/infra-stack.test.mjs",
+    "tooling:test": "node --test scripts/test/infra-stack.test.mjs scripts/test/source-size.test.mjs",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "test:integration": "node scripts/infra/test-auth.mjs integration",
@@ -48,7 +48,8 @@
     "worktree:remove": "node scripts/worktree.mjs remove",
     "worktree:check": "node --test scripts/test/worktree.test.mjs",
     "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs",
-    "test:html": "node scripts/html-check.mjs"
+    "test:html": "node scripts/html-check.mjs",
+    "size:check": "node scripts/quality/source-size.mjs"
   },
   "devDependencies": {
     "deepmerge": "4.3.1",

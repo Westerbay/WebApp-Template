@@ -145,3 +145,11 @@ Missing or empty ZIPs produce an explicit error. A workflow correction must be
 included in the tagged commit: rerunning an old tag uses its original workflow.
 Publish a new unused version after merging the correction; do not move an
 existing release tag.
+
+## Distributed quality guardrails
+
+Both backends and all language profiles retain the shared source-size policy,
+checker and its tests. `pnpm project:check` runs it in source checkouts and in
+extracted ZIPs without Git metadata. Keep the Rust script overlay aligned with
+the root commands when changing quality checks. Archive tests exercise the
+checker against generated NestJS and Rust projects, including its failure path.

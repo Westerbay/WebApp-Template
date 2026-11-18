@@ -17,3 +17,10 @@ Garder les modules métier indépendants. Les DTO communs appartiennent à `cont
 Infrastructure et configuration n'importent ni les fonctionnalités ni leurs racines.
 Assembler dans `app.rs`, `bootstrap.rs`, `cli/` et `openapi/` ; garder `main.rs` minimal.
 La configuration valide les valeurs ; l'infrastructure possède connexions et transports.
+
+Exécuter `pnpm size:check` après une extraction. Plus de 300 lignes de code par
+fichier déclenche un avertissement ; plus de 500 fait échouer le contrôle.
+ESLint avertit au-delà de 50 lignes par fonction. Le code généré est exclu.
+Toute exception doit être bornée et justifiée dans `packages/config/source-size.mjs`.
+Extraire par responsabilité chez son propriétaire, avec des dossiers nommés
+pour les modules cohérents plutôt que des fragments mécaniques.

@@ -22,3 +22,9 @@ Keep `modules/<feature>` independent. Shared feature DTOs belong in `contracts/`
 Infrastructure and configuration never import features or composition roots.
 Compose in `app.rs`, `bootstrap.rs`, `cli/` and `openapi/`; keep `main.rs` thin.
 Configuration validates values; infrastructure owns connections and transports.
+
+Run `pnpm size:check` for source extractions. More than 300 source lines per file
+warns; more than 500 fails. ESLint warns above 50 source lines per function.
+Generated output is excluded. Keep exceptions bounded and justified in
+`packages/config/source-size.mjs`. Extract by responsibility within its owner,
+using named folders for cohesive modules rather than mechanical fragments.

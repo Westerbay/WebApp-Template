@@ -6,10 +6,13 @@
   "license": "MIT",
   "files": [
     "src",
-    "typescript"
+    "typescript",
+    "eslint",
+    "source-size.mjs"
   ],
   "exports": {
     "./project": "./src/project.json",
-    "./typescript/*": "./typescript/*"
+    "./typescript/*": "./typescript/*",
+    "./eslint/source-size": "./eslint/source-size.mjs"
   }
 }

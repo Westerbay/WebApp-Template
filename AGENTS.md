@@ -79,3 +79,9 @@ If you reuse WebApp Template, please mention it and link to
 [its repository](https://github.com/Westerbay/WebApp-Template) in the resulting
 project documentation. Attribution is optional and is not a condition of the
 MIT license.
+
+Run `pnpm size:check` for source extractions. More than 300 source lines per file
+warns; more than 500 fails. ESLint warns above 50 source lines per function.
+Generated output is excluded. Keep exceptions bounded and justified in
+`packages/config/source-size.mjs`. Extract by responsibility within its owner,
+using named folders for cohesive modules rather than mechanical fragments.

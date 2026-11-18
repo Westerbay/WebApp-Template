@@ -261,3 +261,23 @@ informatifs. Le HTML produit, les traces et échecs navigateur restent dans
 `output/html-check/run-*/`, ignoré par Git. Captures et documents générés ne sont
 pas des ressources source. Ce contrôle vérifie la conformité HTML, pas la
 compatibilité Gmail/Outlook/Apple Mail.
+
+## Taille du code et organisation des modules
+
+`pnpm size:check` avertit au-delà de 300 lignes de code par fichier et échoue
+au-delà de 500. ESLint avertit aussi au-delà de 50 lignes par fonction
+JavaScript/TypeScript. Les lignes vides et commentaires ne comptent pas ; les
+chaînes et le contenu JSX restent du code. Les types API, validateurs et
+traductions générés sont exclus. La politique commune et les éventuelles
+exceptions bornées et justifiées appartiennent à `packages/config/source-size.mjs`.
+Aucune exception n’est actuellement nécessaire.
+
+Le contrôle passe par `pnpm project:check` et `pnpm check` dans la CI. Il couvre
+JavaScript, TypeScript, Rust et CSS, y compris les scripts et tests maintenus.
+Il fonctionne dans les dépôts Git comme dans les archives de projet extraites ;
+sans métadonnées Git, le parcours exclut dépendances, builds et caches.
+
+La taille signale une responsabilité à revoir, sans prouver le respect du SRP.
+Garder les extractions chez leur propriétaire et regrouper les implémentations
+cohérentes dans des dossiers nommés. Préserver les points d’entrée, cycles de vie
+et transactions ; éviter les fragments numérotés et les dossiers plats sans cohésion.

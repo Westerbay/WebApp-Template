@@ -1,3 +1,4 @@
+import { verifyGeneratedSourceSize } from "./template-source-size.mjs"
 import assert from "node:assert/strict"
 import { access, mkdtemp, rm, readFile, writeFile } from "node:fs/promises"
 import { execFileSync } from "node:child_process"
@@ -143,6 +144,7 @@ for (const profile of ["en", "fr", "multilingual"]) {
     assert.match(text("docs/DEVELOPMENT.md"), /sslmode=verify-full/)
     const project = join(directory, `${profile}-rust`)
     execFileSync(process.execPath, ["scripts/docs-check.mjs"], { cwd: project })
+    await verifyGeneratedSourceSize(project)
     execFileSync(process.execPath, ["scripts/rust/check-assets.mjs"], {
       cwd: project,
     })
