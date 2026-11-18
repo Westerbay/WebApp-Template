@@ -243,3 +243,39 @@ check still fails. Do not delete Cargo caches or database volumes to repair pnpm
 Use `pnpm run setup` for the application's infrastructure and migrations;
 `pnpm pm setup` configures the package manager itself. Keep the project pin,
 engine minimum, lockfile, project checker and CI versions aligned when upgrading.
+
+## HTML conformance
+
+Install Java 17+ and Chromium, then run the same HTML check as CI:
+
+```bash
+pnpm --filter web exec playwright install chromium
+pnpm test:html
+```
+
+The pinned Nu Html Checker validates the raw SSR responses and the hydrated
+Chromium documents below for every configured locale. Email HTML comes from
+the real renderer with synthetic recipients and links. No database, SMTP
+server or real environment file is used. Unknown browser API requests are
+blocked; the dashboard uses synthetic responses.
+
+| Routes               | States                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| Sign in and signup   | SSR and hydrated forms                                                                                   |
+| Verification request | SSR and hydrated form                                                                                    |
+| Verification result  | SSR and hydrated success or invalid-link result                                                          |
+| Password request     | SSR and hydrated form; validation error and confirmation after client navigation                         |
+| Password reset       | SSR and hydrated form or missing-token error                                                             |
+| Dashboard            | Initial shell; table with rows, empty table, table API error, identity API error and signed-out redirect |
+| Unknown route        | HTTP 404 response and hydrated result                                                                    |
+
+The browser test checks its route inventory against the localization routing
+configuration. Extend both when adding routes. Nest projects check verification
+and reset emails through React server rendering; Rust projects use the Rust renderer.
+Source-template validation checks both backends. CI also runs the command in
+all six generated backend/locale archives.
+
+Errors fail the command without message filters; warnings remain informational.
+Generated HTML, browser traces and failures stay under ignored
+`output/html-check/run-*/`. Screenshots and generated documents are not source
+assets. This verifies HTML conformance, not Gmail/Outlook/Apple Mail compatibility.

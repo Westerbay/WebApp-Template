@@ -249,3 +249,44 @@ fn escape(value: &str) -> String {
         .replace('"', "&quot;")
         .replace('\'', "&#39;")
 }
+
+#[cfg(test)]
+mod html_documents {
+    use super::render;
+    use std::{fs, path::PathBuf};
+
+    #[test]
+    fn rendered_emails_preserve_the_action() {
+        let output = std::env::var_os("HTML_CHECK_EMAILS").map(PathBuf::from);
+        let settings: serde_json::Value =
+            serde_json::from_str(include_str!("../../../assets/locales.json")).unwrap();
+        for locale in ["en", "fr"] {
+            if !settings["locales"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|value| value == locale)
+            {
+                continue;
+            }
+            for kind in ["verification", "reset"] {
+                let url = "https://app.example.test/action?token=fixture&source=html";
+                let mail = render(kind, "fixture@example.test", url, locale).unwrap();
+                assert!(mail.html.contains(&format!("lang=\"{locale}\"")));
+                assert!(
+                    mail.html
+                        .contains(&format!("href=\"{}\"", url.replace('&', "&amp;")))
+                );
+                assert!(mail.text.contains(url));
+                if let Some(directory) = &output {
+                    fs::create_dir_all(directory).unwrap();
+                    fs::write(
+                        directory.join(format!("rust-{locale}-{kind}.html")),
+                        mail.html,
+                    )
+                    .unwrap();
+                }
+            }
+        }
+    }
+}

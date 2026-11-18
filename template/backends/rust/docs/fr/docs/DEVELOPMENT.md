@@ -155,3 +155,41 @@ pour réparer pnpm.
 Utiliser `pnpm run setup` pour l'infrastructure et les migrations de l'application ;
 `pnpm pm setup` configure le gestionnaire de paquets lui-même. Garder alignés la
 version du projet, le minimum moteur, le lockfile, le contrôleur et les versions CI.
+
+## Conformité HTML
+
+Installer Java 17+ et Chromium, puis lancer le même contrôle HTML que la CI :
+
+```bash
+pnpm --filter web exec playwright install chromium
+pnpm test:html
+```
+
+Le Nu Html Checker épinglé valide les réponses SSR brutes et les documents
+Chromium hydratés ci-dessous pour chaque langue configurée. Le HTML des e-mails
+vient du vrai moteur de rendu avec des destinataires et liens fictifs. Aucune
+base, aucun serveur SMTP ni vrai fichier d’environnement n’est utilisé. Les
+requêtes API navigateur inconnues sont bloquées ; le tableau utilise des
+réponses synthétiques.
+
+| Routes                   | États                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Connexion et inscription | Formulaires SSR et hydratés                                                                                    |
+| Demande de vérification  | Formulaire SSR et hydraté                                                                                      |
+| Résultat de vérification | Résultat SSR et hydraté, succès ou lien invalide                                                               |
+| Demande de mot de passe  | Formulaire SSR et hydraté ; erreur de validation et confirmation après navigation cliente                      |
+| Nouveau mot de passe     | Formulaire SSR et hydraté ou erreur sans jeton                                                                 |
+| Tableau de bord          | Coquille initiale ; tableau rempli, vide, erreur API du tableau, erreur d’identité et redirection sans session |
+| Route inconnue           | Réponse HTTP 404 et résultat hydraté                                                                           |
+
+Le test navigateur compare son inventaire aux routes de la configuration des
+langues. Compléter les deux lors d’un ajout. Les projets Nest vérifient les
+e-mails de vérification et de mot de passe via le rendu serveur React ; les projets Rust
+utilisent leur moteur Rust. Le contrôle du template source vérifie les deux
+backends. La CI lance aussi la commande dans les six archives générées.
+
+Les erreurs font échouer la commande sans filtrage ; les avertissements restent
+informatifs. Le HTML produit, les traces et échecs navigateur restent dans
+`output/html-check/run-*/`, ignoré par Git. Captures et documents générés ne sont
+pas des ressources source. Ce contrôle vérifie la conformité HTML, pas la
+compatibilité Gmail/Outlook/Apple Mail.

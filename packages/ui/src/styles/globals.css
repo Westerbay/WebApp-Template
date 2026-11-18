@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "./shadcn.css";
 @import "@fontsource-variable/geist";
+@import "sonner/dist/styles.css";
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../apps/**/*.{ts,tsx}";

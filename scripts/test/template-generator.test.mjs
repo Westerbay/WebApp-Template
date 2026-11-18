@@ -48,6 +48,18 @@ for (const { id, locales, docsLocale } of templateProfiles) {
       const archiveBytes = await readFile(archive)
       const entries = unzipSync(archiveBytes)
       const names = Object.keys(entries)
+      const archiveManifest = JSON.parse(
+        Buffer.from(entries["package.json"]).toString("utf8")
+      )
+      assert.equal(
+        archiveManifest.scripts["test:html"],
+        "node scripts/html-check.mjs"
+      )
+      assert.ok(entries["packages/email/test/unit/html-documents.test.ts"])
+      assert.match(
+        Buffer.from(entries[".github/workflows/ci.yml"]).toString("utf8"),
+        /pnpm test:html/
+      )
       const documentNames = (await readdir(join(source, "docs")))
         .filter((name) => name.endsWith(".md"))
         .sort()
@@ -79,6 +91,10 @@ for (const { id, locales, docsLocale } of templateProfiles) {
         ".gitignore",
         ".github/workflows/ci.yml",
         "infra/images/postgres/Dockerfile",
+        "scripts/html-check.mjs",
+        "apps/web/playwright.html.config.ts",
+        "apps/web/vite.html.config.ts",
+        "apps/web/test/html/documents.spec.ts",
         "infra/images/grafana/Dockerfile",
         "infra/images/grafana/plugins.json",
       ])

@@ -18,9 +18,11 @@ allowBuilds:
   "@swc/core": true
   esbuild: true
   unrs-resolver: true
+  vnu-jar: false
 
 patchedDependencies:
   deepmerge@4.3.1: patches/deepmerge@4.3.1.patch
+  sonner@2.0.7: patches/sonner@2.0.7.patch
 
 minimumReleaseAgeExclude:
   - minimatch@11.0.4

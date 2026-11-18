@@ -47,9 +47,11 @@
     "worktree:create": "node scripts/worktree.mjs create",
     "worktree:remove": "node scripts/worktree.mjs remove",
     "worktree:check": "node --test scripts/test/worktree.test.mjs",
-    "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs"
+    "test:dependency-security": "node --test scripts/security/deepmerge.test.cjs",
+    "test:html": "node scripts/html-check.mjs"
   },
   "devDependencies": {
+    "deepmerge": "4.3.1",
     "dependency-cruiser": "18.6.0",
     "fflate": "0.8.3",
     "orval": "8.45.0",
@@ -57,7 +59,7 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "2.9.18",
     "typescript": "5.9.3",
-    "deepmerge": "4.3.1"
+    "vnu-jar": "26.10.7"
   },
   "packageManager": "pnpm@12.11.2",
   "engines": {
